@@ -1,0 +1,44 @@
+{
+    "properties": [
+        {
+            "name": "security.cors.allowed-origins",
+            "type": "java.lang.String",
+            "description": "Set allowed origins separated by ','"
+        },
+        {
+            "name": "app.s3.bucket",
+            "type": "java.lang.String",
+            "description": "Name of the s3 bucket"
+        },
+        {
+            "name": "cloud.aws.region",
+            "type": "java.lang.String",
+            "description": "AWS cloud region"
+        },
+        {
+            "name": "security.jwt.refresh-ttl-seconds",
+            "type": "java.lang.Long",
+            "description": "Expiry time for JWT Refresh Token"
+        },
+        {
+            "name": "security.jwt.access-ttl-seconds",
+            "type": "java.lang.Long",
+            "description": "Expiry time for JWT Access Token"
+        },
+        {
+            "name": "realestate.base.directory",
+            "type": "java.lang.String",
+            "description": "Base directory path where files are stored"
+        },
+        {
+            "name": "security.jwt.secret",
+            "type": "java.lang.String",
+            "description": "JWT secret key for signing token'"
+        },
+        {
+            "name": "LOG_TO_FILE",
+            "type": "java.lang.Boolean",
+            "description": "Whether to log to a file or not"
+        }
+    ]
+}
