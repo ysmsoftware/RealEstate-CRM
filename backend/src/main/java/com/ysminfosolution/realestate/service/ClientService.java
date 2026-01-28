@@ -19,5 +19,8 @@ public interface ClientService {
     ResponseEntity<ClientBasicInfoDTO> getClientBasicInfo(AppUserDetails appUserDetails, UUID clientId);
 
     ResponseEntity<ClientDetailsDTO> getClientDetails(AppUserDetails appUserDetails, UUID clientId);
+
+    ResponseEntity<String> changeClientInfo(UUID clientId, ClientDetailsDTO clientInfo,
+            AppUserDetails appUserDetails);
     
 }

@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 
@@ -64,6 +67,15 @@ public class ClientController {
         return clientService.getListOfClientBasicInfo(appUserDetails);
 
 
+    }
+
+    @PutMapping("/{clientId}")
+    public ResponseEntity<String> changeClientInfo(@PathVariable UUID clientId, @RequestBody ClientDetailsDTO clientInfo, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+        
+        log.info("\n");
+        log.info("Path: [PUT] /clients/{clientId} | Method: changeClientInfo");
+        
+        return clientService.changeClientInfo(clientId, clientInfo, appUserDetails);
     }
     
 }
