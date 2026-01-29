@@ -12,4 +12,6 @@ public class RealEstateApplication {
 		SpringApplication.run(RealEstateApplication.class, args);
 	}
 
+	// Testing CI/CD
+
 }
