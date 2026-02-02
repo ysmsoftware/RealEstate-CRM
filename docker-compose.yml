@@ -7,9 +7,8 @@ services:
       POSTGRES_DB: realestate
       POSTGRES_USER: ${REALESTATE_DB_USER}
       POSTGRES_PASSWORD: ${REALESTATE_DB_PASS}
-    # Remove port exposure if only accessed internally
-    # ports:
-    #   - "5432:5432"
+    ports:
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
