@@ -26,5 +26,7 @@ public interface FlatRepository extends JpaRepository<Flat, UUID> {
     long countByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
 
     Optional<Flat> findByPropertyIdAndIsDeletedFalse(UUID propertyId);
+
+    long countByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
     
 }

@@ -5,13 +5,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.ysminfosolution.realestate.dto.FlatDTO;
 import com.ysminfosolution.realestate.dto.FloorDTO;
 import com.ysminfosolution.realestate.dto.ProjectBasicInfoDTO;
@@ -22,6 +22,7 @@ import com.ysminfosolution.realestate.exception.ApiException;
 import com.ysminfosolution.realestate.exception.ConflictException;
 import com.ysminfosolution.realestate.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.Flat;
 import com.ysminfosolution.realestate.model.Floor;
 import com.ysminfosolution.realestate.model.Project;
@@ -30,6 +31,8 @@ import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.Wing;
 import com.ysminfosolution.realestate.model.Project.Status;
 import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.EnquiryRepository;
+import com.ysminfosolution.realestate.repository.FlatRepository;
 import com.ysminfosolution.realestate.repository.OrganizationRepository;
 import com.ysminfosolution.realestate.repository.ProjectRepository;
 import com.ysminfosolution.realestate.resolver.ProjectResolver;
@@ -56,6 +59,8 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final OrganizationRepository organizationRepository;
     private final EmployeeUserInfoRepository employeeUserInfoRepository;
+    private final EnquiryRepository enquiryRepository;
+    private final FlatRepository flatRepository;
 
     // * All the other services used
     private final WingService wingService;
@@ -265,10 +270,29 @@ public class ProjectServiceImpl implements ProjectService {
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
         // TODO: Add project details for dashboard
+        Set<Enquiry> projectEnquiries = enquiryRepository
+                .findAllByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
+
+        long projectTotalProperties = flatRepository.countByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
+
+        long projectBooked = projectEnquiries.stream()
+                .filter(e -> e.getStatus() == Enquiry.Status.BOOKED)
+                .count();
+
+        int projectCancelled = (int) projectEnquiries.stream()
+                .filter(e -> e.getStatus() == Enquiry.Status.CANCELLED)
+                .count();
+
+        int projectAvailable = (int) (projectTotalProperties - projectBooked);
 
         ProjectDTO projectDTO = new ProjectDTO(
                 project.getProjectId(),
                 project.getProjectName(),
+                projectTotalProperties,
+                projectBooked,
+                projectAvailable,
+                projectEnquiries.size(),
+                projectCancelled,
                 project.getStartDate(),
                 project.getCompletionDate(),
                 project.getMahareraNo(),
@@ -279,9 +303,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         for (Wing wing : wingService.getFullStructureByProjectId(projectId)) {
 
-
-            if (wing.isDeleted()) continue;
-
+            if (wing.isDeleted())
+                continue;
 
             WingDTO wingDTO = new WingDTO(
                     wing.getWingId(),

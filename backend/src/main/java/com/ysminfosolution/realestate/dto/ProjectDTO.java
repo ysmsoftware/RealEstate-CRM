@@ -9,6 +9,11 @@ import com.ysminfosolution.realestate.model.Project.Status;
 public record ProjectDTO(
     UUID projectId,
     String projectName,
+    long totalProperties,
+    long propertiesBooked,
+    int propertiesAvailable,
+    int totalEnquiries,
+    int cancelledEnquiries,
     LocalDate startDate,
     LocalDate completionDate,
     String mahareraNo,
