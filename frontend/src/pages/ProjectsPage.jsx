@@ -159,7 +159,7 @@ export default function ProjectsPage() {
                     <EmptyState
                         icon={Plus}
                         title="No Projects Yet"
-                        message="Create your first project to get started"
+                        message="Create your first to get started"
                         action={() => navigate("/registration")}
                         actionLabel="Create Project"
                     />
