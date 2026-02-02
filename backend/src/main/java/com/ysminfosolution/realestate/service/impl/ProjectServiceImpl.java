@@ -67,10 +67,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectResolver projectResolver;
 
-    // * Property Variables
-    @Value("${realestate.base.directory}")
-    private String baseStorageDirectory;
-
     private final S3StorageService s3StorageService;
 
     @SuppressWarnings("null")
@@ -267,6 +263,8 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectResolver.resolve(projectId);
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
+
+        // TODO: Add project details for dashboard
 
         ProjectDTO projectDTO = new ProjectDTO(
                 project.getProjectId(),

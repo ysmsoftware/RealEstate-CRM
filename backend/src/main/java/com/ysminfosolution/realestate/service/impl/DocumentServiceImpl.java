@@ -39,9 +39,6 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final ProjectResolver projectResolver;
 
-    // * Property Variables
-    @Value("${realestate.base.directory}")
-    private String baseStorageDirectory;
 
     @Override
     public Boolean createDocumentsForProject(Project savedProject,

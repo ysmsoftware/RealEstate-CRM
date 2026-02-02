@@ -392,6 +392,7 @@ public class EnquiryServiceImpl implements EnquiryService {
                 EnquiryBasicInfoDTO basicInfoDTO = new EnquiryBasicInfoDTO(
                         enquiry.getEnquiryId(),
                         enquiry.getClient().getClientName(),
+                        project.getProjectId(),
                         project.getProjectName(),
                         enquiry.getBudget(),
                         enquiry.getStatus());
@@ -454,6 +455,10 @@ public class EnquiryServiceImpl implements EnquiryService {
         if (updateEnquiryDTO.budget() != null)
             enquiry.setBudget(updateEnquiryDTO.budget());
 
+        if (updateEnquiryDTO.status() != null) {
+            changeEnquiryStatus(enquiryId, updateEnquiryDTO.status(), appUserDetails);
+        }
+
         if (updateEnquiryDTO.reference() != null)
             enquiry.setReference(updateEnquiryDTO.reference());
 
@@ -498,6 +503,7 @@ public class EnquiryServiceImpl implements EnquiryService {
             EnquiryBasicInfoDTO basicInfoDTO = new EnquiryBasicInfoDTO(
                     enquiry.getEnquiryId(),
                     enquiry.getClient().getClientName(),
+                    enquiry.getProject().getProjectId(),
                     enquiry.getProject().getProjectName(),
                     enquiry.getBudget(),
                     enquiry.getStatus());
@@ -590,12 +596,26 @@ public class EnquiryServiceImpl implements EnquiryService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        if (status != Status.HOT_LEAD && status != Status.WARM_LEAD && status != Status.COLD_LEAD) {
-            throw new ApiException(HttpStatus.METHOD_NOT_ALLOWED,
-                    "Status can only be changed to HOT_LEAD, WARM_LEAD or COLD_LEAD");
+        switch (status) {
+            case CANCELLED:
+                enquiry.setRemark("Enquiry cancelled");
+                enquiry.setStatus(Status.CANCELLED);
+
+                // * Remove FollowUp associated with Enquiry from the Tasks
+                taskRepository.deleteByFollowUp_Enquiry(enquiry);
+                break;
+
+            // ! This is only temporary until the booking flow is implemented
+            case BOOKED:
+
+            
+                enquiry.setStatus(Status.BOOKED);
+
+            default:
+                enquiry.setStatus(status);
+                break;
         }
 
-        enquiry.setStatus(status);
         enquiryRepository.save(enquiry);
 
         return ResponseEntity.ok("Status changed successfully");

@@ -7,6 +7,7 @@ import com.ysminfosolution.realestate.model.Enquiry.Status;
 public record EnquiryBasicInfoDTO(
     UUID enquiryId,
     String clientName,
+    UUID projectId,
     String projectName,
     String budget,
     Status status

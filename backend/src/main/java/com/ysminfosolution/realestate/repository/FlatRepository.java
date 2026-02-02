@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -19,6 +20,10 @@ public interface FlatRepository extends JpaRepository<Flat, UUID> {
     // ~ Solves the lazy loading (Could Not Initialize Entity, No Active Session) problem by join fetching the specified columns
     @EntityGraph(attributePaths = {"wing", "floor", "project"})
     Set<Flat> findAllByProject_ProjectId(UUID projectId);
+
+    Set<Flat> findAllByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
+    
+    long countByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
 
     Optional<Flat> findByPropertyIdAndIsDeletedFalse(UUID propertyId);
     

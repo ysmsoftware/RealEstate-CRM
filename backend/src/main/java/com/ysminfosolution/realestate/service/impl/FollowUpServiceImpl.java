@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import com.ysminfosolution.realestate.dto.FollowUpBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.FollowUpNodeRequestDTO;
 import com.ysminfosolution.realestate.dto.FollowUpNodeResponseDTO;
 import com.ysminfosolution.realestate.dto.FollowUpResponseDTO;
+import com.ysminfosolution.realestate.exception.ApiException;
 import com.ysminfosolution.realestate.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.ClientUserInfo;
 import com.ysminfosolution.realestate.model.EmployeeUserInfo;
@@ -249,8 +251,15 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("\n");
         log.info("Method: addNodeToFollowUp");
 
-        FollowUp followUp = followUpRepository.findById(followUpId)
+        FollowUp followUp = followUpRepository.findByFollowUpIdAndIsDeletedFalse(followUpId)
                 .orElseThrow(() -> new NotFoundException("FollowUp not found"));
+
+        Enquiry enquiry = followUp.getEnquiry();
+
+        if (enquiry.getStatus().equals(Enquiry.Status.CANCELLED) || enquiry.getStatus().equals(Enquiry.Status.BOOKED)) {
+                throw new ApiException(HttpStatus.METHOD_NOT_ALLOWED, "Cannot add follow-up activity to a completed enquiry or cancelled enquiry");
+        }
+        
 
         // ✅ Resolve project ONCE (request-scoped)
         Project project = projectResolver.resolve(

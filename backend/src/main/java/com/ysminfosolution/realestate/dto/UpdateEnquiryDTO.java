@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.dto;
 
+import com.ysminfosolution.realestate.model.Enquiry.Status;
 import com.ysminfosolution.realestate.model.Floor.PropertyType;
 
 import jakarta.validation.constraints.Email;
@@ -23,6 +24,7 @@ public record UpdateEnquiryDTO(
     String occupation,
     String company,
     String budget,
+    Status status,
     String reference,
     String referenceName,
     String remark,

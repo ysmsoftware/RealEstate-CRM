@@ -66,4 +66,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
             """)
     Optional<FollowUp> findByIdWithFetch(@Param("followUpId") UUID followUpId);
 
+    Optional<FollowUp> findByFollowUpIdAndIsDeletedFalse(UUID followUpId);
+
 }
