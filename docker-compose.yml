@@ -3,6 +3,7 @@ services:
     image: postgres:16
     container_name: realestate-postgres
     restart: unless-stopped
+    env_file: ./backend/.env
     environment:
       POSTGRES_DB: realestate
       POSTGRES_USER: ${REALESTATE_DB_USER}
