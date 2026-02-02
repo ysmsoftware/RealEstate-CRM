@@ -3,19 +3,16 @@ services:
     image: postgres:16
     container_name: realestate-postgres
     restart: unless-stopped
-    env_file: ./backend/.env
     environment:
-      POSTGRES_DB: realestate
-      POSTGRES_USER: ${REALESTATE_DB_USER}
-      POSTGRES_PASSWORD: ${REALESTATE_DB_PASS}
-    # ports:
-    #   - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
       - realestate_network
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${REALESTATE_DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,7 +22,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: realestate-backend
-    env_file: ./backend/.env
+    env_file:
+      - ./backend/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,12 +31,12 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE:-prod}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/realestate
-      SPRING_DATASOURCE_USERNAME: ${REALESTATE_DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${REALESTATE_DB_PASS}
-      REALESTATE_BASE_DIRECTORY: ${REALESTATE_BASE_DIRECTORY}
-      REALESTATE_JWT_SECRET: ${REALESTATE_JWT_SECRET}
-      JAVA_OPTS: ${JAVA_OPTS:--Xmx512m -Xms256m}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      REALESTATE_BASE_DIRECTORY: ${REALESTATE_BASE_DIRECTORY:?REALESTATE_BASE_DIRECTORY required}
+      REALESTATE_JWT_SECRET: ${REALESTATE_JWT_SECRET:?JWT secret required}
+      JAVA_OPTS: ${JAVA_OPTS}
     volumes:
       - realestate_data:/data/realestate
     networks:
@@ -55,7 +53,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8080}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:?VITE_API_BASE_URL required}
     container_name: realestate-frontend
     ports:
       - "3000:80"
