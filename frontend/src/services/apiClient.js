@@ -1,4 +1,4 @@
-const API_BASE_URL = "/api" //  import.meta.env.VITE_API_URL
+const API_BASE_URL = "/api"
 
 console.log(`DEBUG API_BASE_URL: ${API_BASE_URL}`);
 
