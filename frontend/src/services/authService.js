@@ -3,7 +3,7 @@ import { apiClient } from "./apiClient"
 export const authService = {
     async login(username, password) {
         try {
-            const response = await apiClient.request("/login", {
+            const data = await apiClient.request("/login", {
                 method: "POST",
                 body: JSON.stringify({ username, password }),
             });
