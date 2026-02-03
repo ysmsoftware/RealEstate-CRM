@@ -51,9 +51,6 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-      args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL:?VITE_API_BASE_URL required}
     container_name: realestate-frontend
     ports:
       - "3000:80"
