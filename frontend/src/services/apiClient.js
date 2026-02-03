@@ -1,5 +1,7 @@
 const API_BASE_URL = "/api" //  import.meta.env.VITE_API_URL
 
+console.log(`DEBUG API_BASE_URL: ${API_BASE_URL}`);
+
 // Variable to hold the pending refresh promise (prevents multiple refresh calls)
 let refreshPromise = null
 
@@ -38,6 +40,8 @@ export const apiClient = {
 
     async request(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`
+
+        console.log(`DEBUG URL: ${url}`);
 
         // 1. Prepare Headers
         const headers = { ...options.headers }
