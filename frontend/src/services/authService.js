@@ -8,12 +8,6 @@ export const authService = {
                 body: JSON.stringify({ username, password }),
             });
 
-            const data = await response.json()
-
-            if (!response.ok) {
-                throw new Error(data.message || "Login failed")
-            }
-
             // Store tokens
             apiClient.setTokens(data.accessToken, data.refreshToken)
 
@@ -32,16 +26,10 @@ export const authService = {
 
     async registerOrganization(data) {
         try {
-            const response = await apiClient.request("/register-organization", {
+            const responseData = await apiClient.request("/register-organization", {
                 method: "POST",
                 body: JSON.stringify(data),
             })
-
-            const responseData = await response.json()
-
-            if (!response.ok) {
-                throw new Error(responseData.message || "Registration failed")
-            }
 
             return responseData
         } catch (error) {
