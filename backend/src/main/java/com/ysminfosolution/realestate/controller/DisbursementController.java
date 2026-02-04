@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.controller;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -50,7 +51,7 @@ public class DisbursementController {
 
     @PutMapping("/{projectId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Set<Disbursement>> changeDisbursementsForProject(@PathVariable @NotNull UUID projectId, @RequestBody @NotEmpty @Valid Set<DisbursementCreationDTO> disbursements) {
+    public ResponseEntity<Set<Disbursement>> changeDisbursementsForProject(@PathVariable @NotNull UUID projectId, @RequestBody @NotEmpty @Valid List<DisbursementCreationDTO> disbursements) {
 
         log.info("\n");
         log.info("Path: [PUT] /disbursements/{projectId} | Method: changeDisbursementsForProject");

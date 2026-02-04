@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public Boolean createDocumentsForProject(Project savedProject,
-            Set<DocumentCreationDTO> documents,
+            List<DocumentCreationDTO> documents,
             AppUserDetails appUserDetails) {
 
         log.info("\nMethod: createDocumentsForProject");
