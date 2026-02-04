@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     @Transactional
-    public Boolean createFloorsForWing(Wing savedWing, Set<FloorCreationDTO> floorsDTOs) {
+    public Boolean createFloorsForWing(Wing savedWing, List<FloorCreationDTO> floorsDTOs) {
 
         log.info("\n");
         log.info("Method: createFloorsForWing");

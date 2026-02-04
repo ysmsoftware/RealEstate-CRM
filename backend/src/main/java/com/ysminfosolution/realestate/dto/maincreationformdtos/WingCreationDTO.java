@@ -1,7 +1,7 @@
 package com.ysminfosolution.realestate.dto.maincreationformdtos;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -22,17 +22,17 @@ public record WingCreationDTO(
 
     @Valid
     @NotEmpty(message = "Atleast one floor is required")
-    Set<FloorCreationDTO> floors
+    List<FloorCreationDTO> floors
 ) {
     public WingCreationDTO(
         String wingName,
         Integer noOfFloors,
         Integer noOfProperties,
-        Set<FloorCreationDTO> floors
+        List<FloorCreationDTO> floors
     ) {
         this.wingName = wingName;
         this.noOfFloors = noOfFloors;
         this.noOfProperties = noOfProperties;
-        this.floors = floors != null ? floors : new HashSet<>();
+        this.floors = floors != null ? floors : new ArrayList<>();
     }
 }

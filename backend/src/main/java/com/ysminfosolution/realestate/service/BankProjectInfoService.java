@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import com.ysminfosolution.realestate.security.AppUserDetails;
 
 public interface BankProjectInfoService {
 
-    Boolean createBankProjectInfosForProject(Project savedProject, Set<BankProjectInfoCreationDTO> projectApprovedBanksInfo);
+    Boolean createBankProjectInfosForProject(Project savedProject, List<BankProjectInfoCreationDTO> projectApprovedBanksInfo);
 
     void hardDeleteAllByProjectId(UUID projectId);
 

@@ -2,8 +2,8 @@ package com.ysminfosolution.realestate.dto.maincreationformdtos;
 
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,21 +43,21 @@ public record ProjectCreationDTO (
 
     @Valid
     @NotEmpty(message = "Atleast one wing is required")
-    Set<WingCreationDTO> wings,
+    List<WingCreationDTO> wings,
 
     @Valid
     @NotEmpty(message = "Atleast one project approved bank detail is required")
-    Set<BankProjectInfoCreationDTO> projectApprovedBanksInfo,
+    List<BankProjectInfoCreationDTO> projectApprovedBanksInfo,
 
     @Valid
-    Set<AmenityCreationDTO> amenities,
+    List<AmenityCreationDTO> amenities,
     
     @Valid
-    Set<DocumentCreationDTO> documents,
+    List<DocumentCreationDTO> documents,
 
     @Valid
     @NotEmpty(message = "Atleast one wing is required")
-    Set<DisbursementCreationDTO> disbursements
+    List<DisbursementCreationDTO> disbursements
 ) {
     
     public ProjectCreationDTO(
@@ -68,11 +68,11 @@ public record ProjectCreationDTO (
         String mahareraNo,
         Status status,
         MultipartFile letterHeadFile,
-        Set<WingCreationDTO> wings,
-        Set<BankProjectInfoCreationDTO> projectApprovedBanksInfo,
-        Set<AmenityCreationDTO> amenities,
-        Set<DocumentCreationDTO> documents,
-        Set<DisbursementCreationDTO> disbursements
+        List<WingCreationDTO> wings,
+        List<BankProjectInfoCreationDTO> projectApprovedBanksInfo,
+        List<AmenityCreationDTO> amenities,
+        List<DocumentCreationDTO> documents,
+        List<DisbursementCreationDTO> disbursements
     ) {
         this.projectName = projectName;
         this.projectAddress = projectAddress;
@@ -81,10 +81,10 @@ public record ProjectCreationDTO (
         this.mahareraNo = mahareraNo;
         this.status = status;
         this.letterHeadFile = letterHeadFile;
-        this.wings = wings != null ? wings : new HashSet<>();
-        this.projectApprovedBanksInfo = projectApprovedBanksInfo != null ? projectApprovedBanksInfo : new HashSet<>();
-        this.amenities = amenities != null ? amenities : new HashSet<>();
-        this.documents = documents != null ? documents : new HashSet<>();
-        this.disbursements = disbursements != null ? disbursements : new HashSet<>();
+        this.wings = wings != null ? wings : new ArrayList<>();
+        this.projectApprovedBanksInfo = projectApprovedBanksInfo != null ? projectApprovedBanksInfo : new ArrayList<>();
+        this.amenities = amenities != null ? amenities : new ArrayList<>();
+        this.documents = documents != null ? documents : new ArrayList<>();
+        this.disbursements = disbursements != null ? disbursements : new ArrayList<>();
     }
 }

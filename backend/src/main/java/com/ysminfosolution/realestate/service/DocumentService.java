@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import com.ysminfosolution.realestate.security.AppUserDetails;
 
 public interface DocumentService {
 
-    Boolean createDocumentsForProject(Project savedProject, Set<DocumentCreationDTO> documents, AppUserDetails appUserDetails);
+    Boolean createDocumentsForProject(Project savedProject, List<DocumentCreationDTO> documents, AppUserDetails appUserDetails);
 
     void hardDeleteAllByProjectId(UUID projectId);
 

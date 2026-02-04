@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ import com.ysminfosolution.realestate.model.Wing;
 
 public interface WingService {
 
-    Boolean createWingsForProject(Project savedProject, Set<WingCreationDTO> wings);
+    Boolean createWingsForProject(Project savedProject, List<WingCreationDTO> wings);
 
     void hardDeleteWingsRecursiveByProjectId(UUID projectId);
 
