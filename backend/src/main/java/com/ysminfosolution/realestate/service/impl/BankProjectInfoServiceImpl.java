@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
 
     @Override
     public Boolean createBankProjectInfosForProject(Project savedProject,
-            Set<BankProjectInfoCreationDTO> projectApprovedBanksInfo) {
+            List<BankProjectInfoCreationDTO> projectApprovedBanksInfo) {
 
 
         log.info("\n");

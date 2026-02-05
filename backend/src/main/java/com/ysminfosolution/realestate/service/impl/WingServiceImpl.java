@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class WingServiceImpl implements WingService {
 
     @Override
     @Transactional
-    public Boolean createWingsForProject(Project savedProject, Set<WingCreationDTO> wings) {
+    public Boolean createWingsForProject(Project savedProject, List<WingCreationDTO> wings) {
 
         log.info("\n");
         log.info("Method: createWingsForProject");

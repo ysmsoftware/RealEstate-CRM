@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class AmenityServiceImpl implements AmenityService {
     private final ProjectResolver projectResolver;
 
     @Override
-    public Boolean createAmenitiesForProject(Project savedProject, Set<AmenityCreationDTO> amenities) {
+    public Boolean createAmenitiesForProject(Project savedProject, List<AmenityCreationDTO> amenities) {
 
         log.info("\n");
         log.info("Method: createAmenitiesForProject");

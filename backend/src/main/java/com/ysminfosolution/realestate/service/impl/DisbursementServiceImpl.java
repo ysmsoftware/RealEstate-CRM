@@ -1,5 +1,6 @@
 package com.ysminfosolution.realestate.service.impl;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class DisbursementServiceImpl implements DisbursementService {
     private final ProjectResolver projectResolver;
 
     @Override
-    public Boolean createDisbursementsForProject(Project savedProject, Set<DisbursementCreationDTO> disbursements) {
+    public Boolean createDisbursementsForProject(Project savedProject, List<DisbursementCreationDTO> disbursements) {
 
         log.info("\n");
         log.info("Method: createDisbursementsForProject");
@@ -71,7 +72,7 @@ public class DisbursementServiceImpl implements DisbursementService {
 
     @Override
     public ResponseEntity<Set<Disbursement>> changeDisbursementsForProject(UUID projectId,
-            Set<DisbursementCreationDTO> disbursements) {
+            List<DisbursementCreationDTO> disbursements) {
 
         log.info("\n");
         log.info("Method: changeDisbursementsForProject");
