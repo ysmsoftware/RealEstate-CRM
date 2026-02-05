@@ -421,7 +421,7 @@ export default function ProjectDetailPage() {
 
     const handlePreviewDocument = async (doc) => {
         try {
-            const fileUrl = `/documents/${doc.id || doc.documentId
+            const fileUrl = `${import.meta.env.VITE_API_URL}/documents/${doc.id || doc.documentId
                 }`
             const fileType = doc.fileName?.split(".").pop()?.toLowerCase() || "pdf"
 
@@ -468,6 +468,73 @@ export default function ProjectDetailPage() {
             label: "Overview",
             content: (
                 <div className="space-y-6">
+                    {/* Key Metrics Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Total Properties */}
+                        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-blue-600">Total Properties</p>
+                                    <p className="text-3xl font-bold text-blue-900 mt-1">
+                                        {project?.totalProperties || 0}
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-blue-200 rounded-lg">
+                                    <Building2 size={24} className="text-blue-700" />
+                                </div>
+                            </div>
+                        </Card>
+
+                        {/* Properties Booked */}
+                        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-green-600">Properties Booked</p>
+                                    <p className="text-3xl font-bold text-green-900 mt-1">
+                                        {project?.propertiesBooked || 0}
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-green-200 rounded-lg">
+                                    <Building2 size={24} className="text-green-700" />
+                                </div>
+                            </div>
+                        </Card>
+
+                        {/* Properties Available */}
+                        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-purple-600">Properties Available</p>
+                                    <p className="text-3xl font-bold text-purple-900 mt-1">
+                                        {project?.propertiesAvailable || 0}
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-purple-200 rounded-lg">
+                                    <Building2 size={24} className="text-purple-700" />
+                                </div>
+                            </div>
+                        </Card>
+
+                        {/* Total Enquiries */}
+                        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-medium text-orange-600">Total Enquiries</p>
+                                    <p className="text-3xl font-bold text-orange-900 mt-1">
+                                        {project?.totalEnquiries || 0}
+                                    </p>
+                                    <p className="text-xs text-orange-600 mt-1">
+                                        Cancelled: {project?.cancelledEnquiries || 0}
+                                    </p>
+                                </div>
+                                <div className="p-3 bg-orange-200 rounded-lg">
+                                    <FileText size={24} className="text-orange-700" />
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+
+                    {/* Basic Details Section */}
                     <Card>
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                             <h3 className="text-lg font-semibold text-gray-900">Basic Details</h3>
@@ -569,6 +636,76 @@ export default function ProjectDetailPage() {
                                 </div>
                             </div>
                         )}
+                    </Card>
+
+                    {/* Wings Overview */}
+                    {project?.wings && project.wings.length > 0 && (
+                        <Card>
+                            <h3 className="text-lg font-semibold mb-4">Wings Overview</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {project.wings.map((wing) => (
+                                    <div
+                                        key={wing.wingId}
+                                        className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white"
+                                    >
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                                                <Building2 size={18} className="text-blue-600" />
+                                                {wing.wingName}
+                                            </h4>
+                                            <Badge status="active" className="text-xs">
+                                                {wing.noOfFloors + 1} Floors
+                                            </Badge>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span className="text-gray-600">Total Properties:</span>
+                                                <span className="font-medium text-gray-900">{wing.noOfProperties}</span>
+                                            </div>
+                                            {wing.floors && (
+                                                <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
+                                                    {wing.floors.length} floor{wing.floors.length !== 1 ? "s" : ""}{" "}
+                                                    configured
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Card>
+                    )}
+
+                    {/* Project Status */}
+                    <Card>
+                        <h3 className="text-lg font-semibold mb-4">Project Status</h3>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <Badge
+                                status={
+                                    project?.status === "UPCOMING"
+                                        ? "pending"
+                                        : project?.status === "ONGOING"
+                                            ? "active"
+                                            : "completed"
+                                }
+                                className="text-sm px-4 py-2"
+                            >
+                                {project?.status || "N/A"}
+                            </Badge>
+                            {project?.progress !== undefined && (
+                                <div className="flex-1 w-full sm:max-w-md">
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span className="text-gray-600">Overall Progress</span>
+                                        <span className="font-semibold text-gray-900">{project.progress}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-3">
+                                        <div
+                                            className="bg-blue-600 h-3 rounded-full transition-all"
+                                            style={{ width: `${project.progress}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </Card>
                 </div>
             ),
