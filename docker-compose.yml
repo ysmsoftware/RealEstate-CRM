@@ -33,6 +33,9 @@ services:
       REALESTATE_BASE_DIRECTORY: ${REALESTATE_BASE_DIRECTORY:?REALESTATE_BASE_DIRECTORY required}
       REALESTATE_JWT_SECRET: ${REALESTATE_JWT_SECRET:?JWT secret required}
       JAVA_OPTS: ${JAVA_OPTS}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
     volumes:
       - realestate_data:/data/realestate
     networks:
