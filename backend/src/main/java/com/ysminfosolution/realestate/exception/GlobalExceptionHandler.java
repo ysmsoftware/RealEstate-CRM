@@ -2,6 +2,8 @@ package com.ysminfosolution.realestate.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,8 +12,6 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-@SuppressWarnings("null")
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,6 +31,15 @@ public class GlobalExceptionHandler {
         pd.setProperty("errors", errors);
         pd.setProperty("timestamp", Instant.now());
 
+        return pd;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        pd.setTitle("Invalid Credentials");
+        pd.setType(URI.create("https://api.realestate/errors/bad-credentials"));
+        pd.setProperty("timestamp", Instant.now());
         return pd;
     }
 
@@ -73,6 +82,18 @@ public class GlobalExceptionHandler {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(ex.getStatus(), ex.getMessage());
         pd.setTitle("API Error");
         pd.setType(URI.create("https://api.realestate/errors/api-error"));
+        pd.setProperty("timestamp", Instant.now());
+
+        return pd;
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthentication(AuthenticationException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+        pd.setTitle("Authentication Failed");
+        pd.setDetail("Invalid username or password");
+        pd.setType(URI.create("https://api.realestate/errors/authentication"));
         pd.setProperty("timestamp", Instant.now());
 
         return pd;
