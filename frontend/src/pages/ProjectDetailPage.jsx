@@ -421,7 +421,7 @@ export default function ProjectDetailPage() {
 
     const handlePreviewDocument = async (doc) => {
         try {
-            const fileUrl = `${import.meta.env.VITE_API_URL}/documents/${doc.id || doc.documentId
+            const fileUrl = `/api/documents/${doc.id || doc.documentId
                 }`
             const fileType = doc.fileName?.split(".").pop()?.toLowerCase() || "pdf"
 
