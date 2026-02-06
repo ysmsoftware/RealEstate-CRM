@@ -1,6 +1,10 @@
 package com.ysminfosolution.realestate.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,6 +39,15 @@ public class Organization {
 
     @Column(name = "org_name", nullable = false)
     private String orgName;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;

@@ -391,6 +391,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
                 EnquiryBasicInfoDTO basicInfoDTO = new EnquiryBasicInfoDTO(
                         enquiry.getEnquiryId(),
+                        enquiry.getCreatedAt(),
                         enquiry.getClient().getClientName(),
                         project.getProjectId(),
                         project.getProjectName(),
@@ -502,6 +503,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
             EnquiryBasicInfoDTO basicInfoDTO = new EnquiryBasicInfoDTO(
                     enquiry.getEnquiryId(),
+                    enquiry.getCreatedAt(),
                     enquiry.getClient().getClientName(),
                     enquiry.getProject().getProjectId(),
                     enquiry.getProject().getProjectName(),

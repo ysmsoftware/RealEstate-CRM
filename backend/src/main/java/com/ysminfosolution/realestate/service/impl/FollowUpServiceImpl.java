@@ -270,7 +270,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         followUp.setFollowUpNextDate(nodeRequestDTO.followUpNextDate());
 
         // * Create Task if FollowUpNextDate is Today
-        if (followUp.getFollowUpNextDate().isEqual(LocalDate.now()) && !taskRepository.existsByFollowUp(followUp)) {
+        if (followUp.getFollowUpNextDate().isBefore(LocalDate.now().plusDays(1)) && !taskRepository.existsByFollowUp(followUp)) {
             Task task = new Task();
             task.setFollowUp(followUp);
             taskRepository.save(task);

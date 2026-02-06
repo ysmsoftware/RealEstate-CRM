@@ -1,6 +1,10 @@
 package com.ysminfosolution.realestate.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,5 +28,14 @@ public class Task {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "follow_up_id", referencedColumnName = "follow_up_id", nullable = false)
     private FollowUp followUp;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
 
 }
