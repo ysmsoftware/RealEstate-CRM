@@ -41,8 +41,6 @@ export const apiClient = {
     async request(endpoint, options = {}) {
         const url = `${API_BASE_URL}${endpoint}`
 
-        console.log(`DEBUG URL: ${url}`);
-
         // 1. Prepare Headers
         const headers = { ...options.headers }
         if (!(options.body instanceof FormData)) {
