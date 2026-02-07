@@ -132,7 +132,7 @@ export default function UsersPage() {
             setShowModal(false)
         } catch (err) {
             console.error("[v0] Failed to create agent:", err)
-            error("Failed to create agent")
+            error(err.message || "Failed to create agent")
         } finally {
             setIsSubmitting(false) // Stop loader
         }
@@ -173,7 +173,7 @@ export default function UsersPage() {
             setShowModal(false)
         } catch (err) {
             console.error("[v0] Failed to update user:", err)
-            error("Failed to update user")
+            error(err.message || "Failed to update user")
         } finally {
             setIsSubmitting(false) // Stop loader
         }
