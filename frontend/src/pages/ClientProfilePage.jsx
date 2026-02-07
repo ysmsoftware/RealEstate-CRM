@@ -129,7 +129,7 @@ export default function ClientProfilePage() {
 
             } catch (err) {
                 console.error("Failed to load client profile:", err)
-                showError("Failed to load client details")
+                showError(err.message || "Failed to load client details")
             } finally {
                 setLoadingClient(false)
             }
@@ -315,7 +315,7 @@ export default function ClientProfilePage() {
             await fetchTimelineData()
             setNodeForm(prev => ({ ...prev, body: "", followUpDateTime: "" }))
         } catch (err) {
-            showError("Failed to add note")
+            showError(err.message || "Failed to add note")
         } finally {
             setSubmittingNode(false)
         }
@@ -342,7 +342,7 @@ export default function ClientProfilePage() {
                 const options = await enquiryService.getPropertyOptions(newProjectId)
                 setPropertyOptions(options)
             } catch (err) {
-                showError("Failed to load property options")
+                showError(err.message || "Failed to load property options")
             } finally {
                 setOptionsLoading(false)
             }
@@ -437,7 +437,7 @@ export default function ClientProfilePage() {
             setEnquiryModalMode('edit')
             setEnquiryModalOpen(true)
         } catch (err) {
-            showError("Failed to load enquiry details for editing")
+            showError(err.message || "Failed to load enquiry details for editing")
         } finally {
             setLoadingEnquiryDetails(false)
             setActionLoading({ id: null, type: null })
@@ -458,8 +458,7 @@ export default function ClientProfilePage() {
             setEnquiries(updatedEnquiries || [])
 
         } catch (err) {
-            console.error(err)
-            showError("Failed to update enquiry")
+            showError(err.message || "Failed to update enquiry")
         } finally {
             setUpdatingEnquiry(false)
         }
@@ -481,7 +480,7 @@ export default function ClientProfilePage() {
                 const options = await enquiryService.getPropertyOptions(newProjectId)
                 setPropertyOptions(options)
             } catch (err) {
-                showError("Failed to load property options")
+                showError(err.message || "Failed to load property options")
             } finally {
                 setOptionsLoading(false)
             }

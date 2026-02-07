@@ -42,7 +42,7 @@ export default function ClientsPage() {
                 setClients(data || [])
             } catch (err) {
                 console.error("[v0] Failed to fetch clients:", err)
-                error("Failed to load clients")
+                error(err.message || "Failed to load clients")
             } finally {
                 setLoading(false)
             }
@@ -106,7 +106,7 @@ export default function ClientsPage() {
             setShowModal(false)
         } catch (err) {
             console.error("[v0] Failed to save client:", err)
-            error("Failed to save client")
+            error(err.message || "Failed to save client")
         }
     }
 

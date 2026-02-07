@@ -106,7 +106,7 @@ export default function EnquiryBookPage() {
             setPropertyOptions(data)
         } catch (err) {
             console.error("Failed to fetch property options", err)
-            error("Failed to load property details")
+            error(err.message || "Failed to load property details")
         } finally {
             setOptionsLoading(false)
         }

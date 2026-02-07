@@ -170,7 +170,7 @@ export default function FollowUpPage() {
                 setFollowUps(followUpsData || [])
             } catch (err) {
                 console.error("[v0] Failed to fetch follow-up data:", err)
-                error("Failed to load follow-ups")
+                error(err.message || "Failed to load follow-ups")
             } finally {
                 setLoading(false)
             }
@@ -257,7 +257,7 @@ export default function FollowUpPage() {
             setSelectedFollowUp(updatedFollowUp)
         } catch (err) {
             console.error("[v0] Failed to add note:", err)
-            error("Failed to add note")
+            error(err.message || "Failed to add note")
         }
     }, [nodeForm, selectedFollowUp, error, success])
 
@@ -295,7 +295,7 @@ export default function FollowUpPage() {
             setFollowUps(followUpsData || [])
         } catch (err) {
             console.error("[v0] Failed to complete follow-up:", err)
-            error("Failed to complete follow-up")
+            error(err.message || "Failed to complete follow-up")
         }
     }, [selectedFollowUp, completeForm, error, success])
 
@@ -308,7 +308,7 @@ export default function FollowUpPage() {
                     setShowTimelineModal(true)
                 } catch (err) {
                     console.error("Failed to fetch follow-up details:", err)
-                    error("Failed to load follow-up details")
+                    error(err.message || "Failed to load follow-up details")
                 }
             }
 
