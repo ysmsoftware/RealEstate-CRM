@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.ysminfosolution.realestate.dto.NewOrganizationResponseDTO;
 import com.ysminfosolution.realestate.dto.UserResponseDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.User;
 import com.ysminfosolution.realestate.repository.OrganizationRepository;

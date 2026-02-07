@@ -1,4 +1,4 @@
-package com.ysminfosolution.realestate.exception;
+package com.ysminfosolution.realestate.error.security;
 
 import java.io.IOException;
 import java.net.URI;

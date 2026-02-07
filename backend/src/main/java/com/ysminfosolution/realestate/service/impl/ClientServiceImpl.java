@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ysminfosolution.realestate.dto.ClientBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.ClientDetailsDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.ClientUserInfo;
 import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.FollowUp;

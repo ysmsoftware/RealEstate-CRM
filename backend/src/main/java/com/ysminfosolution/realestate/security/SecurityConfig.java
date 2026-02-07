@@ -14,8 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-import com.ysminfosolution.realestate.exception.CustomAccessDeniedHandler;
-import com.ysminfosolution.realestate.exception.CustomAuthenticationEntryPoint;
+
+import com.ysminfosolution.realestate.error.security.CustomAccessDeniedHandler;
+import com.ysminfosolution.realestate.error.security.CustomAuthenticationEntryPoint;
 import com.ysminfosolution.realestate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

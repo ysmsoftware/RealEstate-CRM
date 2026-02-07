@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.ysminfosolution.realestate.context.ProjectContext;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.repository.ProjectRepository;
 

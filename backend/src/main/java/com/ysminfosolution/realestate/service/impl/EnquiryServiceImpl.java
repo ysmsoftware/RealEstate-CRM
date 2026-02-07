@@ -22,8 +22,8 @@ import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.EnquiryProperty
 import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.PropertyOption;
 import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.PropertyOptionsFlat;
 import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.PropertyTypeOption;
-import com.ysminfosolution.realestate.exception.ApiException;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.ApiException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.ClientUserInfo;
 import com.ysminfosolution.realestate.model.EmployeeUserInfo;
 import com.ysminfosolution.realestate.model.Enquiry;

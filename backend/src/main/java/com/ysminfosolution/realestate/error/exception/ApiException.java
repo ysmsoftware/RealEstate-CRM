@@ -1,4 +1,4 @@
-package com.ysminfosolution.realestate.exception;
+package com.ysminfosolution.realestate.error.exception;
 
 import org.springframework.http.HttpStatus;
 

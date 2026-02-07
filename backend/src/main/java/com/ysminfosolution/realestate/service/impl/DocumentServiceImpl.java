@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.maincreationformdtos.DocumentCreationDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Document;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.repository.DocumentRepository;

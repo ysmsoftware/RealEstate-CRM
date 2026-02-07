@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.NewOrganizationRequestDTO;
 import com.ysminfosolution.realestate.dto.NewOrganizationResponseDTO;
-import com.ysminfosolution.realestate.exception.ConflictException;
+import com.ysminfosolution.realestate.error.exception.ConflictException;
 import com.ysminfosolution.realestate.model.AdminUserInfo;
 import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.User;

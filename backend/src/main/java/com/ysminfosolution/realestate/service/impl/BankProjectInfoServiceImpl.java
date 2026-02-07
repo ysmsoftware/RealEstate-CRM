@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.NewBankProjectInfoResponseDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.BankProjectInfoCreationDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.BankProjectInfo;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.repository.BankProjectInfoRepository;

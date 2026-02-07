@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.NewAmenityResponse;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.AmenityCreationDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Amenity;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.repository.AmenityRepository;

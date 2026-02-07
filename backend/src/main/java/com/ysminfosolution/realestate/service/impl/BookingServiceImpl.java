@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.BookingDTO;
 import com.ysminfosolution.realestate.dto.NewBookingDTO;
-import com.ysminfosolution.realestate.exception.NotFoundException;
+import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Booking;
 import com.ysminfosolution.realestate.model.ClientUserInfo;
 import com.ysminfosolution.realestate.model.Enquiry;
