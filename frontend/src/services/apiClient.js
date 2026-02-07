@@ -56,6 +56,11 @@ export const apiClient = {
 
             // 3. Handle 401 (Unauthorized)
             if (response.status === 401) {
+
+                if (endpoint === "/login" || endpoint === "/register-organization" || endpoint === "/refresh") {
+                    return this.handleResponse(response);
+                }
+
                 console.warn("Token expired, attempting refresh...")
 
                 // Attempt refresh
