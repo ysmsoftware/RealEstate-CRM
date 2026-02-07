@@ -13,11 +13,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.ysminfosolution.realestate.error.security.CustomAccessDeniedHandler;
 import com.ysminfosolution.realestate.error.security.CustomAuthenticationEntryPoint;
 import com.ysminfosolution.realestate.repository.UserRepository;
+import com.ysminfosolution.realestate.security.filter.JsonUsernamePasswordAuthFilter;
+import com.ysminfosolution.realestate.security.handler.JwtAuthenticationFailureHandler;
+import com.ysminfosolution.realestate.security.handler.JwtAuthenticationSuccessHandler;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -28,24 +32,32 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final JwtAuthenticationSuccessHandler successHandler;
+    private final JwtAuthenticationFailureHandler failureHandler;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(
+            AuthenticationManager authenticationManager,
+            HttpSecurity http)
+            throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                        .accessDeniedHandler(customAccessDeniedHandler))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register-organization", "/refresh", "/status", "/index.html",
-                                "/dashboard.js")
-                        .permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterAfter(jwtAuthFilter, ExceptionTranslationFilter.class);
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/login", "/register-organization", "/refresh", "/status", "/index.html",
+                            "/dashboard.js")
+                    .permitAll()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                    .requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers("/error").permitAll()
+                    .anyRequest().authenticated())
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler))
+            .addFilterBefore(jsonLoginFilter(authenticationManager),
+                    UsernamePasswordAuthenticationFilter.class)
+
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -73,4 +85,15 @@ public class SecurityConfig {
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         };
     }
+
+    @Bean
+    JsonUsernamePasswordAuthFilter jsonLoginFilter(AuthenticationManager am) {
+        JsonUsernamePasswordAuthFilter filter = new JsonUsernamePasswordAuthFilter(am);
+
+        filter.setAuthenticationSuccessHandler(successHandler);
+        filter.setAuthenticationFailureHandler(failureHandler);
+
+        return filter;
+    }
+
 }

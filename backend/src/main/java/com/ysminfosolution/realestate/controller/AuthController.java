@@ -6,9 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthController {
 
-    private final AuthenticationManager authManager;
     private final OrganizationUserDetailsService organizationUserDetailsService;
     private final JwtService jwt;
 
@@ -56,22 +52,6 @@ public class AuthController {
     }
 
     // ---------- Endpoints ----------
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
-        log.info("\n");
-        log.info("Path: [POST] /login | Method: login");
-
-        Authentication auth = new UsernamePasswordAuthenticationToken(req.username(), req.password());
-
-        Authentication result = authManager.authenticate(auth);
-        AppUserDetails appUserDetails = (AppUserDetails) result.getPrincipal();
-
-        String access = jwt.generateAccessToken(appUserDetails);
-        String refresh = jwt.generateRefreshToken(appUserDetails);
-
-        return ResponseEntity.ok(new TokenResponse(access, refresh, 900, appUserDetails.getRole()));
-    }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody RefreshRequest req) throws ParseException {
