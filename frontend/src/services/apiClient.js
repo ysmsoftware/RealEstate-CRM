@@ -1,7 +1,5 @@
 const API_BASE_URL = "/api"
 
-console.log(`DEBUG API_BASE_URL: ${API_BASE_URL}`);
-
 // Variable to hold the pending refresh promise (prevents multiple refresh calls)
 let refreshPromise = null
 
@@ -100,7 +98,18 @@ export const apiClient = {
         }
 
         if (!response.ok) {
-            const message = data?.message || text || `API Error: ${response.status}`
+            let message = data?.message || text || `API Error: ${response.status}`
+
+            if (data && typeof data === "object") {
+                if (data.title && data.detail) {
+                    message = `${data.title}: ${data.detail}`
+                } else if (data.title) {
+                    message = data.title
+                } else if (data.detail) {
+                    message = data.detail
+                }
+            }
+
             throw new Error(message)
         }
 
