@@ -21,9 +21,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -75,8 +77,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         } catch (BadCredentialsException | ParseException e) {
             SecurityContextHolder.clearContext();
-            throw new BadCredentialsException(e.getMessage(), e);
 
+            log.debug("JWT authentication failed: {}", e.getMessage());
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setHeader("WWW-Authenticate", "Bearer");
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Cache-Control", "no-store");
+            response.setHeader("Pragma", "no-cache");
+            response.setContentType("application/problem+json");
+            response.getWriter().write("""
+                {
+                    "type": "https://api.realestate/errors/authentication",
+                    "title": "Unauthorized",
+                    "status": 401,
+                    "detail": "Authentication failed"
+                }
+                """);
+            return;
         }
 
         chain.doFilter(request, response);
