@@ -79,6 +79,9 @@ public class Project {
     @Column(name = "project_address", nullable = false)
     private String projectAddress;
 
+    @Column(name = "letterhead_url", nullable = false)
+    private String letterheadUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ysminfosolution.realestate.dto.ProjectBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.ProjectDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.ProjectCreationDTO;
 import com.ysminfosolution.realestate.model.Project;
-import com.ysminfosolution.realestate.model.Project.Status;
 import com.ysminfosolution.realestate.security.AppUserDetails;
 import com.ysminfosolution.realestate.service.ProjectService;
 
@@ -88,15 +86,6 @@ public class ProjectController {
         return projectService.createProject(newProjectDetails, appUserDetails);
     }
 
-    @PutMapping("/complete/{projectId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changeProjectStatus(@PathVariable @NotNull UUID projectId, @RequestParam @NotNull Status status) {
-
-        log.info("\n");
-        log.info("Path: [PUT] /projects/complete/{projectId} | Method: changeProjectStatus");
-
-        return projectService.changeProjectStatus(projectId, status);
-    }
 
     @PutMapping("/{projectId}")
     @PreAuthorize("hasRole('ADMIN')")

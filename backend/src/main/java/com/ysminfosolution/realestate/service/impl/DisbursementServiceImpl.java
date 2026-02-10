@@ -77,6 +77,12 @@ public class DisbursementServiceImpl implements DisbursementService {
         log.info("\n");
         log.info("Method: changeDisbursementsForProject");
 
+        // * Check if the total disbursement percentage is 100%
+        if (disbursements.stream().mapToDouble(d -> d.percentage()).sum() != 100) {
+            throw new IllegalArgumentException("Total disbursement percentage must be 100%");
+        }
+
+
         deleteAllByProjectId(projectId);
         Project project = projectResolver.resolve(projectId);
         createDisbursementsForProject(project, disbursements);

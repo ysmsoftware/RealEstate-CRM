@@ -2,6 +2,7 @@ package com.ysminfosolution.realestate.service.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ysminfosolution.realestate.dto.FlatDTO;
 import com.ysminfosolution.realestate.dto.FloorDTO;
@@ -108,6 +110,9 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectRepository.existsByMahareraNo(newProjectDetails.mahareraNo())) {
             throw new ConflictException("Maharera number already exists");
         }
+
+        project.setLetterheadUrl(saveLetterHeadToS3(project, newProjectDetails.letterHeadFile(), appUserDetails));
+
         project.setMahareraNo(newProjectDetails.mahareraNo());
         project.setProgress((short) 0);
         project.setStatus(newProjectDetails.status());
@@ -155,25 +160,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream().filter(p -> !p.isDeleted()).collect(Collectors.toSet()));
     }
 
-    @Override
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @Transactional
-    public ResponseEntity<String> changeProjectStatus(UUID projectId, Status status) {
-
-        log.info("\n");
-        log.info("Method: changeProjectStatus");
-
-        if (projectResolver.resolve(projectId) == null) {
-            throw new NotFoundException("Project not found for id: " + projectId);
-        }
-
-        Project project = projectResolver.resolve(projectId);
-
-        project.setStatus(status);
-        projectRepository.save(project);
-        return ResponseEntity.ok("Project status changed successfully");
-    }
-
+    
     @SuppressWarnings("null")
     @Override
     @Transactional
@@ -226,6 +213,14 @@ public class ProjectServiceImpl implements ProjectService {
             throw new NotFoundException("Project not found for id: " + projectId);
         }
 
+        if (incomingProject.getProgress() == 0) {
+            project.setStatus(Status.UPCOMING);
+        } else if (incomingProject.getProgress() > 0 && incomingProject.getProgress() < 100) {
+            project.setStatus(Status.IN_PROGRESS);
+        } else {
+            project.setStatus(Status.COMPLETED);
+        }
+
         project.setProjectName(incomingProject.getProjectName());
         project.setProgress(incomingProject.getProgress());
         project.setProjectAddress(incomingProject.getProjectAddress());
@@ -269,7 +264,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        // TODO: Add project details for dashboard
         Set<Enquiry> projectEnquiries = enquiryRepository
                 .findAllByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
 
@@ -311,7 +305,7 @@ public class ProjectServiceImpl implements ProjectService {
                     wing.getWingName(),
                     wing.getNoOfFloors(),
                     wing.getNoOfProperties(),
-                    new HashSet<>());
+                    new TreeSet<>());
 
             for (Floor floor : wing.getFloors()) {
 
@@ -406,6 +400,17 @@ public class ProjectServiceImpl implements ProjectService {
 
         return ResponseEntity.ok(basicInfoDTOs);
 
+    }
+
+    private String saveLetterHeadToS3(Project project,
+            MultipartFile letterHead,
+            AppUserDetails user) {
+
+        String key = user.getOrgId() + "/" +
+                project.getProjectName() + "/LetterHead/" +
+                letterHead.getOriginalFilename();
+
+        return s3StorageService.uploadFile(key, letterHead);
     }
 
 }

@@ -9,7 +9,6 @@ import com.ysminfosolution.realestate.dto.ProjectBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.ProjectDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.ProjectCreationDTO;
 import com.ysminfosolution.realestate.model.Project;
-import com.ysminfosolution.realestate.model.Project.Status;
 import com.ysminfosolution.realestate.security.AppUserDetails;
 
 public interface ProjectService {
@@ -18,8 +17,6 @@ public interface ProjectService {
     ResponseEntity<Project> createProject(ProjectCreationDTO newProjectDetails, AppUserDetails appUserDetails);
 
     ResponseEntity<Set<Project>> getAllProjects();
-
-    ResponseEntity<String> changeProjectStatus(UUID projectId, Status status);
 
     void hardDeleteProjectRecursive(Project project, AppUserDetails appUserDetails);
 

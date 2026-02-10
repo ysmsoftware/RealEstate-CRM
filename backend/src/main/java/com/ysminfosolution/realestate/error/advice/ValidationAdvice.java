@@ -38,4 +38,16 @@ public class ValidationAdvice {
         return pd;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        pd.setTitle("Validation Error");
+        pd.setType(URI.create("https://api.realestate/errors/validation"));
+        pd.setDetail(ex.getMessage());
+        pd.setProperty("timestamp", Instant.now());
+
+        return pd;
+    }
+
 }

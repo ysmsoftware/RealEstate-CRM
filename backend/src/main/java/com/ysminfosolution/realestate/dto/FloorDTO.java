@@ -14,6 +14,13 @@ public record FloorDTO(
     Double area,
     Integer quantity,
     Set<FlatDTO> flats
-) {
+) 
+// * Required for sorting
+implements Comparable<FloorDTO> {
+
+    @Override
+    public int compareTo(FloorDTO arg0) {
+        return this.floorNo.compareTo(arg0.floorNo);
+    }
 
 }

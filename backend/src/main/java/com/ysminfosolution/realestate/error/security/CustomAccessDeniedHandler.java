@@ -10,11 +10,17 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+
+    private final ObjectMapper mapper;
 
     @Override
     public void handle(HttpServletRequest req, HttpServletResponse res, AccessDeniedException ex)
@@ -33,6 +39,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
         res.setStatus(403);
         res.setContentType("application/problem+json");
-        res.getWriter().write(pd.toString());
+        mapper.writeValue(res.getOutputStream(), pd);
     }
 }
