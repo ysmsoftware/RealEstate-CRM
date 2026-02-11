@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +15,7 @@ import com.ysminfosolution.realestate.dto.ChangeUserInfoDTO;
 import com.ysminfosolution.realestate.dto.CreateNewUserRequestDTO;
 import com.ysminfosolution.realestate.dto.ProjectLeastInfoDTO;
 import com.ysminfosolution.realestate.dto.UserResponseDTO;
+import com.ysminfosolution.realestate.error.exception.ApiException;
 import com.ysminfosolution.realestate.error.exception.ConflictException;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.AdminUserInfo;
@@ -295,7 +296,7 @@ public class UserServiceImpl implements UserService {
 
         adminUserInfoRepository.findByUser_UserId(userId).ifPresent(adminUserInfo -> {
             if (adminUserInfo.isSuperAdmin()) {
-                throw new AccessDeniedException("Cannot delete super admin user");
+                throw new ApiException(HttpStatus.BAD_REQUEST, "Cannot delete super admin user");
             }
             adminUserInfo.setDeleted(true);
             adminUserInfoRepository.save(adminUserInfo);
