@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService {
 
         for (User user : users) {
 
-
             UserResponseDTO userResponseDTO;
 
             if (user.getRole() == Role.EMPLOYEE) {
@@ -87,10 +86,10 @@ public class UserServiceImpl implements UserService {
                 Set<ProjectLeastInfoDTO> projects = new HashSet<>();
 
                 employeeUserInfo.getProjects().stream()
-                .filter(p -> !p.isDeleted())
-                .forEach(project -> {
-                    projects.add(new ProjectLeastInfoDTO(project.getProjectId(), project.getProjectName()));
-                });
+                        .filter(p -> !p.isDeleted())
+                        .forEach(project -> {
+                            projects.add(new ProjectLeastInfoDTO(project.getProjectId(), project.getProjectName()));
+                        });
 
                 userResponseDTO = new UserResponseDTO(
                         user.getUserId(),
@@ -232,15 +231,10 @@ public class UserServiceImpl implements UserService {
         if (changeUserInfoDTO.mobileNumber() != null && !changeUserInfoDTO.mobileNumber().isEmpty()) {
             user.setMobileNumber(changeUserInfoDTO.mobileNumber());
         }
-        if (changeUserInfoDTO.isEnabled() != null) {
-            System.out.println("\n\nShould reach here\n\n");
-            user.setEnabled(changeUserInfoDTO.isEnabled());
-        }
+
         if (changeUserInfoDTO.userType() != null) {
             user.setRole(changeUserInfoDTO.userType());
         }
-
-        userRepository.save(user);
 
         if (changeUserInfoDTO.userType().equals(User.Role.ADMIN)) {
             if (!adminUserInfoRepository.existsByUser_UserId(user.getUserId())) {
@@ -248,23 +242,33 @@ public class UserServiceImpl implements UserService {
                 adminUserInfo.setDeleted(false);
                 adminUserInfo.setUser(user);
 
+                if (changeUserInfoDTO.isEnabled() != null) {
+
+                    if (adminUserInfo.isSuperAdmin() && !changeUserInfoDTO.isEnabled()) {
+                        throw new ApiException(HttpStatus.BAD_REQUEST, "Cannot disable super admin");
+                    }
+
+                    user.setEnabled(changeUserInfoDTO.isEnabled());
+                }
+
                 adminUserInfoRepository.save(adminUserInfo);
             }
         } else if (changeUserInfoDTO.userType().equals(User.Role.EMPLOYEE)) {
             if (!employeeUserInfoRepository.existsByUser_UserId(user.getUserId())) {
                 EmployeeUserInfo employeeUserInfo = new EmployeeUserInfo();
 
-
-                employeeUserInfo.setProjects(projectRepository.findAllByProjectIdInAndIsDeletedFalse(changeUserInfoDTO.projectIds()));
+                employeeUserInfo.setProjects(
+                        projectRepository.findAllByProjectIdInAndIsDeletedFalse(changeUserInfoDTO.projectIds()));
                 employeeUserInfo.setUser(user);
                 employeeUserInfo.setDeleted(false);
 
                 employeeUserInfoRepository.save(employeeUserInfo);
 
-
             }
 
         }
+
+        userRepository.save(user);
 
         return ResponseEntity.ok("User info updated successfully");
 
