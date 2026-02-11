@@ -19,7 +19,6 @@ public record NewEnquiryDTO(
     @Pattern(regexp = "^(\\+[1-9]\\d{1,3})?\\d{10}$", message = "Mobile number number format is invalid") 
     String mobileNumber,
 
-    @NotBlank
     String landlineNumber,
     
     @NotBlank

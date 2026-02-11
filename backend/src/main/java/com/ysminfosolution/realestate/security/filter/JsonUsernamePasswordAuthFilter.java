@@ -35,8 +35,8 @@ public class JsonUsernamePasswordAuthFilter
 
             UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
-                    creds.username(),
-                    creds.password()
+                    creds.username().trim(),
+                    creds.password().trim()
                 );
 
             return getAuthenticationManager().authenticate(auth);

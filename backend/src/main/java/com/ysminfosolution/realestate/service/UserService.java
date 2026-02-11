@@ -10,6 +10,7 @@ import com.ysminfosolution.realestate.dto.CreateNewUserRequestDTO;
 import com.ysminfosolution.realestate.dto.UserResponseDTO;
 import com.ysminfosolution.realestate.security.AppUserDetails;
 
+
 public interface UserService {
 
     ResponseEntity<UserResponseDTO> getLoggedInUserInfo(AppUserDetails appUserDetails);
@@ -20,6 +21,8 @@ public interface UserService {
             AppUserDetails appUserDetails);
 
     ResponseEntity<String> changeUserInfo(UUID userId, ChangeUserInfoDTO changeUserInfoDTO, AppUserDetails appUserDetails);
+
+    ResponseEntity<String> deleteById(UUID userId, AppUserDetails appUserDetails);
 
 
 }

@@ -85,7 +85,9 @@ public class UserServiceImpl implements UserService {
 
                 Set<ProjectLeastInfoDTO> projects = new HashSet<>();
 
-                employeeUserInfo.getProjects().forEach(project -> {
+                employeeUserInfo.getProjects().stream()
+                .filter(p -> !p.isDeleted())
+                .forEach(project -> {
                     projects.add(new ProjectLeastInfoDTO(project.getProjectId(), project.getProjectName()));
                 });
 
@@ -172,6 +174,7 @@ public class UserServiceImpl implements UserService {
 
             AdminUserInfo adminUserInfo = new AdminUserInfo();
             adminUserInfo.setDeleted(false);
+            adminUserInfo.setSuperAdmin(true);
             adminUserInfo.setUser(user);
 
             adminUserInfoRepository.save(adminUserInfo);
@@ -264,5 +267,40 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.ok("User info updated successfully");
 
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> deleteById(UUID userId, AppUserDetails appUserDetails) {
+        log.info("\n");
+        log.info("Method: deleteById");
+
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null || user.isDeleted()) {
+            throw new NotFoundException("User not found for id: " + userId);
+        }
+
+        if (!user.getOrganization().getOrgId().equals(appUserDetails.getOrgId())) {
+            throw new AccessDeniedException("Unauthorized to delete user");
+        }
+
+        user.setDeleted(true);
+        user.setEnabled(false);
+        userRepository.save(user);
+
+        employeeUserInfoRepository.findByUser_UserId(userId).ifPresent(employeeUserInfo -> {
+            employeeUserInfo.setDeleted(true);
+            employeeUserInfoRepository.save(employeeUserInfo);
+        });
+
+        adminUserInfoRepository.findByUser_UserId(userId).ifPresent(adminUserInfo -> {
+            if (adminUserInfo.isSuperAdmin()) {
+                throw new AccessDeniedException("Cannot delete super admin user");
+            }
+            adminUserInfo.setDeleted(true);
+            adminUserInfoRepository.save(adminUserInfo);
+        });
+
+        return ResponseEntity.ok("User deleted successfully");
     }
 }

@@ -20,6 +20,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,5 +78,15 @@ public class UserController {
         log.info("Path: [PUT] /users/{userId} | Method: changeUserInfo");
         
         return userService.changeUserInfo(userId, changeUserInfoDTO, appUserDetails);
+    }
+
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteById(@PathVariable @NotNull UUID userId, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+
+        log.info("\n");
+        log.info("Path: [DELETE] /users/{userId} | Method: deleteById");
+
+        return userService.deleteById(userId, appUserDetails);
     }
 }

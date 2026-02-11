@@ -29,7 +29,8 @@ public class Document {
 
     public enum DocumentType {
         FloorPlan,
-        BasementPlan
+        BasementPlan,
+        LetterHead
     }
     
     @Id

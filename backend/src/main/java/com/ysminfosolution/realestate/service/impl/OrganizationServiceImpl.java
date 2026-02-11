@@ -73,6 +73,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         AdminUserInfo adminUserInfo = new AdminUserInfo();
         adminUserInfo.setUser(user);
         adminUserInfo.setDeleted(false);
+        adminUserInfo.setSuperAdmin(true);
 
         adminUserInfoRepository.save(adminUserInfo);
 

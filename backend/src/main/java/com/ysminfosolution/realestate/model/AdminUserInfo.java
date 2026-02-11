@@ -36,6 +36,9 @@ public class AdminUserInfo {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "is_super_admin" )
+    private boolean isSuperAdmin = false;
+
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
 

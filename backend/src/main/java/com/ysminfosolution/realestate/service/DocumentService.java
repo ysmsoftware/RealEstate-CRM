@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 
+import com.ysminfosolution.realestate.dto.DocumentResponseDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.DocumentCreationDTO;
 import com.ysminfosolution.realestate.model.Document;
 import com.ysminfosolution.realestate.model.Project;
@@ -22,7 +23,7 @@ public interface DocumentService {
 
     ResponseEntity<String> deleteById(UUID documentId);
 
-    ResponseEntity<Set<Document>> getAllDocumentsForProjectId(UUID projectId, AppUserDetails appUserDetails);
+    ResponseEntity<Set<DocumentResponseDTO>> getAllDocumentsForProjectId(UUID projectId, AppUserDetails appUserDetails);
 
     ResponseEntity<Document> getDocumentById(@NonNull UUID documentId, AppUserDetails appUserDetails);
 

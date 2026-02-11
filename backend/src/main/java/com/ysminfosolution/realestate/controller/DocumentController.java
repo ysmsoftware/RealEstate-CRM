@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.ysminfosolution.realestate.dto.DocumentResponseDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.DocumentCreationDTO;
 import com.ysminfosolution.realestate.model.Document;
 import com.ysminfosolution.realestate.security.AppUserDetails;
@@ -72,7 +73,7 @@ public class DocumentController {
     }
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<Set<Document>> GetAllDocumentsForProjectId(@PathVariable @NotNull UUID projectId,
+    public ResponseEntity<Set<DocumentResponseDTO>> GetAllDocumentsForProjectId(@PathVariable @NotNull UUID projectId,
             @AuthenticationPrincipal AppUserDetails appUserDetails) {
 
         log.info("\n");

@@ -10,10 +10,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ysminfosolution.realestate.dto.DocumentResponseDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.DocumentCreationDTO;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Document;
 import com.ysminfosolution.realestate.model.Project;
+import com.ysminfosolution.realestate.model.Document.DocumentType;
 import com.ysminfosolution.realestate.repository.DocumentRepository;
 import com.ysminfosolution.realestate.resolver.ProjectResolver;
 import com.ysminfosolution.realestate.security.AppUserDetails;
@@ -155,7 +157,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ResponseEntity<Set<Document>> getAllDocumentsForProjectId(UUID projectId, AppUserDetails appUserDetails) {
+    public ResponseEntity<Set<DocumentResponseDTO>> getAllDocumentsForProjectId(UUID projectId, AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Method: getAllDocumentsForProjectId");
@@ -164,8 +166,15 @@ public class DocumentServiceImpl implements DocumentService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        return ResponseEntity.ok(documentRepository.findAllByProject_ProjectId(projectId)
-                .stream().filter(doc -> !doc.isDeleted()).collect(Collectors.toSet()));
+        Set<DocumentResponseDTO> documents = documentRepository.findAllByProject_ProjectId(projectId)
+                .stream()
+                .filter(doc -> !doc.isDeleted())
+                .map(d -> new DocumentResponseDTO(d.getDocumentId(), d.getDocumentTitle(), d.getDocumentType(), d.getDocumentURL()))
+                .collect(Collectors.toSet());
+
+        documents.add(new DocumentResponseDTO(projectId, "Project LetterHead", DocumentType.LetterHead, project.getLetterheadUrl()));
+
+        return ResponseEntity.ok(documents);
     }
 
     @Override
@@ -189,14 +198,19 @@ public class DocumentServiceImpl implements DocumentService {
         log.info("\n");
         log.info("Method: deleteDocumentsByProjectId");
 
-        Set<Document> documents = getAllDocumentsForProjectId(projectId, null).getBody();
+        Set<DocumentResponseDTO> documents = getAllDocumentsForProjectId(projectId, null).getBody();
 
         if (documents == null) {
             return;
         }
 
-        for (Document document : documents) {
-            deleteById(document.getDocumentId());
+
+
+        for (DocumentResponseDTO document : documents) {
+            if (!document.documentTitle().equals("Project LetterHead")) {
+                deleteById(document.documentId());
+                
+            }
         }
     }
 
