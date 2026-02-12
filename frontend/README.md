@@ -61,24 +61,6 @@ npm run preview
 
 ## Demo Credentials
 
-### Admin Account
-- **Email**: admin@propease.test
-- **Password**: 1234
-- **Role**: ADMIN (Full access to all features)
-
-### Agent Accounts
-- **Email**: agent@propease.test
-- **Password**: 1234
-- **Role**: EMPLOYEE (Limited access)
-
-- **Email**: sarah@propease.test
-- **Password**: 1234
-- **Role**: EMPLOYEE
-
-- **Email**: mike@propease.test
-- **Password**: 1234
-- **Role**: EMPLOYEE
-
 ## Project Structure
 
 \`\`\`
