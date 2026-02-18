@@ -40,8 +40,11 @@ public class Organization {
     @Column(name = "org_name", nullable = false)
     private String orgName;
 
+    @Column(name = "logo_url")
+    private String logoUrl;
+
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp

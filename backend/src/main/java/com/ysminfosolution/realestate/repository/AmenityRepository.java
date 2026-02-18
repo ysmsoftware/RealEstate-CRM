@@ -12,6 +12,8 @@ public interface AmenityRepository extends JpaRepository<Amenity, UUID> {
 
     Set<Amenity> findAllByProject_ProjectId(UUID projectId);
 
+    Set<Amenity> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+
     void deleteAllByProject_ProjectId(UUID projectId);
 
     Optional<Amenity> findByAmenityIdAndIsDeletedFalse(UUID amenityId);

@@ -12,6 +12,8 @@ public interface BankProjectInfoRepository extends JpaRepository<BankProjectInfo
 
     Set<BankProjectInfo> findAllByProject_ProjectId(UUID projectId);
 
+    Set<BankProjectInfo> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+
     void deleteAllByProject_ProjectId(UUID projectId);
 
 

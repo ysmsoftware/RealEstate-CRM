@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Detail Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 24px;
+        }
+
+        body {
+            margin: 0;
+            color: #1f2937;
+            background: #ffffff;
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .report-header-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 1px solid #dde3eb;
+            margin-bottom: 18px;
+        }
+
+        .report-header-table td {
+            border: none;
+            padding: 0 0 14px 0;
+            vertical-align: middle;
+        }
+
+        .header-left img {
+            max-height: 60px;
+            max-width: 200px;
+            display: block;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .org-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .report-title {
+            font-size: 13px;
+            color: #334155;
+            margin-top: 2px;
+        }
+
+        .generated-at {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .section {
+            margin-bottom: 18px;
+            page-break-inside: avoid;
+        }
+
+        .section h2 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            color: #111827;
+            border-bottom: 1px solid #eef2f7;
+            padding-bottom: 5px;
+        }
+
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+            padding: 16px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .overview-item {
+            border-bottom: 1px dashed #eef2f7;
+            padding-bottom: 4px;
+        }
+
+        .overview-label {
+            color: #64748b;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .overview-value {
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .wing-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
+            padding: 12px;
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+
+        .wing-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: #1e293b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+
+        thead th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .total-row td {
+            font-weight: 700;
+            background-color: #f8fafc;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        .tags {
+            margin-top: 4px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #eef3ff;
+            color: #1e3a8a;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 0 8px 8px 0;
+        }
+
+        .muted {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .doc-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .doc-list li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <table class="report-header-table">
+        <tr>
+            <td class="header-left" style="width: 40%;">
+                <img th:if="${logoDataUri != null}" th:src="${logoDataUri}" alt="Organization logo" />
+            </td>
+            <td class="header-right" style="width: 60%;">
+                <div class="org-name" th:text="${view.organizationName}">Organization</div>
+                <div class="report-title">Project Detail Report</div>
+                <div class="generated-at">Generated at: <span th:text="${view.generatedAt}">-</span></div>
+            </td>
+        </tr>
+    </table>
+
+    <section class="section card" th:if="${view.includeProjectOverview}">
+        <h2>Project Overview</h2>
+        <div class="overview-grid">
+            <div class="overview-item">
+                <div class="overview-label">Project Name</div>
+                <div class="overview-value" th:text="${view.projectOverview.projectName}">-</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Status</div>
+                <div class="overview-value" th:text="${view.projectOverview.status}">-</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Progress</div>
+                <div class="overview-value" th:text="${view.projectOverview.progress}">-</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">MahaRERA No</div>
+                <div class="overview-value" th:text="${view.projectOverview.mahareraNo}">-</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Start Date</div>
+                <div class="overview-value" th:text="${view.projectOverview.startDate}">-</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-label">Completion Date</div>
+                <div class="overview-value" th:text="${view.projectOverview.completionDate}">-</div>
+            </div>
+            <div class="overview-item" style="grid-column: 1 / -1;">
+                <div class="overview-label">Project Address</div>
+                <div class="overview-value" th:text="${view.projectOverview.projectAddress}">-</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" th:if="${view.includeWingStructure}">
+        <h2>Wing Structure</h2>
+        <p class="muted" th:if="${#lists.isEmpty(view.wings)}">No wing structure data available.</p>
+        <div class="wing-card" th:each="wing : ${view.wings}">
+            <h3 class="wing-title" th:text="${wing.wingName}">Wing</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="left-align">Floor</th>
+                        <th class="left-align">Property Type</th>
+                        <th class="left-align">Property</th>
+                        <th>Area</th>
+                        <th>Vacant</th>
+                        <th>Booked</th>
+                        <th>Registered</th>
+                        <th>Total Flats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(wing.floors)}">
+                        <td class="left-align" colspan="8">No floor data available.</td>
+                    </tr>
+                    <tr th:each="row : ${wing.floors}">
+                        <td class="left-align" th:text="${row.floorName}">-</td>
+                        <td class="left-align" th:text="${row.propertyType}">-</td>
+                        <td class="left-align" th:text="${row.property}">-</td>
+                        <td th:text="${row.area}">-</td>
+                        <td th:text="${row.vacantCount}">0</td>
+                        <td th:text="${row.bookedCount}">0</td>
+                        <td th:text="${row.registeredCount}">0</td>
+                        <td th:text="${row.totalCount}">0</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="left-align">Total</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td th:text="${wing.totalVacant}">0</td>
+                        <td th:text="${wing.totalBooked}">0</td>
+                        <td th:text="${wing.totalRegistered}">0</td>
+                        <td th:text="${wing.totalFlats}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section" th:if="${view.includeBankProjectInfo}">
+        <h2>Bank Project Info</h2>
+        <p class="muted" th:if="${#lists.isEmpty(view.bankProjectInfos)}">No bank project info available.</p>
+        <table th:if="${!#lists.isEmpty(view.bankProjectInfos)}">
+            <thead>
+                <tr>
+                    <th class="left-align">Bank</th>
+                    <th class="left-align">Branch</th>
+                    <th class="left-align">Contact Person</th>
+                    <th class="left-align">Contact Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="bank : ${view.bankProjectInfos}">
+                    <td class="left-align" th:text="${bank.bankName}">-</td>
+                    <td class="left-align" th:text="${bank.branchName}">-</td>
+                    <td class="left-align" th:text="${bank.contactPerson}">-</td>
+                    <td class="left-align" th:text="${bank.contactNumber}">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section" th:if="${view.includeAmenities}">
+        <h2>Amenities</h2>
+        <p class="muted" th:if="${#lists.isEmpty(view.amenities)}">No amenities available.</p>
+        <div class="tags" th:if="${!#lists.isEmpty(view.amenities)}">
+            <span class="tag" th:each="amenity : ${view.amenities}" th:text="${amenity}">Amenity</span>
+        </div>
+    </section>
+
+    <section class="section" th:if="${view.includeDisbursements}">
+        <h2>Disbursement Schedule</h2>
+        <p class="muted" th:if="${#lists.isEmpty(view.disbursements)}">No disbursement details available.</p>
+        <table th:if="${!#lists.isEmpty(view.disbursements)}">
+            <thead>
+                <tr>
+                    <th class="left-align">Title</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="disbursement : ${view.disbursements}">
+                    <td class="left-align" th:text="${disbursement.title}">-</td>
+                    <td th:text="${disbursement.percentage}">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="section" th:if="${view.includeDocuments}">
+        <h2>Included Documents</h2>
+        <p class="muted" th:if="${#lists.isEmpty(view.documents)}">No valid documents selected.</p>
+        <ul class="doc-list" th:if="${!#lists.isEmpty(view.documents)}">
+            <li th:each="document : ${view.documents}">
+                <span th:text="${document.title}">Document</span>
+                <span> (</span>
+                <span th:text="${document.type}">Type</span>
+                <span>)</span>
+            </li>
+        </ul>
+    </section>
+</body>
+</html>

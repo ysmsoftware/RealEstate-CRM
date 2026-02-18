@@ -11,10 +11,13 @@ import com.ysminfosolution.realestate.security.AppUserDetails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
@@ -24,6 +27,9 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @RequiredArgsConstructor
 @Slf4j
 public class S3StorageService {
+
+    public record S3ObjectData(byte[] bytes, String contentType) {
+    }
 
     private final S3Client s3Client;
 
@@ -45,6 +51,20 @@ public class S3StorageService {
 
         } catch (Exception e) {
             throw new RuntimeException("Error uploading file to S3", e);
+        }
+    }
+
+    public S3ObjectData downloadFile(String key) {
+        try {
+            GetObjectRequest request = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+
+            ResponseBytes<GetObjectResponse> response = s3Client.getObjectAsBytes(request);
+            return new S3ObjectData(response.asByteArray(), response.response().contentType());
+        } catch (Exception e) {
+            throw new RuntimeException("Error downloading file from S3: " + key, e);
         }
     }
 

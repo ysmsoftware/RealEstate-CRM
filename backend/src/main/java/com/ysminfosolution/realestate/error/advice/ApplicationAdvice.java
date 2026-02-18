@@ -32,22 +32,23 @@ public class ApplicationAdvice {
         return pd;
     }
 
-    @ExceptionHandler(Exception.class)
-    public ProblemDetail handleUnexpected(Exception ex) {
+    // TODO: Remove in production
+    // @ExceptionHandler(Exception.class)
+    // public ProblemDetail handleUnexpected(Exception ex) {
 
-        if (ex instanceof AuthorizationDeniedException) {
-            throw (AuthorizationDeniedException) ex;
-        }
+    //     if (ex instanceof AuthorizationDeniedException) {
+    //         throw (AuthorizationDeniedException) ex;
+    //     }
 
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "An unexpected error occurred");
+    //     ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+    //             HttpStatus.INTERNAL_SERVER_ERROR,
+    //             "An unexpected error occurred");
 
-        pd.setTitle("Internal Server Error");
-        pd.setType(URI.create("https://api.realestate/errors/server-error"));
-        pd.setProperty("timestamp", Instant.now());
+    //     pd.setTitle("Internal Server Error");
+    //     pd.setType(URI.create("https://api.realestate/errors/server-error"));
+    //     pd.setProperty("timestamp", Instant.now());
 
-        return pd;
-    }
+    //     return pd;
+    // }
 
 }
