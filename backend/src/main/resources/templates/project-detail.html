@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -76,21 +77,15 @@
         .card {
             border: 1px solid #e0e0e0;
             border-radius: 6px;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
             padding: 16px;
             margin-bottom: 20px;
             page-break-inside: avoid;
         }
 
-        .overview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
         .overview-item {
             border-bottom: 1px dashed #eef2f7;
             padding-bottom: 4px;
+            text-align: left;
         }
 
         .overview-label {
@@ -103,13 +98,11 @@
             color: #0f172a;
             font-size: 12px;
             font-weight: 500;
-            word-break: break-word;
         }
 
         .wing-card {
             border: 1px solid #e5e7eb;
             border-radius: 6px;
-            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.05);
             padding: 12px;
             margin-bottom: 14px;
             page-break-inside: avoid;
@@ -133,7 +126,8 @@
             font-weight: 600;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #e0e0e0;
             padding: 8px;
             text-align: center;
@@ -182,6 +176,7 @@
         }
     </style>
 </head>
+
 <body>
     <table class="report-header-table">
         <tr>
@@ -198,37 +193,58 @@
 
     <section class="section card" th:if="${view.includeProjectOverview}">
         <h2>Project Overview</h2>
-        <div class="overview-grid">
-            <div class="overview-item">
-                <div class="overview-label">Project Name</div>
-                <div class="overview-value" th:text="${view.projectOverview.projectName}">-</div>
-            </div>
-            <div class="overview-item">
-                <div class="overview-label">Status</div>
-                <div class="overview-value" th:text="${view.projectOverview.status}">-</div>
-            </div>
-            <div class="overview-item">
-                <div class="overview-label">Progress</div>
-                <div class="overview-value" th:text="${view.projectOverview.progress}">-</div>
-            </div>
-            <div class="overview-item">
-                <div class="overview-label">MahaRERA No</div>
-                <div class="overview-value" th:text="${view.projectOverview.mahareraNo}">-</div>
-            </div>
-            <div class="overview-item">
-                <div class="overview-label">Start Date</div>
-                <div class="overview-value" th:text="${view.projectOverview.startDate}">-</div>
-            </div>
-            <div class="overview-item">
-                <div class="overview-label">Completion Date</div>
-                <div class="overview-value" th:text="${view.projectOverview.completionDate}">-</div>
-            </div>
-            <div class="overview-item" style="grid-column: 1 / -1;">
-                <div class="overview-label">Project Address</div>
-                <div class="overview-value" th:text="${view.projectOverview.projectAddress}">-</div>
-            </div>
-        </div>
+
+        <table style="width:100%; border-collapse: collapse;">
+            <tr>
+                <!-- LEFT COLUMN -->
+                <td style="width:50%; vertical-align: top; padding-right: 15px; border: none;">
+                    <div class="overview-item">
+                        <div class="overview-label">Project Name</div>
+                        <div class="overview-value" th:text="${view.projectOverview.projectName}">-</div>
+                    </div>
+
+                    <div class="overview-item">
+                        <div class="overview-label">Status</div>
+                        <div class="overview-value" th:text="${view.projectOverview.status}">-</div>
+                    </div>
+
+                    <div class="overview-item">
+                        <div class="overview-label">Progress</div>
+                        <div class="overview-value" th:text="${view.projectOverview.progress}">-</div>
+                    </div>
+                </td>
+
+                <!-- RIGHT COLUMN -->
+                <td style="width:50%; vertical-align: top; padding-left: 15px; border: none;">
+                    <div class="overview-item">
+                        <div class="overview-label">MahaRERA No</div>
+                        <div class="overview-value" th:text="${view.projectOverview.mahareraNo}">-</div>
+                    </div>
+
+                    <div class="overview-item">
+                        <div class="overview-label">Start Date</div>
+                        <div class="overview-value" th:text="${view.projectOverview.startDate}">-</div>
+                    </div>
+
+                    <div class="overview-item">
+                        <div class="overview-label">Completion Date</div>
+                        <div class="overview-value" th:text="${view.projectOverview.completionDate}">-</div>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- ADDRESS ROW -->
+            <tr>
+                <td colspan="2" style="padding-top: 10px; border: none;">
+                    <div class="overview-item">
+                        <div class="overview-label">Project Address</div>
+                        <div class="overview-value" th:text="${view.projectOverview.projectAddress}">-</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </section>
+
 
     <section class="section" th:if="${view.includeWingStructure}">
         <h2>Wing Structure</h2>
@@ -340,4 +356,5 @@
         </ul>
     </section>
 </body>
+
 </html>
