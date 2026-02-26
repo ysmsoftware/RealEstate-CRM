@@ -13,9 +13,11 @@ import jakarta.validation.constraints.Pattern;
 public record ChangeUserInfoDTO(
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "username contains invalid characters")
     String username,
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "password contains invalid characters")
     String password,
 
     @NotBlank
@@ -26,7 +28,7 @@ public record ChangeUserInfoDTO(
     User.Role userType,
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Full name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Full name contains invalid characters")
     String fullName,
 
     @NotBlank

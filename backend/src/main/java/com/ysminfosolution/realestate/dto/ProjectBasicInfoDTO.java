@@ -8,9 +8,10 @@ import com.ysminfosolution.realestate.model.Project.Status;
 public record ProjectBasicInfoDTO(
     UUID projectId,
     String projectName,
+    String projectAddress,
+    String pincode,
     Status status,
     Short progress,
-    String location,
     LocalDate startDate,
     LocalDate completionDate
 ) {

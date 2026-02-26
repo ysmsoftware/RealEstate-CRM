@@ -17,11 +17,14 @@ import jakarta.validation.constraints.*;
 public record ProjectCreationDTO (
     
     @NotBlank(message = "Project name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Project name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Project name contains invalid characters")
     String projectName,
 
-    @Pattern(regexp = "^[a-zA-Z0-9\\s/,]*$", message = "Project address must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s/,]*$", message = "Project address contains invalid characters")
     String projectAddress,
+
+    @Pattern(regexp = "^\\d{6}$", message = "Pincode must be exactly 6 digits")
+    String pincode,
 
     @NotNull(message = "Project start date is required")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -63,6 +66,7 @@ public record ProjectCreationDTO (
     public ProjectCreationDTO(
         String projectName,
         String projectAddress,
+        String pincode,
         LocalDate startDate,
         LocalDate completionDate,
         String mahareraNo,
@@ -76,6 +80,7 @@ public record ProjectCreationDTO (
     ) {
         this.projectName = projectName;
         this.projectAddress = projectAddress;
+        this.pincode = pincode;
         this.startDate = startDate;
         this.completionDate = completionDate;
         this.mahareraNo = mahareraNo;

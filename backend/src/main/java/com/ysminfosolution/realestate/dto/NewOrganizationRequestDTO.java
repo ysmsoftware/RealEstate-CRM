@@ -16,9 +16,11 @@ public record NewOrganizationRequestDTO(
     String orgEmail,
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "User name contains invalid characters")
     String username,
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Password contains invalid characters")
     String password,
 
     @NotBlank
@@ -26,7 +28,7 @@ public record NewOrganizationRequestDTO(
     String email,
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Full name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Full name contains invalid characters")
     String fullName,
 
     @Pattern(regexp = "^(\\+[1-9]\\d{1,3})?\\d{10}$", message = "Invalid mobile number format") 

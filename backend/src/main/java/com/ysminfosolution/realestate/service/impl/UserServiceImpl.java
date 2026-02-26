@@ -198,7 +198,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public ResponseEntity<String> changeUserInfo(UUID userId, ChangeUserInfoDTO changeUserInfoDTO,
             AppUserDetails appUserDetails) {
 

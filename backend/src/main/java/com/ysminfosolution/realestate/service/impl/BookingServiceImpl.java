@@ -37,7 +37,6 @@ public class BookingServiceImpl implements BookingService {
     private final EnquiryRepository enquiryRepository;
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<BookingDTO> createNewBooking(NewBookingDTO newBookingDTO, AppUserDetails appUserDetails) {
 
         log.info("\n");
@@ -71,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
 
         } else if (newBookingDTO.clientId() == null) {
             // ~ No enquiry was Involved And No Client was chosen Therefore creating new
-            // Client
+            // ~ Client
             clientUserInfo = new ClientUserInfo();
             clientUserInfo.setAadharNo(newBookingDTO.aadharNo());
             clientUserInfo.setDob(newBookingDTO.dob());

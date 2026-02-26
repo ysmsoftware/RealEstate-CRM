@@ -29,7 +29,6 @@ public class FollowUpNodeServiceImpl implements FollowUpNodeService {
     private final UserRepository userRepository;
 
     @Override
-    @SuppressWarnings("null")
     public boolean createFirstNodeForFollowUp(FollowUp followUp, AppUserDetails appUserDetails) {
 
         log.info("\n");
@@ -72,7 +71,6 @@ public class FollowUpNodeServiceImpl implements FollowUpNodeService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void createNodeForFollowUp(FollowUp followUp, FollowUpNodeRequestDTO nodeRequestDTO,
             AppUserDetails appUserDetails) {
 
@@ -93,7 +91,6 @@ public class FollowUpNodeServiceImpl implements FollowUpNodeService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void deleteAllNodesForFollowUp(UUID followUpId) {
 
         log.info("\n");

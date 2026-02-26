@@ -67,7 +67,6 @@ public class FlatServiceImp implements FlatService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Flat getFlatById(UUID id) {
 
         log.info("\n");
@@ -81,7 +80,6 @@ public class FlatServiceImp implements FlatService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public void deleteFlatsRecursiveByFloorId(UUID floorId) {
 
         log.info("\n");
@@ -95,7 +93,6 @@ public class FlatServiceImp implements FlatService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public Set<Flat> getAllFlatsForFloor(UUID floorId) {
 
         log.info("\n");

@@ -49,7 +49,6 @@ public class DocumentController {
     private final S3PresignedUrlService presignedUrlService;
     private final DocumentService documentService;
 
-    @SuppressWarnings("null")
     @GetMapping("/download/**")
     public ResponseEntity<String> getDocumentUrl(HttpServletRequest request) {
 

@@ -6,15 +6,15 @@ import jakarta.validation.constraints.Pattern;
 public record BankProjectInfoCreationDTO(
 
         @NotBlank(message = "Bank name is required") 
-        @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Bank name must not contain special characters") 
+        @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Bank name contains invalid characters") 
         String bankName,
 
         @NotBlank(message = "Branch name is required") 
-        @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Branch name must not contain special characters") 
+        @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Branch name contains invalid characters") 
         String branchName,
 
         @NotBlank(message = "Contact person is required") 
-        @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Contact person must not contain special characters") 
+        @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Contact person contains invalid characters") 
         String contactPerson,
 
         @NotBlank(message = "Contact number is required") 

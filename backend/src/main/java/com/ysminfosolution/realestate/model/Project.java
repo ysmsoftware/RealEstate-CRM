@@ -79,6 +79,9 @@ public class Project {
     @Column(name = "project_address", nullable = false)
     private String projectAddress;
 
+    @Column(name = "pincode", nullable = true)
+    private String pincode;
+
     @Column(name = "letterhead_url", nullable = false)
     private String letterheadUrl;
 

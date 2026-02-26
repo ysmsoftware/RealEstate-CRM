@@ -69,7 +69,6 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public void hardDeleteFloorsRecursiveByWingId(UUID wingId) {
 
         log.info("\n");
@@ -85,7 +84,6 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public void deleteFloorsRecursiveByWingId(UUID wingId) {
 
         log.info("\n");

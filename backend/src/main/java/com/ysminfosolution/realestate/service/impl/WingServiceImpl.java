@@ -67,7 +67,6 @@ public class WingServiceImpl implements WingService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public void hardDeleteWingsRecursiveByProjectId(UUID projectId) {
 
         log.info("\n");
@@ -83,7 +82,6 @@ public class WingServiceImpl implements WingService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public ResponseEntity<Wing> updateWing(UUID wingId, WingCreationDTO wingCreationDTO) {
 
         log.info("\n");
@@ -104,7 +102,6 @@ public class WingServiceImpl implements WingService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public Boolean deleteWingRecursiveByWingtId(UUID wingId) {
 
         log.info("\n");
@@ -124,7 +121,6 @@ public class WingServiceImpl implements WingService {
 
     @Override
     @Transactional
-    @SuppressWarnings("null")
     public void deleteWingsRecursiveByProjectId(UUID projectId) {
 
         log.info("\n");

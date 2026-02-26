@@ -20,6 +20,7 @@ public record ProjectDTO(
     Status status,
     Short progress,
     String projectAddress,
+    String pincode,
     Set<WingDTO> wings
 ) {
 

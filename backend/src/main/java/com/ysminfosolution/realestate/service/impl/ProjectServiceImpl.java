@@ -76,7 +76,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final S3StorageService s3StorageService;
 
-    @SuppressWarnings("null")
     public Organization getOrganizationById(UUID orgId) {
         return organizationRepository.findById(orgId)
                 .filter(o -> !o.isDeleted())
@@ -105,6 +104,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setOrganization(organization);
         project.setProjectName(newProjectDetails.projectName());
         project.setProjectAddress(newProjectDetails.projectAddress());
+        project.setPincode(newProjectDetails.pincode());
         project.setStartDate(newProjectDetails.startDate());
         project.setCompletionDate(newProjectDetails.completionDate());
         if (projectRepository.existsByMahareraNo(newProjectDetails.mahareraNo())) {
@@ -161,7 +161,6 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     
-    @SuppressWarnings("null")
     @Override
     @Transactional
     public void hardDeleteProjectRecursive(Project project, AppUserDetails appUserDetails) {
@@ -224,6 +223,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setProjectName(incomingProject.getProjectName());
         project.setProgress(incomingProject.getProgress());
         project.setProjectAddress(incomingProject.getProjectAddress());
+        project.setPincode(incomingProject.getPincode());
         project.setStartDate(incomingProject.getStartDate());
         project.setCompletionDate(incomingProject.getCompletionDate());
         project.setMahareraNo(incomingProject.getMahareraNo());
@@ -253,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     // ? Cache can be implemented but a lot of entitie change this data so not
-    // implementing it
+    // ? implementing it
     @Override
     public ResponseEntity<ProjectDTO> getProjectStructureById(UUID projectId, AppUserDetails appUserDetails) {
 
@@ -293,6 +293,7 @@ public class ProjectServiceImpl implements ProjectService {
                 project.getStatus(),
                 project.getProgress(),
                 project.getProjectAddress(),
+                project.getPincode(),
                 new HashSet<>());
 
         for (Wing wing : wingService.getFullStructureByProjectId(projectId)) {
@@ -364,9 +365,10 @@ public class ProjectServiceImpl implements ProjectService {
                 ProjectBasicInfoDTO dto = new ProjectBasicInfoDTO(
                         project.getProjectId(),
                         project.getProjectName(),
+                        project.getProjectAddress(),
+                        project.getPincode(),
                         project.getStatus(),
                         project.getProgress(),
-                        project.getProjectAddress(),
                         project.getStartDate(),
                         project.getCompletionDate());
 
@@ -387,9 +389,10 @@ public class ProjectServiceImpl implements ProjectService {
                 ProjectBasicInfoDTO dto = new ProjectBasicInfoDTO(
                         project.getProjectId(),
                         project.getProjectName(),
+                        project.getProjectAddress(),
+                        project.getPincode(),
                         project.getStatus(),
                         project.getProgress(),
-                        project.getProjectAddress(),
                         project.getStartDate(),
                         project.getCompletionDate());
 

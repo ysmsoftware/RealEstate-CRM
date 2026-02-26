@@ -143,7 +143,6 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<FollowUpResponseDTO> getFollowUpForEnquiry(
             UUID enquiryId,
             AppUserDetails appUserDetails) {
@@ -244,7 +243,6 @@ public class FollowUpServiceImpl implements FollowUpService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<String> addNodeToFollowUp(UUID followUpId, FollowUpNodeRequestDTO nodeRequestDTO,
             AppUserDetails appUserDetails) {
 

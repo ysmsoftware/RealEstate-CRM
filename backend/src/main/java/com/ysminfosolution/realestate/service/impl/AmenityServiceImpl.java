@@ -96,7 +96,6 @@ public class AmenityServiceImpl implements AmenityService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<NewAmenityResponse> updateAmenity(UUID amenityId, Amenity amenityBody) {
 
         log.info("\n");
@@ -117,7 +116,6 @@ public class AmenityServiceImpl implements AmenityService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<String> deleteById(UUID amenityId) {
 
         log.info("\n");

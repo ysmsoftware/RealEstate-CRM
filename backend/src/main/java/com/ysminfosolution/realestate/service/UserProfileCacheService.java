@@ -21,14 +21,12 @@ public class UserProfileCacheService {
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
 
-    @SuppressWarnings("null")
     public Organization getOrganizationById(UUID orgId) {
         return organizationRepository.findById(orgId)
                 .filter(o -> !o.isDeleted())
                 .orElseThrow(() -> new NotFoundException("Organization not found"));
     }
 
-    @SuppressWarnings("null")
     public UserResponseDTO getUserProfile(UUID userId, UUID orgId) {
 
         Organization organization = getOrganizationById(orgId);

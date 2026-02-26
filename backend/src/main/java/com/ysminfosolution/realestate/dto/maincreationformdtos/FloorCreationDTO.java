@@ -15,14 +15,14 @@ public record FloorCreationDTO(
     Short floorNo,
 
     @NotBlank(message = "Floor name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Floor name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Floor name contains invalid characters")
     String floorName,
 
     @NotNull(message = "Property type is required")
     PropertyType propertyType,
 
     @NotBlank(message = "Property category is required")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Property category must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Property category contains invalid characters")
     String property,
 
     @NotNull(message = "Floor area is required")

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.*;
 public record WingCreationDTO(
 
     @NotBlank(message = "Wing name is required")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s()]+$", message = "Wing name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Wing name contains invalid characters")
     String wingName,
 
     @NotNull(message = "Number of floors are required")

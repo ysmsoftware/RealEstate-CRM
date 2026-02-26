@@ -139,7 +139,6 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @SuppressWarnings("null")
     public ResponseEntity<String> deleteById(UUID documentId) {
 
         log.info("\n");

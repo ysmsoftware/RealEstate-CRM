@@ -14,9 +14,11 @@ import jakarta.validation.constraints.Pattern;
 public record CreateNewUserRequestDTO(
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "username contains invalid characters")
     String username,
 
     @NotBlank
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "password contains invalid characters")
     String password,
 
     @NotBlank
@@ -27,7 +29,7 @@ public record CreateNewUserRequestDTO(
     Role userType,
 
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Full name must not contain special characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Full name contains invalid characters")
     String fullName,
 
     @Pattern(regexp = "^(\\+[1-9]\\d{1,3})?\\d{10}$", message = "Invalid mobile number format") 
