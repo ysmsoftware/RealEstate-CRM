@@ -89,6 +89,8 @@ export default function WingsTab({ project, projectId, onRefresh }) {
         if (!floorInput.floorName) { toastError("Floor Name is required"); return }
 
         const newFloorData = { ...floorInput }
+
+        // Only auto-assign if still empty
         if (newFloorData.floorNo === "" || newFloorData.floorNo === undefined) {
             newFloorData.floorNo = editingFloorIndex >= 0
                 ? currentWingFloors[editingFloorIndex].floorNo
@@ -272,6 +274,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
                                 <table className="w-full text-sm text-left">
                                     <thead className="bg-gray-100 sticky top-0">
                                         <tr>
+                                            <th className="p-2 border-b">No</th>
                                             <th className="p-2 border-b">Floor</th>
                                             <th className="p-2 border-b">Type</th>
                                             <th className="p-2 border-b">Property</th>
@@ -282,6 +285,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
                                     <tbody className="divide-y divide-gray-100">
                                         {selectedWing.floors.map((f, idx) => (
                                             <tr key={idx} className="hover:bg-gray-50">
+                                                <td className="p-2 text-center font-medium">{f.floorNo}</td>
                                                 <td className="p-2">{f.floorName}</td>
                                                 <td className="p-2">{f.propertyType}</td>
                                                 <td className="p-2">{f.property}</td>

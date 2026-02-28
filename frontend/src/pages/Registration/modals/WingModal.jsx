@@ -59,8 +59,18 @@ export default function WingModal({
             {/* Floor Input Section */}
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 mb-4">
                 <div className="grid grid-cols-2 md:grid-cols-12 gap-2 items-end">
+                    <div className="col-span-1 md:col-span-1">
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Floor No</label>
+                        <input
+                            type="number"
+                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none"
+                            value={floorInput.floorNo}
+                            onChange={(e) => setFloorInput({ ...floorInput, floorNo: e.target.value })}
+                            placeholder="0"
+                        />
+                    </div>
                     <div className="col-span-2 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Floor No/Name</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Floor Name</label>
                         <input
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none"
                             value={floorInput.floorName}
@@ -152,6 +162,7 @@ export default function WingModal({
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0">
                         <tr>
                             <th className="px-3 py-2 border-b text-center w-12">SN</th>
+                            <th className="px-3 py-2 border-b text-center">No</th>
                             <th className="px-3 py-2 border-b">Floor Name</th>
                             <th className="px-3 py-2 border-b">Property Type</th>
                             <th className="px-3 py-2 border-b">Property</th>
@@ -164,6 +175,7 @@ export default function WingModal({
                         {currentWingFloors.map((floor, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="px-3 py-2 text-center text-gray-500">{index + 1}</td>
+                                <td className="px-3 py-2 text-center font-medium">{floor.floorNo}</td>
                                 <td className="px-3 py-2">{floor.floorName}</td>
                                 <td className="px-3 py-2">{floor.propertyType}</td>
                                 <td className="px-3 py-2">{floor.property}</td>
@@ -181,7 +193,7 @@ export default function WingModal({
                         ))}
                         {currentWingFloors.length === 0 && (
                             <tr>
-                                <td colSpan="7" className="text-center py-4 text-gray-500 text-xs">
+                                <td colSpan="8" className="text-center py-4 text-gray-500 text-xs">
                                     No floors added yet.
                                 </td>
                             </tr>

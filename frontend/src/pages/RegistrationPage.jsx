@@ -128,9 +128,8 @@ export default function RegistrationPage() {
 
         const newFloorData = { ...floorInput }
 
-        // If floorNo is empty (e.g. manual entry), try to guess it or leave it
+        // Only auto-assign if still empty
         if (newFloorData.floorNo === "" || newFloorData.floorNo === undefined) {
-            // If adding new, maybe set it to the next index
             newFloorData.floorNo = editingFloorIndex >= 0
                 ? currentWingFloors[editingFloorIndex].floorNo
                 : currentWingFloors.length.toString()
@@ -580,8 +579,8 @@ export default function RegistrationPage() {
                                                     )
                                                 }
                                                 className={`px-3 py-1 rounded-full text-sm md:text-base font-medium transition ${amenities.includes(amenity)
-                                                        ? "bg-indigo-600 text-white"
-                                                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                                    ? "bg-indigo-600 text-white"
+                                                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                                     }`}
                                             >
                                                 {amenity}
@@ -787,7 +786,7 @@ export default function RegistrationPage() {
                                                         <tbody className="divide-y divide-gray-100">
                                                             {wing.floors.map((f, fIdx) => (
                                                                 <tr key={fIdx}>
-                                                                    <td className="px-3 py-2 font-medium">{f.floorName}</td>
+                                                                    <td className="px-3 py-2 font-medium">{f.floorNo} - {f.floorName}</td>
                                                                     <td className="px-3 py-2">{f.propertyType}</td>
                                                                     <td className="px-3 py-2">{f.property}</td>
                                                                     <td className="px-3 py-2">{f.area}</td>
