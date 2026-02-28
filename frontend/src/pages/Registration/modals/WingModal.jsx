@@ -9,7 +9,8 @@ export default function WingModal({
     floorInput, setFloorInput,
     currentWingFloors,
     editingFloorIndex,
-    onAddFloor, onEditFloor, onDeleteFloor
+    onAddFloor, onEditFloor, onDeleteFloor,
+    onUpdateFloor
 }) {
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Fill Wing Information" size="xl">
@@ -90,7 +91,7 @@ export default function WingModal({
                             <option value="Commercial">Commercial</option>
                         </select>
                     </div>
-                    <div className="col-span-2 md:col-span-3">
+                    <div className="col-span-2 md:col-span-2">
                         <label className="block text-xs font-medium text-gray-700 mb-1">Property</label>
                         <select
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
@@ -175,16 +176,62 @@ export default function WingModal({
                         {currentWingFloors.map((floor, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="px-3 py-2 text-center text-gray-500">{index + 1}</td>
-                                <td className="px-3 py-2 text-center font-medium">{floor.floorNo}</td>
-                                <td className="px-3 py-2">{floor.floorName}</td>
-                                <td className="px-3 py-2">{floor.propertyType}</td>
-                                <td className="px-3 py-2">{floor.property}</td>
-                                <td className="px-3 py-2">{floor.area}</td>
-                                <td className="px-3 py-2 text-center">{floor.quantity}</td>
+                                <td className="px-3 py-1 text-center">
+                                    <input
+                                        type="number"
+                                        className="w-16 px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white text-center"
+                                        value={floor.floorNo}
+                                        onChange={(e) => onUpdateFloor(index, 'floorNo', e.target.value)}
+                                    />
+                                </td>
+                                <td className="px-3 py-1">
+                                    <input
+                                        className="w-full px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white"
+                                        value={floor.floorName}
+                                        onChange={(e) => onUpdateFloor(index, 'floorName', e.target.value)}
+                                    />
+                                </td>
+                                <td className="px-3 py-1">
+                                    <select
+                                        className="w-full px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white"
+                                        value={floor.propertyType}
+                                        onChange={(e) => onUpdateFloor(index, 'propertyType', e.target.value)}
+                                    >
+                                        <option value="Residential">Residential</option>
+                                        <option value="Commercial">Commercial</option>
+                                    </select>
+                                </td>
+                                <td className="px-3 py-1">
+                                    <select
+                                        className="w-full px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white"
+                                        value={floor.property}
+                                        onChange={(e) => onUpdateFloor(index, 'property', e.target.value)}
+                                    >
+                                        <option value="1 BHK">1 BHK</option>
+                                        <option value="2 BHK">2 BHK</option>
+                                        <option value="3 BHK">3 BHK</option>
+                                        <option value="4 BHK">4 BHK</option>
+                                        <option value="Offices">Offices</option>
+                                        <option value="Shops">Shops</option>
+                                    </select>
+                                </td>
+                                <td className="px-3 py-1">
+                                    <input
+                                        type="number"
+                                        className="w-full px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white"
+                                        value={floor.area}
+                                        onChange={(e) => onUpdateFloor(index, 'area', e.target.value)}
+                                    />
+                                </td>
+                                <td className="px-3 py-1 text-center">
+                                    <input
+                                        type="number"
+                                        className="w-16 px-1 py-1 text-xs border border-transparent hover:border-gray-300 focus:border-indigo-500 rounded outline-none bg-transparent focus:bg-white text-center"
+                                        value={floor.quantity}
+                                        onChange={(e) => onUpdateFloor(index, 'quantity', e.target.value)}
+                                    />
+                                </td>
                                 <td className="px-3 py-2 flex justify-center gap-2">
-                                    <button onClick={() => onEditFloor(index)} className="text-green-600 hover:text-green-800 p-1">
-                                        <Edit size={16} />
-                                    </button>
                                     <button onClick={() => onDeleteFloor(index)} className="text-red-500 hover:text-red-700 p-1">
                                         <Trash2 size={16} />
                                     </button>

@@ -123,6 +123,12 @@ export default function WingsTab({ project, projectId, onRefresh }) {
         }
     }
 
+    const handleUpdateFloor = (index, field, value) => {
+        const updatedFloors = [...currentWingFloors]
+        updatedFloors[index] = { ...updatedFloors[index], [field]: value }
+        setCurrentWingFloors(updatedFloors)
+    }
+
     const handleSaveWing = async () => {
         if (!wingForm.wingName) { toastError("Wing Name is required"); return }
         if (currentWingFloors.length === 0) { toastError("Please add at least one floor"); return }
@@ -248,6 +254,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
                 floorInput={floorInput} setFloorInput={setFloorInput}
                 currentWingFloors={currentWingFloors} editingFloorIndex={editingFloorIndex}
                 onAddFloor={handleAddOrUpdateFloorRow} onEditFloor={handleEditFloorRow} onDeleteFloor={handleDeleteFloorRow}
+                onUpdateFloor={handleUpdateFloor}
             />
 
             <Modal
