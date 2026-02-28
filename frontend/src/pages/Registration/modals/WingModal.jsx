@@ -78,7 +78,6 @@ export default function WingModal({
                             <option value="">Choose...</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
-                            <option value="Industrial">Industrial</option>
                         </select>
                     </div>
                     <div className="col-span-2 md:col-span-3">
