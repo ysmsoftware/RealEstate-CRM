@@ -53,10 +53,10 @@ export default function WingsTab({ project, projectId, onRefresh }) {
                         newFloors.push({
                             floorNo: i.toString(),
                             floorName: i === 0 ? "Ground Floor" : `Floor ${i}`,
-                            propertyType: "Residential",
-                            property: "2 BHK",
-                            area: "1",
-                            quantity: "1"
+                            propertyType: "",
+                            property: "",
+                            area: "",
+                            quantity: ""
                         })
                     }
                     return newFloors;
@@ -87,6 +87,10 @@ export default function WingsTab({ project, projectId, onRefresh }) {
 
     const handleAddOrUpdateFloorRow = () => {
         if (!floorInput.floorName) { toastError("Floor Name is required"); return }
+        if (!floorInput.propertyType) { toastError("Property Type is required"); return }
+        if (!floorInput.property) { toastError("Property is required"); return }
+        if (!floorInput.area || parseFloat(floorInput.area) <= 0) { toastError("Valid Area is required"); return }
+        if (!floorInput.quantity || parseInt(floorInput.quantity) <= 0) { toastError("Valid Quantity is required"); return }
 
         const newFloorData = { ...floorInput }
 
@@ -132,6 +136,23 @@ export default function WingsTab({ project, projectId, onRefresh }) {
     const handleSaveWing = async () => {
         if (!wingForm.wingName) { toastError("Wing Name is required"); return }
         if (currentWingFloors.length === 0) { toastError("Please add at least one floor"); return }
+
+        // Validate all floors in the list
+        for (let i = 0; i < currentWingFloors.length; i++) {
+            const f = currentWingFloors[i]
+            if (!f.floorNo || !f.floorName || !f.propertyType || !f.property || !f.area || !f.quantity) {
+                toastError(`Incomplete details for floor "${f.floorName || i}". All fields are required.`)
+                return
+            }
+            if (parseFloat(f.area) <= 0) {
+                toastError(`Invalid area for floor "${f.floorName}".`)
+                return
+            }
+            if (parseInt(f.quantity) <= 0) {
+                toastError(`Invalid quantity for floor "${f.floorName}".`)
+                return
+            }
+        }
 
         try {
             const totalProps = currentWingFloors.reduce((sum, floor) => sum + (parseInt(floor.quantity) || 0), 0)

@@ -94,15 +94,14 @@ export default function RegistrationPage() {
             const count = parseInt(wingForm.noOfFloors) || 0
             const autoFloors = []
 
-            // Standard logic: 0 = Ground, 1 = Floor 1, etc.
             for (let i = 0; i <= count; i++) {
                 autoFloors.push({
                     floorNo: i.toString(),
                     floorName: i === 0 ? "Ground Floor" : `Floor ${i}`,
-                    propertyType: "Residential", // Default
-                    property: "2 BHK", // Default
-                    area: "0",
-                    quantity: "0"
+                    propertyType: "",
+                    property: "",
+                    area: "",
+                    quantity: ""
                 })
             }
             setCurrentWingFloors(autoFloors)
@@ -122,10 +121,11 @@ export default function RegistrationPage() {
     }
 
     const handleAddOrUpdateFloorRow = () => {
-        if (!floorInput.floorName) {
-            error("Floor Name is required")
-            return
-        }
+        if (!floorInput.floorName) { error("Floor Name is required"); return }
+        if (!floorInput.propertyType) { error("Property Type is required"); return }
+        if (!floorInput.property) { error("Property is required"); return }
+        if (!floorInput.area || parseFloat(floorInput.area) <= 0) { error("Valid Area is required"); return }
+        if (!floorInput.quantity || parseInt(floorInput.quantity) <= 0) { error("Valid Quantity is required"); return }
 
         const newFloorData = { ...floorInput }
 
@@ -187,6 +187,23 @@ export default function RegistrationPage() {
         if (currentWingFloors.length === 0) {
             error("Please add at least one floor configuration")
             return
+        }
+
+        // Validate all floors in the list
+        for (let i = 0; i < currentWingFloors.length; i++) {
+            const f = currentWingFloors[i]
+            if (!f.floorNo || !f.floorName || !f.propertyType || !f.property || !f.area || !f.quantity) {
+                error(`Incomplete details for floor "${f.floorNo || i}". All fields (Name, Type, Property, Area, Qty) are required.`)
+                return
+            }
+            if (parseFloat(f.area) <= 0) {
+                error(`Invalid area for floor "${f.floorName || f.floorNo}".`)
+                return
+            }
+            if (parseInt(f.quantity) <= 0) {
+                error(`Invalid quantity for floor "${f.floorName || f.floorNo}".`)
+                return
+            }
         }
 
         const totalProps = currentWingFloors.reduce((sum, floor) => sum + (parseInt(floor.quantity) || 0), 0)

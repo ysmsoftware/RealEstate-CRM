@@ -61,7 +61,9 @@ export default function WingModal({
             <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 mb-4">
                 <div className="grid grid-cols-2 md:grid-cols-12 gap-2 items-end">
                     <div className="col-span-1 md:col-span-1">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Floor No</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Floor No <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="number"
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none"
@@ -71,7 +73,9 @@ export default function WingModal({
                         />
                     </div>
                     <div className="col-span-2 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Floor Name</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Floor Name <span className="text-red-500">*</span>
+                        </label>
                         <input
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none"
                             value={floorInput.floorName}
@@ -80,7 +84,9 @@ export default function WingModal({
                         />
                     </div>
                     <div className="col-span-2 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Type</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Type <span className="text-red-500">*</span>
+                        </label>
                         <select
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
                             value={floorInput.propertyType}
@@ -92,7 +98,9 @@ export default function WingModal({
                         </select>
                     </div>
                     <div className="col-span-2 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Property</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Property <span className="text-red-500">*</span>
+                        </label>
                         <select
                             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none bg-white"
                             value={floorInput.property}
@@ -108,7 +116,9 @@ export default function WingModal({
                         </select>
                     </div>
                     <div className="col-span-1 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Area</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Area <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="number"
                             min="1"
@@ -129,7 +139,9 @@ export default function WingModal({
                         />
                     </div>
                     <div className="col-span-1 md:col-span-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Qty</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                            Qty <span className="text-red-500">*</span>
+                        </label>
                         <input
                             type="number"
                             min="1"
