@@ -201,6 +201,9 @@ export function useRegistrationForm() {
             if (!validateMahareraNo(basicInfo.mahareraNo)) {
                 error("Invalid Maharera number format"); return false
             }
+            if (new Date(basicInfo.startDate) >= new Date(basicInfo.completionDate)) {
+                error("Start date must be before completion date"); return false
+            }
         }
         return true
     }
