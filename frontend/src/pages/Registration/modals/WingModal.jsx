@@ -207,6 +207,7 @@ export default function WingModal({
                                         value={floor.propertyType}
                                         onChange={(e) => onUpdateFloor(index, 'propertyType', e.target.value)}
                                     >
+                                        <option value="">Choose...</option>
                                         <option value="Residential">Residential</option>
                                         <option value="Commercial">Commercial</option>
                                     </select>
@@ -217,6 +218,7 @@ export default function WingModal({
                                         value={floor.property}
                                         onChange={(e) => onUpdateFloor(index, 'property', e.target.value)}
                                     >
+                                        <option value="">Choose...</option>
                                         <option value="1 BHK">1 BHK</option>
                                         <option value="2 BHK">2 BHK</option>
                                         <option value="3 BHK">3 BHK</option>

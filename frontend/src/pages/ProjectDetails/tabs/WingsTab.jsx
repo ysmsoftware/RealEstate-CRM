@@ -69,7 +69,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
     const openAddWingModal = () => {
         setWingForm({ wingId: null, wingName: "", noOfFloors: "", manualFloorEntry: false })
         setCurrentWingFloors([])
-        setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "1", quantity: "1" })
+        setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "", quantity: "" })
         setEditingFloorIndex(-1)
         setWingModalOpen(true)
     }
@@ -110,7 +110,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
         } else {
             setCurrentWingFloors([...currentWingFloors, newFloorData])
         }
-        setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "1", quantity: "1" })
+        setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "", quantity: "" })
     }
 
     const handleEditFloorRow = (index) => {
@@ -123,7 +123,7 @@ export default function WingsTab({ project, projectId, onRefresh }) {
         setCurrentWingFloors(updated)
         if (editingFloorIndex === index) {
             setEditingFloorIndex(-1)
-            setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "1", quantity: "1" })
+            setFloorInput({ floorNo: "", floorName: "", propertyType: "", property: "", area: "", quantity: "" })
         }
     }
 
