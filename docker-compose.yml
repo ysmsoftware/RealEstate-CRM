@@ -22,6 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: realestate-backend
+    restart: unless-stopped  # ADDED
     depends_on:
       postgres:
         condition: service_healthy
@@ -52,6 +53,7 @@ services:
     build:
       context: ./frontend
     container_name: realestate-frontend
+    restart: unless-stopped  # ADDED
     ports:
       - "3000:80"
     depends_on:
