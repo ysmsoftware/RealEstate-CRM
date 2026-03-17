@@ -28,11 +28,11 @@ export default function RegistrationPage() {
         basicInfo, setBasicInfo,
 
         // Wings
-        wings, handleOpenAddWing, handleDeleteWing, handleEditWing, handleDuplicateWing, // <--- Destructured here
+        wings, handleOpenAddWing, handleDeleteWing, handleEditWing, handleDuplicateWing,
         showWingModal, setShowWingModal, handleSaveWing,
         wingForm, setWingForm, currentWingFloors,
         floorInput, setFloorInput, editingFloorIndex,
-        handleAddOrUpdateFloorRow, handleEditFloorRow, handleDeleteFloorRow,
+        handleAddOrUpdateFloorRow, handleEditFloorRow, handleDeleteFloorRow, handleUpdateFloorRow,
 
         // Banks
         banks, setBanks, showBankModal, setShowBankModal,
@@ -137,6 +137,7 @@ export default function RegistrationPage() {
                     floorInput={floorInput} setFloorInput={setFloorInput}
                     currentWingFloors={currentWingFloors} editingFloorIndex={editingFloorIndex}
                     onAddFloor={handleAddOrUpdateFloorRow} onEditFloor={handleEditFloorRow} onDeleteFloor={handleDeleteFloorRow}
+                    onUpdateFloor={handleUpdateFloorRow}
                 />
 
                 <BankModal

@@ -156,6 +156,12 @@ export function useRegistrationForm() {
         }
     }
 
+    const handleUpdateFloorRow = (index, field, value) => {
+        const updated = [...currentWingFloors]
+        updated[index] = { ...updated[index], [field]: value }
+        setCurrentWingFloors(updated)
+    }
+
     const handleSaveWing = () => {
         if (!wingForm.wingName) { error("Wing Name is required"); return }
         if (currentWingFloors.length === 0) { error("Please add at least one floor configuration"); return }
@@ -341,7 +347,7 @@ export function useRegistrationForm() {
         showWingModal, setShowWingModal, handleSaveWing,
         wingForm, setWingForm, currentWingFloors,
         floorInput, setFloorInput, editingFloorIndex,
-        handleAddOrUpdateFloorRow, handleEditFloorRow, handleDeleteFloorRow,
+        handleAddOrUpdateFloorRow, handleEditFloorRow, handleDeleteFloorRow, handleUpdateFloorRow,
         banks, setBanks, showBankModal, setShowBankModal,
         bankForm, setBankForm, handleAddBank,
 
