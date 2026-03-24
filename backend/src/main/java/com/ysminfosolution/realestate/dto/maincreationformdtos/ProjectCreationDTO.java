@@ -20,7 +20,7 @@ public record ProjectCreationDTO (
     @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "Project name contains invalid characters")
     String projectName,
 
-    @Pattern(regexp = "^[\\p{L}0-9\\s/,]*$", message = "Project address contains invalid characters")
+    @Pattern(regexp = "^[\\p{L}0-9\\s,./#()-]*$", message = "Project address contains invalid characters")
     String projectAddress,
 
     @Pattern(regexp = "^\\d{6}$", message = "Pincode must be exactly 6 digits")

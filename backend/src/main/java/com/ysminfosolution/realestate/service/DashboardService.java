@@ -46,7 +46,16 @@ public class DashboardService {
                 .map(ProjectBasicInfoDTO::projectId)
                 .toList();
 
-        long totalProperties = flatRepository.countByProject_ProjectIdInAndIsDeletedFalse(projectIds);
+        Map<UUID, Long> propertyCountByProject = projectIds.isEmpty()
+                ? Map.of()
+                : flatRepository.countActiveFlatsByProjectIds(projectIds).stream()
+                        .collect(Collectors.toMap(
+                                FlatRepository.ProjectFlatCount::getProjectId,
+                                FlatRepository.ProjectFlatCount::getTotalProperties));
+
+        long totalProperties = propertyCountByProject.values().stream()
+                .mapToLong(Long::longValue)
+                .sum();
 
         // -----------------------------------------
         // Global enquiry stats
@@ -86,7 +95,7 @@ public class DashboardService {
                             .filter(e -> e.status() == Enquiry.Status.CANCELLED)
                             .count();
 
-                    long projectTotalProperties = totalProperties; // adjust if you later support per-project counts
+                    long projectTotalProperties = propertyCountByProject.getOrDefault(project.projectId(), 0L);
                     int projectAvailable = (int) (projectTotalProperties - projectBooked);
 
                     return new DashboardProjectResponseDTO(

@@ -7,11 +7,18 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.ysminfosolution.realestate.model.Flat;
 
 
 public interface FlatRepository extends JpaRepository<Flat, UUID> {
+
+    interface ProjectFlatCount {
+        UUID getProjectId();
+        Long getTotalProperties();
+    }
 
     void deleteAllByFloor_FloorId(UUID floorId);
 
@@ -24,6 +31,15 @@ public interface FlatRepository extends JpaRepository<Flat, UUID> {
     Set<Flat> findAllByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
     
     long countByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
+
+    @Query("""
+            SELECT f.project.projectId AS projectId, COUNT(f) AS totalProperties
+            FROM Flat f
+            WHERE f.project.projectId IN :projectIds
+              AND f.isDeleted = false
+            GROUP BY f.project.projectId
+            """)
+    List<ProjectFlatCount> countActiveFlatsByProjectIds(@Param("projectIds") List<UUID> projectIds);
 
     Optional<Flat> findByPropertyIdAndIsDeletedFalse(UUID propertyId);
 
