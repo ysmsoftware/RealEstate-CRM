@@ -1,0 +1,9 @@
+name: Linux Server
+values:
+  - key: url
+    value: https://realestateysm.duckdns.org/api
+    enabled: true
+  - key: mahareraNo
+    value: ""
+    enabled: true
+color: null

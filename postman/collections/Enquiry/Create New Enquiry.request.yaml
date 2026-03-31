@@ -1,0 +1,52 @@
+$kind: http-request
+url: "{{base_url}}"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"clientName\": \"Nyaz Ansari\",\r
+
+    \  \"mobileNumber\": \"8551055201\",\r
+
+    \  \"landlineNumber\": \"23432434234234\",\r
+
+    \  \"email\": \"1nyazul2003@gmail.com\",\r
+
+    \  \"city\": \"Nashik\",\r
+
+    \  \"address\": \"Ozar, Nashik\",\r
+
+    \  \"occupation\": \"Student\",\r
+
+    \  \"company\": \"YSM Info Solutions\",\r
+
+    \  \"projectId\": \"{{project_id}}\",\r
+
+    \  \"propertyType\": \"Commercial\",\r
+
+    \  \"property\": \"3 BHK\",\r
+
+    \  \"area\": 587,\r
+
+    \  \"budget\": \"4500000\",\r
+
+    \  \"reference\": \"Newspaper\",\r
+
+    \  \"referenceName\": \"Kalnirnay\"\r
+
+    }\r\n"
+scripts:
+  - type: afterResponse
+    code: |
+      pm.test("Successful POST request", function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      });
+
+      // Update the global project Id
+      pm.globals.set("enquiry_id", pm.response.json().enquiryId);
+      pm.globals.set("clientId", pm.response.json().clientId);
+
+      pm.collectionVariables.set("enquiryId", pm.response.json().enquiryId);
+    language: text/javascript
+order: 6000

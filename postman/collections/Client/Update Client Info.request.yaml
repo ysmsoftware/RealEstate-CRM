@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/{{clientId}}"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+        "clientId": "023666eb-edb5-45a2-bd73-375216c4d66c",
+        "clientName": "zaki",
+        "email": "zaki@gmail.com",
+        "mobileNumber": "1234567890",
+        "dob": null,
+        "landlineNumber": "12313",
+        "city": "asjnajd",
+        "address": "snssvn",
+        "occupation": "iddsvnsivn",
+        "company": "dsfvndv",
+        "panNo": "68465",
+        "aadharNo": null
+    }
+order: 4000

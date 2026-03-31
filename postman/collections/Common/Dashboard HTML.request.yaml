@@ -1,0 +1,4 @@
+$kind: http-request
+url: https://realestate.ysminfosolution.com/api/index.html
+method: GET
+order: 6000

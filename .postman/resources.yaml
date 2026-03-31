@@ -1,0 +1,37 @@
+# Use this workspace to collaborate
+workspace:
+  id: 05589f37-5bd3-4877-be04-889a27a0ede0
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+cloudResources:
+  collections:
+    ../postman/collections/Employee: 35343550-02d2807d-f88a-4fc0-879e-3365f370c12f
+    ../postman/collections/Project Detail PDF: 35343550-0fd6f866-9995-4de6-b398-efaa6935aa88
+    ../postman/collections/Admin: 35343550-104866b3-d835-41cb-9304-7ada79cabc45
+    ../postman/collections/Common: 35343550-27f856c9-b723-4a56-bea1-e355cc3bd5ca
+    ../postman/collections/Document: 35343550-3ef8f36f-1c29-497f-aa22-2e3d3f58b0de
+    ../postman/collections/User: 35343550-4152bdd5-eea8-47c1-a90a-7da703fcbdb6
+    ../postman/collections/FollowUp: 35343550-58d9d0c1-0e10-4f98-9e20-0d53b9ab6692
+    ../postman/collections/Wing: 35343550-60569a8d-03d8-4397-86d5-9c5c0d363838
+    ../postman/collections/DisbursementBankDetail: 35343550-730e94fc-265d-4935-853b-9cfa9a8a57b8
+    ../postman/collections/Enquiry: 35343550-771a8a30-c8ba-4e80-8e36-f3d2563c0a5b
+    ../postman/collections/Booking: 35343550-94c60ae3-fce1-4f89-8063-b120777b3d73
+    ../postman/collections/BankProjectInfo: 35343550-94d60f42-c628-486c-b494-6a31020c1e74
+    ../postman/collections/Disbursement: 35343550-974f1ee4-cd0f-4284-b775-5f5c7e9c7401
+    ../postman/collections/Monitoring: 35343550-b5b7cf2d-6fde-4335-8cf2-88215c544366
+    ../postman/collections/Project: 35343550-b913b112-fb2f-4e18-a0df-76a7b764709b
+    ../postman/collections/Dashboard: 35343550-d29c52a0-51f6-4ce8-98ee-de32fb239b9b
+    ../postman/collections/Amenity: 35343550-e79eae96-f076-4747-85dd-ebabc3bc3900
+    ../postman/collections/Client: 35343550-f4eac6dc-1b85-4c22-a051-ef40b9b9a324
+  environments:
+    ../postman/environments/Beta Docker.environment.yaml: 35343550-14351d61-73c5-4dab-baa3-2f666609bfa0
+    ../postman/environments/VPS.environment.yaml: 35343550-5fe396b5-f571-402c-99a4-a0159f59902a
+    ../postman/environments/Beta.environment.yaml: 35343550-933da906-17f1-4819-a9a7-bd0f45f41c8d
+    ../postman/environments/Linux Server.environment.yaml: 35343550-a4af4ff7-67e6-47ba-aea5-16053270d81b
+    ../postman/environments/Codespace.environment.yaml: 35343550-d1bfbbea-9e53-4411-aad8-0821d9243999
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

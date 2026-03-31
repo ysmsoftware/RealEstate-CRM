@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/{{disbursement_bank_detail_id}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"bankName\": \"SBI\",\r
+
+    \    \"branchName\": \"Ojhar\",\r
+
+    \    \"ifsc\": \"IYTUHV\",\r
+
+    \    \"accountType\": \"CURRENT\",\r
+
+    \    \"accountName\": \"tiyufv\",\r
+
+    \    \"accountNo\": \"6549851215465\"\r
+
+    }"
+order: 4000

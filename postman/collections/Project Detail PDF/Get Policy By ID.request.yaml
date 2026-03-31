@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}/detail-pdf-policies/{{projectDetailPdfPolicyId}}"
+method: GET
+order: 4000

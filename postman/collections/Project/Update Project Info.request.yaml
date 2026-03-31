@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"projectName\": \"GreenHouse Project\",\r
+
+    \  \"projectAddress\": \"Ozar, Nashik\",\r
+
+    \  \"pincode\": \"422206\",\r
+
+    \  \"startDate\": \"2025-09-01\",\r
+
+    \  \"completionDate\": \"2026-05-31\",\r
+
+    \  \"mahareraNo\": \"{{mahareraNo}}\",\r
+
+    \  \"progress\": 78\r
+
+    }\r\n"
+order: 5000

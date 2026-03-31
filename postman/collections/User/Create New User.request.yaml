@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{base_url}}"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\": \"nyaz\",\r
+
+    \    \"password\": \"nyaz\",\r
+
+    \    \"email\": \"official2003@gmail.com\",\r
+
+    \    \"userType\": \"EMPLOYEE\",\r
+
+    \    \"fullName\": \"Nyaz Ansari\",\r
+
+    \    \"mobileNumber\": \"8498455616\",\r
+
+    \    \"projectIds\": [\r
+
+    \        \"{{project_id}}\"\r
+
+    \    ]\r
+
+    }"
+order: 3000

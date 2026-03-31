@@ -1,0 +1,9 @@
+name: Beta Docker
+values:
+  - key: url
+    value: http://localhost:8080
+    enabled: true
+  - key: mahareraNo
+    value: ""
+    enabled: true
+color: null

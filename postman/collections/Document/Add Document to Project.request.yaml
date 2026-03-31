@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "documentType": "FloorPlan",
+        "documentTitle": "Sample Floor Plan",
+        "s3Key": "some/s3/path/document.pdf"
+    }
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r\n"
+    language: text/javascript
+order: 4000

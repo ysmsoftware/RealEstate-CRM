@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/{{followUpId}}/node"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"followUpNextDate\": \"2025-11-13\",\r
+
+    \    \"body\": \"This is another nodekjduicbdu for followup\",\r
+
+    \    \"tag\": \"ouiheidcbjh\"\r
+
+    }\r\n"
+order: 7000

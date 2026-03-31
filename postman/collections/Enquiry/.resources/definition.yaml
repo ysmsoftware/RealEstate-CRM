@@ -1,0 +1,10 @@
+$kind: collection
+variables:
+  base_url: "{{url}}/enquiries"
+  enquiryId: c79d29be-a5b5-427c-a7d8-a0e333ac72e4
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

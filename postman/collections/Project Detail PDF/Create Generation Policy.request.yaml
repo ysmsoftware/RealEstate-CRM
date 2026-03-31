@@ -1,0 +1,34 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}/detail-pdf-policies"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "policyName": "All Details",
+      "includeProjectOverview": true,
+      "includeWings": true,
+      "includeFloors": true,
+      "includeFlats": true,
+      "includeAmenities": true,
+      "includeDisbursements": true,
+      "includeDocuments": true,
+      "documentIds": [
+        "e72cf112-6fd3-40ac-ac64-0e92d01d4614"
+      ]
+    }
+scripts:
+  - type: afterResponse
+    code: >+
+      pm.test("Successful POST request", function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      });
+
+
+      // Update the global project Id
+
+      pm.globals.set("projectDetailPdfPolicyId",
+      pm.response.json().projectDetailPdfPolicyId);
+
+    language: text/javascript
+order: 1000

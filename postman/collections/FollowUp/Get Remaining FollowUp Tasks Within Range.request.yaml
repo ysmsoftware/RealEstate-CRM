@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/tasks?fromDate=2025-11-30&toDate=2025-12-30"
+method: GET
+queryParams:
+  fromDate: 2025-11-30
+  toDate: 2025-12-30
+order: 6000

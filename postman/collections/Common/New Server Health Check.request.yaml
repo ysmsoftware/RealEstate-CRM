@@ -1,0 +1,4 @@
+$kind: http-request
+url: "https://13.203.102.145/api/index.html"
+method: GET
+order: 7000

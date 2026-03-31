@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/{{userId}}"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+        "username": "test",
+        "password": "test",
+        "email": "test@gmail.com",
+        "userType": "EMPLOYEE",
+        "fullName": "test test",
+        "mobileNumber": "1234567890",
+        "isEnabled": false,
+        "projectIds": [
+            ""
+        ]
+    }
+order: 4000

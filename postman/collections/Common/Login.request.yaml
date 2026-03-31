@@ -1,0 +1,96 @@
+$kind: http-request
+description: >-
+  This POST request authenticates a user and returns access credentials for the
+  API.
+
+
+  **Purpose:**  
+
+  Use this endpoint to log in with your user credentials. If the user belongs to
+  multiple organizations, you will first receive a list of organizations to
+  select from.
+
+
+  **Request Body Parameters:**
+
+
+  - `username` (string): The user's login name. (Required)
+      
+  - `password` (string): The user's password. (Required)
+      
+  - `orgId` (string): The unique identifier of your organization. (Required only
+  if the user belongs to multiple organizations)
+      
+
+  **Login Flow:**
+
+
+  1. Submit `username` and `password`. If the user is associated with multiple
+  organizations, the response will contain an `organizations` array with `orgId`
+  and `orgName`.
+      
+  2. Use the desired `orgId` from the list and resend the login request
+  including the `orgId` field.
+      
+
+  **Expected Response:**
+
+
+  - On success: `accessToken` (JWT for API authentication), `refreshToken` (for
+  obtaining new access tokens), and `expiresInSeconds` (token expiry time in
+  seconds).
+      
+  - On organization conflict: `organizations` array listing available
+  organizations for the user.
+      
+
+  ---
+
+
+  **Sample Successful Login Response:**
+
+
+  ``` json
+
+  {
+    "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZWFsZXN0YXRlLWFwcCIsImV4cCI6MTc2MDcyNTIwNywiaWF0IjoxNzYwNzI0MzA3LCJ1c2VySWQiOiJmZDUyY2Q3ZC04ZjEzLTQ4MzItYTFmYS0zZTA1ZTc3ZDQ1MzEiLCJvcmdJZCI6ImM2ZDMwYjMxLWM3NzctNDM5ZS04YTIyLTdlNzMwY2Q1Y2U0NSIsImp0aSI6ImFjY2VzcyJ9.cAFkG5YxV_EHMB_N7Y6kBg6xgRz5SPWzYHQKEQom0ug",
+    "refreshToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJyZWFsZXN0YXRlLWFwcCIsImV4cCI6MTc2MTkzMzkwNywiaWF0IjoxNzYwNzI0MzA3LCJ1c2VySWQiOiJmZDUyY2Q3ZC04ZjEzLTQ4MzItYTFmYS0zZTA1ZTc3ZDQ1MzEiLCJvcmdJZCI6ImM2ZDMwYjMxLWM3NzctNDM5ZS04YTIyLTdlNzMwY2Q1Y2U0NSIsImp0aSI6InJlZnJlc2gifQ.HJrglZM-ukBwO_TJF1Ot5IS5_pJ04e0EViaW-Zbpn_I",
+    "expiresInSeconds": 900
+  }
+
+   ```
+
+  Send a valid combination of credentials to receive authentication tokens or a
+  list of organizations if selection is required.
+url: "{{base_url}}/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\": \"nyaz1\",\r
+
+    \    \"password\": \"nyaz1\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      pm.globals.set(\"accessToken\", pm.response.json().accessToken);\r
+
+      pm.globals.set(\"refreshToken\", pm.response.json().refreshToken);\r
+
+      pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 2000

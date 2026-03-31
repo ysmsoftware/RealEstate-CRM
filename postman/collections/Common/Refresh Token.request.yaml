@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{base_url}}/refresh"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"refreshToken\": \"{{refreshToken}}\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      pm.globals.set(\"accessToken\", pm.response.json().accessToken);\r
+
+      pm.globals.set(\"refreshToken\", pm.response.json().refreshToken);\r
+
+      \r\n"
+    language: text/javascript
+order: 4000

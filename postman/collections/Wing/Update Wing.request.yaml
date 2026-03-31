@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/{{wing_id}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"wingName\": \"Wing A\",\r
+
+    \    \"noOfFloors\": 2,\r
+
+    \    \"noOfProperties\": 6\r
+
+    }\r\n"
+order: 4000
