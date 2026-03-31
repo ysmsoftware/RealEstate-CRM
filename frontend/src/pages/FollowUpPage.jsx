@@ -23,9 +23,20 @@ const INITIAL_FORM_STATE = {
     description: "",
 }
 
+const getDefaultFollowUpDate = () => {
+    const d = new Date()
+    d.setDate(d.getDate() + 5)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 const INITIAL_NODE_FORM_STATE = {
     body: "",
-    followUpDateTime: new Date().toISOString().slice(0, 16),
+    followUpDateTime: getDefaultFollowUpDate(),
     eventTag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
 }
 
@@ -106,7 +117,7 @@ const FollowUpTable = ({ followUps, viewMode, onComplete, onViewTimeline }) => {
                 className={`border-b border-gray-200 hover:bg-gray-50 ${isComplete ? "bg-gray-50 opacity-60" : ""
                     } ${isOverdue ? "bg-red-50" : ""}`}
             >
-                <td className="px-4 md:px-6 py-4">
+                {/* <td className="px-4 md:px-6 py-4">
                     {viewMode === VIEW_MODES.TODAY && !isComplete ? (
                         <button
                             onClick={() => onComplete(followUp.followUpId)}
@@ -118,10 +129,10 @@ const FollowUpTable = ({ followUps, viewMode, onComplete, onViewTimeline }) => {
                     ) : (
                         <CheckCircle2 size={20} className={isComplete ? "text-green-600" : "text-gray-300"} />
                     )}
-                </td>
-                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.clientName}</td>
+                </td> */}
+                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.leadName}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{formatDate(followUp.followUpNextDate)}</td>
-                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.mobileNumber}</td>
+                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.leadMobileNumber}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.agentName || "Unassigned"}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">
                     <p className="truncate max-w-xs">{followUp.description || "-"}</p>
@@ -248,7 +259,7 @@ export default function FollowUpPage() {
             success("Note added successfully")
             setNodeForm({
                 ...INITIAL_NODE_FORM_STATE,
-                followUpDateTime: new Date().toISOString().slice(0, 16),
+                followUpDateTime: getDefaultFollowUpDate(),
             })
 
             // Refresh follow-up data
@@ -418,9 +429,9 @@ export default function FollowUpPage() {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-gray-200">
-                                        <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 w-12"></th>
+                                        {/* <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 w-12"></th> */}
                                         <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                            Client
+                                            Lead
                                         </th>
                                         <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 whitespace-nowrap">
                                             Follow-Up Date
@@ -461,9 +472,9 @@ export default function FollowUpPage() {
                 >
                     <div className="space-y-4">
                         <div>
-                            <p className="text-sm text-gray-600">Client</p>
+                            <p className="text-sm text-gray-600">Lead</p>
                             <p className="text-lg font-semibold text-gray-900">
-                                {selectedFollowUp ? selectedFollowUp.clientName : ""}
+                                {selectedFollowUp ? selectedFollowUp.leadName : ""}
                             </p>
                         </div>
 
@@ -515,10 +526,10 @@ export default function FollowUpPage() {
                             <div className="flex flex-col h-full">
 
                                 <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-center justify-between">
-                                    <p className="text-md font-bold text-gray-900">{selectedFollowUp.clientName}</p>
+                                    <p className="text-md font-bold text-gray-900">{selectedFollowUp.leadName}</p>
                                     <div className="flex items-center gap-2">
                                         <Phone size={14} className="text-gray-400" />
-                                        <span className="text-sm font-medium text-gray-700">{selectedFollowUp.mobileNumber}</span>
+                                        <span className="text-sm font-medium text-gray-700">{selectedFollowUp.leadMobileNumber}</span>
                                     </div>
                                 </div>
 

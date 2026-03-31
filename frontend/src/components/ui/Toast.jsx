@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react"
 
@@ -15,17 +14,23 @@ const toastStore = {
   },
 }
 
+const showSuccessToast = (message, duration = 3000) => {
+  toastStore.notify({ id: Date.now(), type: "success", message, duration })
+}
+
+const showErrorToast = (message, duration = 3000) => {
+  toastStore.notify({ id: Date.now(), type: "error", message, duration })
+}
+
+const showInfoToast = (message, duration = 3000) => {
+  toastStore.notify({ id: Date.now(), type: "info", message, duration })
+}
+
 export const useToast = () => {
   return {
-    success: (message, duration = 3000) => {
-      toastStore.notify({ id: Date.now(), type: "success", message, duration })
-    },
-    error: (message, duration = 3000) => {
-      toastStore.notify({ id: Date.now(), type: "error", message, duration })
-    },
-    info: (message, duration = 3000) => {
-      toastStore.notify({ id: Date.now(), type: "info", message, duration })
-    },
+    success: showSuccessToast,
+    error: showErrorToast,
+    info: showInfoToast,
   }
 }
 

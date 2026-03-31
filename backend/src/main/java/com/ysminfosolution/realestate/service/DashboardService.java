@@ -31,12 +31,12 @@ public class DashboardService {
 
     public DashboardResponseDTO getDashboardData(AppUserDetails appUserDetails) {
 
-        Set<ProjectBasicInfoDTO> projects = projectService.getListofBasicProjectInfo(appUserDetails).getBody();
+        List<ProjectBasicInfoDTO> projects = projectService.getListofBasicProjectInfo(appUserDetails).getBody();
 
         Set<EnquiryBasicInfoDTO> enquiries = enquiryService.getListOfEnquiryBasicInfo(appUserDetails).getBody();
 
         if (projects == null || enquiries == null) {
-            return new DashboardResponseDTO(0, 0, 0, 0, 0, 0, Set.of());
+            return new DashboardResponseDTO(0, 0, 0, 0, 0, 0, List.of());
         }
 
         // -----------------------------------------
@@ -81,7 +81,7 @@ public class DashboardService {
         // -----------------------------------------
         // Per-project dashboard data
         // -----------------------------------------
-        Set<DashboardProjectResponseDTO> projectList = projects.stream()
+        List<DashboardProjectResponseDTO> projectList = projects.stream()
                 .map(project -> {
 
                     List<EnquiryBasicInfoDTO> projectEnquiries = enquiriesByProject.getOrDefault(project.projectId(),
@@ -107,7 +107,7 @@ public class DashboardService {
                             projectEnquiries.size(),
                             projectCancelled);
                 })
-                .collect(Collectors.toSet());
+                .toList();
 
         // -----------------------------------------
         // Final response

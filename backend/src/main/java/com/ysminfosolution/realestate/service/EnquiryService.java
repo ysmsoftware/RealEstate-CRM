@@ -32,13 +32,7 @@ public interface EnquiryService {
     ResponseEntity<String> updateEnquiry(@NonNull UUID enquiryId, UpdateEnquiryDTO updateEnquiryDTO,
             AppUserDetails appUserDetails);
 
-    ResponseEntity<Set<EnquiryBasicInfoDTO>> getListOfEnquiryBasicInfoForClient(AppUserDetails appUserDetails,
-            UUID clientId);
-
     ResponseEntity<EnquiryPropertyOptions> getAllPropertyOptionsForProject(UUID projectId,
-            AppUserDetails appUserDetails);
-
-    ResponseEntity<EnquiryResponseDTO> createNewEnquiryForClient(NewEnquiryDTO newEnquiryDTO, @NonNull UUID clientId,
             AppUserDetails appUserDetails);
 
     ResponseEntity<String> changeEnquiryStatus(@NonNull UUID enquiryId, Status status, AppUserDetails appUserDetails);

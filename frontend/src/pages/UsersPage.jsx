@@ -49,6 +49,20 @@ export default function UsersPage() {
     const [form, setForm] = useState(initialFormState)
     // const projects = data.projects || [] // Removed useData dependancy
 
+    const getAssignedProjectIds = (userToEdit) => {
+        if (Array.isArray(userToEdit.projectIds)) {
+            return userToEdit.projectIds
+        }
+
+        if (Array.isArray(userToEdit.allocatedProjects)) {
+            return userToEdit.allocatedProjects
+                .map((project) => project.id || project.projectId || null)
+                .filter(Boolean)
+        }
+
+        return []
+    }
+
     useEffect(() => {
         fetchUsers()
         fetchProjectsList()
@@ -94,7 +108,7 @@ export default function UsersPage() {
             mobileNumber: userToEdit.mobileNumber || "",
             password: "",
             userType: userToEdit.userType || userToEdit.role || "EMPLOYEE",
-            projectIds: userToEdit.projectIds || [],
+            projectIds: getAssignedProjectIds(userToEdit),
             isEnabled: userToEdit.enabled !== undefined ? userToEdit.enabled : true
         })
         setShowModal(true)
@@ -124,7 +138,7 @@ export default function UsersPage() {
             return
         }
 
-        if (!form.projectIds || form.projectIds.length === 0) {
+        if (form.userType === "EMPLOYEE" && (!form.projectIds || form.projectIds.length === 0)) {
             error("Please assign at least one project")
             return
         }
@@ -168,7 +182,7 @@ export default function UsersPage() {
             return
         }
 
-        if (!form.projectIds || form.projectIds.length === 0) {
+        if (form.userType === "EMPLOYEE" && (!form.projectIds || form.projectIds.length === 0)) {
             error("Please assign at least one project")
             return
         }
@@ -375,30 +389,31 @@ export default function UsersPage() {
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Assign Projects</label>
-                            <div className="space-y-2 max-h-48 overflow-y-auto border p-2 rounded-md">
-                                {projects.map((p) => (
-                                    <label key={p.projectId} className="flex items-center gap-2">
-                                        <input
-                                            type="checkbox"
-                                            className="w-4 h-4 text-indigo-600 border-gray-300 rounded"
-                                            checked={form.projectIds.includes(p.projectId)}
-                                            disabled={isSubmitting}
-                                            onChange={(e) => {
-                                                if (e.target.checked) {
-                                                    setForm({ ...form, projectIds: [...form.projectIds, p.projectId] })
-                                                } else {
-                                                    setForm({ ...form, projectIds: form.projectIds.filter(id => id !== p.projectId) })
-                                                }
-                                            }}
-
-                                        />
-                                        <span className="text-sm text-gray-700 truncate">{p.projectName}</span>
-                                    </label>
-                                ))}
+                        {form.userType === "EMPLOYEE" && (
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Assign Projects</label>
+                                <div className="space-y-2 max-h-48 overflow-y-auto border p-2 rounded-md">
+                                    {projects.map((p) => (
+                                        <label key={p.projectId} className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 text-indigo-600 border-gray-300 rounded"
+                                                checked={form.projectIds.includes(p.projectId)}
+                                                disabled={isSubmitting}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setForm({ ...form, projectIds: [...form.projectIds, p.projectId] })
+                                                    } else {
+                                                        setForm({ ...form, projectIds: form.projectIds.filter(id => id !== p.projectId) })
+                                                    }
+                                                }}
+                                            />
+                                            <span className="text-sm text-gray-700 truncate">{p.projectName}</span>
+                                        </label>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         <div className="flex flex-col sm:flex-row gap-2 justify-end pt-4">
                             <Button

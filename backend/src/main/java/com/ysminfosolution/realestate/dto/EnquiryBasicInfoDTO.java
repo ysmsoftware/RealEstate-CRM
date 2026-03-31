@@ -8,7 +8,8 @@ import com.ysminfosolution.realestate.model.Enquiry.Status;
 public record EnquiryBasicInfoDTO(
     UUID enquiryId,
     LocalDateTime enquiryCreatedDateTime,
-    String clientName,
+    String leadName,
+    String leadMobileNumber,
     UUID projectId,
     String projectName,
     String budget,

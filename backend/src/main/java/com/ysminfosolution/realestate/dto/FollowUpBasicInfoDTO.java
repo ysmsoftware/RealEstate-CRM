@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public record FollowUpBasicInfoDTO(
     UUID followUpId,
-    String clientName,
-    String mobileNumber,
+    String leadName,
+    String leadMobileNumber,
     LocalDate followUpNextDate,
     String agentName,
     String description

@@ -23,11 +23,12 @@ public interface ClientUserInfoRepository extends JpaRepository<ClientUserInfo, 
                     c.city,
                     c.occupation
                 )
-                FROM Enquiry e
-                JOIN e.client c
-                JOIN e.project p
+                FROM Booking b
+                JOIN b.client c
+                JOIN b.flat f
+                JOIN f.project p
                 WHERE p.organization.orgId = :orgId
-                  AND e.isDeleted = false
+                  AND b.isDeleted = false
                   AND p.isDeleted = false
                   AND c.isDeleted = false
             """)
@@ -44,16 +45,15 @@ public interface ClientUserInfoRepository extends JpaRepository<ClientUserInfo, 
                     c.city,
                     c.occupation
                 )
-                FROM Enquiry e
-                JOIN e.client c
-                JOIN e.project p
+                FROM Booking b
+                JOIN b.client c
+                JOIN b.flat f
+                JOIN f.project p
                 WHERE p.projectId IN :projectIds
                   AND c.isDeleted = false
-                  AND e.isDeleted = false
+                  AND b.isDeleted = false
                   AND p.isDeleted = false
             """)
     Set<ClientBasicInfoDTO> findClientBasicInfoByProjectIds(Set<UUID> projectIds);
-
-    Optional<ClientUserInfo> findByEmail(String email);
 
 }

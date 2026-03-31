@@ -10,19 +10,19 @@ import jakarta.validation.constraints.Positive;
 public record UpdateEnquiryDTO(
 
 
-    String clientName,
+    String leadName,
 
     @Pattern(regexp = "^(\\+[1-9]\\d{1,3})?\\d{10}$", message = "Invalid mobile number format") 
-    String mobileNumber,
+    String leadMobileNumber,
 
-    String landlineNumber,
+    String leadLandlineNumber,
 
     @Email
-    String email,
-    String city,
-    String address,
-    String occupation,
-    String company,
+    String leadEmail,
+    String leadCity,
+    String leadAddress,
+    String leadOccupation,
+    String leadCompany,
     String budget,
     Status status,
     String reference,

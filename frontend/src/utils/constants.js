@@ -59,7 +59,7 @@ export const STATIC_CREDENTIALS = []
 
 export const FOLLOWUP_EVENT_TAGS = {
     FOLLOW_UP_CREATED: "Follow-up Created",
-    CLIENT_CALLED: "Client Called",
+    CLIENT_CALLED: "Lead Called",
     SITE_VISIT_SCHEDULED: "Site Visit Scheduled",
     SITE_VISIT_COMPLETED: "Site Visit Completed",
     PROPOSAL_SENT: "Proposal Sent",
@@ -70,13 +70,13 @@ export const FOLLOWUP_EVENT_TAGS = {
     DOCUMENT_SENT: "Document Sent",
     DOCUMENT_RECEIVED: "Document Received",
     QUERY_RESOLVED: "Query Resolved",
-    WAITING_FOR_CLIENT: "Waiting for Client",
+    WAITING_FOR_CLIENT: "Waiting for Lead",
     FOLLOW_UP_COMPLETED: "Follow-up Completed",
 }
 
 export const FOLLOWUP_EVENT_TAG_COLORS = {
     "Follow-up Created": "bg-blue-100 text-blue-700",
-    "Client Called": "bg-green-100 text-green-700",
+    "Lead Called": "bg-green-100 text-green-700",
     "Site Visit Scheduled": "bg-purple-100 text-purple-700",
     "Site Visit Completed": "bg-indigo-100 text-indigo-700",
     "Proposal Sent": "bg-orange-100 text-orange-700",
@@ -87,7 +87,7 @@ export const FOLLOWUP_EVENT_TAG_COLORS = {
     "Document Sent": "bg-pink-100 text-pink-700",
     "Document Received": "bg-rose-100 text-rose-700",
     "Query Resolved": "bg-lime-100 text-lime-700",
-    "Waiting for Client": "bg-gray-100 text-gray-700",
+    "Waiting for Lead": "bg-gray-100 text-gray-700",
     "Follow-up Completed": "bg-green-100 text-green-700",
 }
 

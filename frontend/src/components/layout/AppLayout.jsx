@@ -9,7 +9,6 @@ import {
     Plus,
     BookOpen,
     Phone,
-    Users,
     User,
     Bell,
     LogOut,
@@ -39,7 +38,6 @@ export const AppLayout = ({ children }) => {
         ...(isAdmin ? [{ icon: Plus, label: "Project Registration", path: "/registration" }] : []),
         { icon: BookOpen, label: "Enquiry Book", path: "/enquiry-book" },
         { icon: Phone, label: "Follow-Up", path: "/follow-up" },
-        { icon: Users, label: "Clients", path: "/clients" },
         // { icon: Home, label: "Bookings", path: "/bookings" },
         // { icon: DollarSign, label: "Payments", path: "/payments" },
         // { icon: Bell, label: "Notifications", path: "/notifications" },
@@ -92,7 +90,9 @@ export const AppLayout = ({ children }) => {
                 <nav className="flex-1 overflow-y-auto p-2 md:p-4 space-y-1 md:space-y-2">
                     {menuItems.map((item) => {
                         const Icon = item.icon
-                        const isActive = location.pathname === item.path
+                        const isActive =
+                            location.pathname === item.path ||
+                            (item.path !== "/" && location.pathname.startsWith(`${item.path}/`))
                         return (
                             <button
                                 key={item.path}

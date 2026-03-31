@@ -1,6 +1,6 @@
 package com.ysminfosolution.realestate.service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public interface ProjectService {
 
     ResponseEntity<Project> createProject(ProjectCreationDTO newProjectDetails, AppUserDetails appUserDetails);
 
-    ResponseEntity<Set<Project>> getAllProjects();
+    ResponseEntity<List<Project>> getAllProjects();
 
     void hardDeleteProjectRecursive(Project project, AppUserDetails appUserDetails);
 
@@ -28,6 +28,6 @@ public interface ProjectService {
 
     ResponseEntity<ProjectDTO> getProjectStructureById(UUID projectId, AppUserDetails appUserDetails);
 
-    ResponseEntity<Set<ProjectBasicInfoDTO>> getListofBasicProjectInfo(AppUserDetails appUserDetails);
+    ResponseEntity<List<ProjectBasicInfoDTO>> getListofBasicProjectInfo(AppUserDetails appUserDetails);
 
 }

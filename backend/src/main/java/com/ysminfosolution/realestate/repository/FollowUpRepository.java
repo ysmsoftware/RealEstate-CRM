@@ -21,7 +21,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                JOIN FETCH e.client c
                 WHERE p IN :projects AND f.isDeleted = false
             """)
     Set<FollowUp> findAllByProjectsWithFetch(@Param("projects") Set<Project> projects);
@@ -31,7 +30,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
     @Query("""
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
-                JOIN FETCH e.client c
                 WHERE e IN :enquiries AND f.isDeleted = false
             """)
     Set<FollowUp> findAllByEnquiriesWithFetch(@Param("enquiries") Set<Enquiry> enquiries);
@@ -40,7 +38,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                JOIN FETCH e.client c
                 WHERE p.projectId = :projectId 
                 AND f.isDeleted = false
                 AND e.isDeleted = false
@@ -50,7 +47,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
     @Query("""
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
-                JOIN FETCH e.client c
                 WHERE e.enquiryId = :enquiryId 
                 AND f.isDeleted = false
             """)
@@ -60,7 +56,6 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                JOIN FETCH e.client c
                 WHERE f.followUpId = :followUpId 
                 AND f.isDeleted = false
             """)

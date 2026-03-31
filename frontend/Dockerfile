@@ -4,9 +4,9 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
-RUN apk add --no-cache curl
 
 FROM nginx:alpine
+RUN apk add --no-cache curl
 COPY --from=build /app/dist /usr/share/nginx/html
 
 RUN chmod -R 755 /usr/share/nginx/html

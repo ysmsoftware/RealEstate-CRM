@@ -10,9 +10,9 @@ public record FollowUpResponseDTO(
     LocalDate followUpNextDate,
     String description,
     Set<FollowUpNodeResponseDTO> followUpNodes,
-    String clientName,
-    String email,
-    String mobileNumber
+    String leadName,
+    String leadEmail,
+    String leadMobileNumber
 ) {
 
 }

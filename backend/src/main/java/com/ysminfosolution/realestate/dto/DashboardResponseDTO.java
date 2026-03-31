@@ -1,6 +1,6 @@
 package com.ysminfosolution.realestate.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public record DashboardResponseDTO(
     int totalProjects,
@@ -9,7 +9,7 @@ public record DashboardResponseDTO(
     int propertiesAvailable,
     int totalEnquiries,
     int cancelledEnquiries,
-    Set<DashboardProjectResponseDTO> projects
+    List<DashboardProjectResponseDTO> projects
 ) {
     
 }

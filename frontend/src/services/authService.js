@@ -26,9 +26,18 @@ export const authService = {
 
     async registerOrganization(data) {
         try {
+            const { logo, ...organization } = data
+            const formData = new FormData()
+
+            formData.append("organization", JSON.stringify(organization))
+
+            if (logo instanceof File) {
+                formData.append("logo", logo)
+            }
+
             const responseData = await apiClient.request("/register-organization", {
                 method: "POST",
-                body: JSON.stringify(data),
+                body: formData,
             })
 
             return responseData

@@ -12,7 +12,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -75,9 +74,29 @@ public class Enquiry {
     @Column(name = "reference_name", nullable = false)
     private String referenceName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "client_id", name = "client_id", nullable = false)
-    private ClientUserInfo client;
+    @Column(name = "lead_name", nullable = false)
+    private String leadName;
+
+    @Column(name = "lead_mobile_number", nullable = false, length = 15)
+    private String leadMobileNumber;
+
+    @Column(name = "lead_landline_number", nullable = true, length = 15)
+    private String leadLandlineNumber;
+
+    @Column(name = "lead_email", nullable = false)
+    private String leadEmail;
+
+    @Column(name = "lead_city", nullable = false)
+    private String leadCity;
+
+    @Column(name = "lead_address", nullable = false, length = 500)
+    private String leadAddress;
+
+    @Column(name = "lead_occupation", nullable = false)
+    private String leadOccupation;
+
+    @Column(name = "lead_company", nullable = false)
+    private String leadCompany;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

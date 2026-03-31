@@ -13,29 +13,29 @@ import jakarta.validation.constraints.Positive;
 public record NewEnquiryDTO(
 
     @NotBlank
-    String clientName,
+    String leadName,
 
     @NotBlank
     @Pattern(regexp = "^(\\+[1-9]\\d{1,3})?\\d{10}$", message = "Mobile number number format is invalid") 
-    String mobileNumber,
+    String leadMobileNumber,
 
-    String landlineNumber,
+    String leadLandlineNumber,
     
     @NotBlank
     @Email
-    String email,
+    String leadEmail,
 
     @NotBlank
-    String city,
+    String leadCity,
 
     @NotBlank
-    String address,
+    String leadAddress,
 
     @NotBlank
-    String occupation,
+    String leadOccupation,
 
     @NotBlank
-    String company,
+    String leadCompany,
 
     @NotNull
     UUID projectId,
