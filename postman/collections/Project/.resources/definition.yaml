@@ -1,6 +1,8 @@
 $kind: collection
 name: Project
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

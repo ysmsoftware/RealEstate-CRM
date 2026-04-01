@@ -49,4 +49,4 @@ scripts:
 
       pm.environment.set("enquiryId", pm.response.json().enquiryId);
     language: text/javascript
-order: 6000
+order: 5000

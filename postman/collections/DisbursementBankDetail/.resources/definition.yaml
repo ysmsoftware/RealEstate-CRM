@@ -4,6 +4,8 @@ variables:
   base_url: "{{url}}/disbursementBankDetails"
   disbursement_bank_detail_id: f50a1210-48f9-4888-a44c-46a8f462007c
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

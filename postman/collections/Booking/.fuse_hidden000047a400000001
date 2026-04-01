@@ -1,0 +1,43 @@
+$kind: http-request
+url: "{{base_url}}"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"clientId\": null,\r
+
+    \    \"enquiryId\": null,\r
+
+    \    \"propertyId\": \"955937d4-e27f-478d-a9a1-6a4e1875ceff\",\r
+
+    \    \"clientName\": \"Smita Kadam\",\r
+
+    \    \"dob\": \"2003-09-01\",\r
+
+    \    \"panNo\": \"785764768\",\r
+
+    \    \"aadharNo\": \"97854386967\",\r
+
+    \    \"bookingAmount\": 456415,\r
+
+    \    \"bookingDate\": \"2025-09-01\",\r
+
+    \    \"rate\": \"789567\",\r
+
+    \    \"infraAmount\": \"089687\",\r
+
+    \    \"agreementAmount\": \"68747657\",\r
+
+    \    \"gstPercentage\": 54.65,\r
+
+    \    \"gstAmount\": \"987678\",\r
+
+    \    \"totalAmount\": \"978567\",\r
+
+    \    \"chequeNo\": \"65149845\",\r
+
+    \    \"chequeDate\": \"2025-09-01\"\r
+
+    }"
+order: 1000

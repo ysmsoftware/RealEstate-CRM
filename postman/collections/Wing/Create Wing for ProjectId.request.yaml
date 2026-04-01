@@ -66,4 +66,4 @@ scripts:
 
       pm.environment.set(\"wing_id\", pm.response.json().wingId);"
     language: text/javascript
-order: 2000
+order: 1000

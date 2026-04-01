@@ -3,6 +3,8 @@ name: Dashboard
 variables:
   base_url: "{{url}}/dashboard"
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

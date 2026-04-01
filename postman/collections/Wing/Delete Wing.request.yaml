@@ -1,4 +1,4 @@
 $kind: http-request
 url: "{{base_url}}/{{wing_id}}"
 method: DELETE
-order: 3000
+order: 2000

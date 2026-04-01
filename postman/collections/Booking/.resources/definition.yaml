@@ -3,6 +3,8 @@ name: Booking
 variables:
   base_url: "{{url}}/bookings"
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

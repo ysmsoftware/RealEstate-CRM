@@ -1,5 +1,4 @@
 $kind: http-request
-name: Register Organisation
 url: "{{base_url}}/register-organization"
 method: POST
 body:
@@ -17,12 +16,9 @@ body:
             "fullName": "Nyaz",
             "mobileNo": "7854218956"
         }
-      disabled: false
     - type: file
       key: logo
-      src:
-        - postman-cloud:///1f1001c4-fd57-46f0-acec-261fb73c2be3
-      disabled: false
+      src: postman-cloud:///1f1001c4-fd57-46f0-acec-261fb73c2be3
 scripts:
   - type: afterResponse
     code: "pm.test(\"Successful POST request\", function () {\r

@@ -3,6 +3,8 @@ name: Disbursement
 variables:
   base_url: "{{url}}/disbursements"
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"
