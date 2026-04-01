@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{base_url}}/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\": \"smi123\",\r
+
+    \    \"password\": \"smi123\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      await pm.vault.set(\"accessToken\", pm.response.json().accessToken);\r
+
+      await pm.vault.set(\"refreshToken\", pm.response.json().refreshToken);\r
+
+      pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 2000

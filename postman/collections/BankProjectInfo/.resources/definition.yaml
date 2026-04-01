@@ -1,0 +1,11 @@
+$kind: collection
+name: BankProjectInfo
+variables:
+  base_url: "{{url}}/bankProjectInfo"
+  bank_project_info_id: ""
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

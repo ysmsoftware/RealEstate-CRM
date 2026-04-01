@@ -1,0 +1,43 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: accountName
+      value: Nyaz's Account
+    - type: text
+      key: bankName
+      value: SBI
+    - type: text
+      key: branchName
+      value: Ozar
+    - type: text
+      key: ifsc
+      value: IYTUHV
+    - type: text
+      key: accountType
+      value: SAVINGS
+    - type: text
+      key: accountNo
+      value: "6549851215465"
+    - type: file
+      key: disbursemantLetterHead
+      src: postman-cloud:///1f077bc0-8699-46e0-9dfa-7416a5f4eefb
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      // Update the selected environment disbursement bank detail Id\r
+
+      pm.environment.set(\"disbursement_bank_detail_id\",
+      pm.response.json().bankDisbursementId);\r\n"
+    language: text/javascript
+order: 3000

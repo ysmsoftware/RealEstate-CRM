@@ -1,0 +1,41 @@
+$kind: http-request
+url: "{{base_url}}/{{enquiryId}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"clientName\": \"Tony Stark\",\r
+
+    \    \"mobileNumber\": \"9764748645\",\r
+
+    \    \"landlineNumber\": \"5676851\",\r
+
+    \    \"email\": \"starkindustry@gmail.com\",\r
+
+    \    \"city\": \"Nashik\",\r
+
+    \    \"address\": \"jygscyu, sahcb\",\r
+
+    \    \"occupation\": \"ytgyudx\",\r
+
+    \    \"company\": \"khsgdc\",\r
+
+    \    \"budget\": \"78655768\",\r
+
+    \    \"status\": \"COMPLETED\",\r
+
+    \    \"reference\": \"Website\",\r
+
+    \    \"referenceName\": \"Google Search\",\r
+
+    \    \"remark\": \"Interested in 2BHK units, wants to visit site\",\r
+
+    \    \"propertyType\": \"Residential\",\r
+
+    \    \"property\": \"2 BHK\",\r
+
+    \    \"area\": 767.98\r
+
+    }"
+order: 6000

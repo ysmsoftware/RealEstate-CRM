@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}"
+method: PUT
+body:
+  type: json
+  content: "[\r
+
+    \    {\r
+
+    \        \"disbursementTitle\":\"first\",\r
+
+    \        \"description\":\"giuyegf siugcsd shvduh\",\r
+
+    \        \"percentage\":98\r
+
+    \    }//,\r
+
+    \    // {\r
+
+    \    //     \"disbursementTitle\":\"second\",\r
+
+    \    //     \"description\":\"uhdbwed wquidbc adae\",\r
+
+    \    //     \"percentage\":2\r
+
+    \    // }\r
+
+    ]\r
+
+    \r\n"
+order: 2000

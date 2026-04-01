@@ -1,0 +1,11 @@
+$kind: collection
+name: Wing
+variables:
+  base_url: "{{url}}/wings"
+  wing_id: 8fba78d0-6750-43b9-89a6-25c847975c93
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

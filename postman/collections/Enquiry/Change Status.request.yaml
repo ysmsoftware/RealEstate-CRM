@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/status/{{enquiryId}}"
+method: PUT
+body:
+  type: json
+  content: '"WARM_LEAD"'
+order: 9000

@@ -1,0 +1,10 @@
+$kind: collection
+name: Disbursement
+variables:
+  base_url: "{{url}}/disbursements"
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

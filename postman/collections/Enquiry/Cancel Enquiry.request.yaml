@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}:/cancel/{{enquiryId}}?remark=This is some remark for enquiry
+  cancellation"
+method: DELETE
+queryParams:
+  remark: This is some remark for enquiry cancellation
+order: 7000

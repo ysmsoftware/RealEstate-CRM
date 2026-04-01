@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/{{amenity_id}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"amenityName\": \"Swimming Pool\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });"
+    language: text/javascript
+order: 4000

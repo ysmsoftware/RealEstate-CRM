@@ -1,0 +1,10 @@
+$kind: collection
+name: Client
+variables:
+  base_url: "{{url}}/clients"
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

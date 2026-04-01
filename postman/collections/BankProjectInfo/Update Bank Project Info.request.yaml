@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{base_url}}/{{bank_project_info_id}}"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"bankName\": \"Maharashtra Bank\",\r
+
+    \    \"branchName\": \"Ojhar\",\r
+
+    \    \"contactPerson\": \"Nyaz\",\r
+
+    \    \"contactNumber\": \"8551055201\"\r
+
+    }\r\n"
+order: 4000

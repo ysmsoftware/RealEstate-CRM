@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/allocate/{{project_id}}"
+method: PUT
+body:
+  type: json
+  content: "[\r
+
+    \    \"33c31746-dfb8-44a7-8c5e-f2f73942e0db\"\r
+
+    ]"
+order: 1000

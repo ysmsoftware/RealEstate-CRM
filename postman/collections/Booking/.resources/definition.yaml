@@ -1,0 +1,10 @@
+$kind: collection
+name: Booking
+variables:
+  base_url: "{{url}}/bookings"
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

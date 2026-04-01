@@ -1,0 +1,10 @@
+$kind: collection
+name: Document
+variables:
+  base_url: "{{url}}/documents"
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

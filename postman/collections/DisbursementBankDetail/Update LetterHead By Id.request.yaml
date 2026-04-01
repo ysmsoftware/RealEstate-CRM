@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/letterHead/{{disbursement_bank_detail_id}}"
+method: PUT
+body:
+  type: formdata
+  content:
+    - type: file
+      key: file
+      src: postman-cloud:///1f077bc1-c03b-4f50-80d0-a74fa1c5a321
+order: 5000

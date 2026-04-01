@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/{{disbursement_bank_detail_id}}"
+method: GET
+order: 2000

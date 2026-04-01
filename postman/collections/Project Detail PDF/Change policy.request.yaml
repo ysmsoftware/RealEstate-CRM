@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{base_url}}/{{project_id}}/detail-pdf-policies/{{projectDetailPdfPolicyId}}"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+      "policyName": "Few Details",
+      "includeProjectOverview": true,
+      "includeWings": false,
+      "includeFloors": false,
+      "includeFlats": false,
+      "includeAmenities": true,
+      "includeDisbursements": true,
+      "includeDocuments": true,
+      "documentIds": [
+        "f31b2134-c606-407d-97d7-aa00cd1745c8"
+      ]
+    }
+order: 6000

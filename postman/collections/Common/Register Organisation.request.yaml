@@ -1,0 +1,36 @@
+$kind: http-request
+url: "{{base_url}}/register-organization"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: organization
+      value: |-
+        {
+            "orgName": "YSM infosolution",
+            "orgEmail": "ysminfosolution@gmail.com",
+            "username": "smi123",
+            "password": "smi123",
+            "email": "nyaz@gmail.com",
+            "fullName": "Nyaz",
+            "mobileNo": "7854218956"
+        }
+    - type: file
+      key: logo
+      src: postman-cloud:///1f1001c4-fd57-46f0-acec-261fb73c2be3
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Successful POST request\", function () {\r
+
+      \    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r
+
+      });\r
+
+      \r
+
+      pm.environment.set(\"org_id\", pm.response.json().orgId);\r
+
+      \r\n"
+    language: text/javascript
+order: 3000

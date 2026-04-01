@@ -1,0 +1,4 @@
+$kind: collection
+name: Common
+variables:
+  base_url: "{{url}}"

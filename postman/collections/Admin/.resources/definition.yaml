@@ -1,0 +1,10 @@
+$kind: collection
+name: Admin
+variables:
+  base_url: "{{url}}/admins"
+auth:
+  - id: ""
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"

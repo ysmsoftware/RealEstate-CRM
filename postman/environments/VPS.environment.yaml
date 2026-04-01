@@ -1,0 +1,9 @@
+name: VPS
+values:
+  - key: url
+    value: https://realestate.ysminfosolution.com/api
+    enabled: true
+  - key: mahareraNo
+    value: ""
+    enabled: true
+color: null
