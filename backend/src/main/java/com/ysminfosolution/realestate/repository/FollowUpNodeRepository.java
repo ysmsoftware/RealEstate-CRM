@@ -2,6 +2,7 @@ package com.ysminfosolution.realestate.repository;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,16 @@ public interface FollowUpNodeRepository extends JpaRepository<FollowUpNode, UUID
             ORDER BY fn.followUp.followUpId, fn.followUpDateTime
             """)
     Set<FollowUpNode> findAllByFollowUpIdsWithUser(@Param("followUpIds") Set<UUID> followUpIds);
+
+    Optional<FollowUpNode> findFirstByFollowUp_FollowUpIdAndIsDeletedFalseOrderByFollowUpDateTimeDesc(UUID followUpId);
+
+    @Query("""
+            SELECT fn FROM FollowUpNode fn
+            JOIN FETCH fn.user
+            WHERE fn.followUp.followUpId = :followUpId
+            AND fn.followUpNodeId = :nodeId
+            AND fn.isDeleted = false
+            """)
+    Optional<FollowUpNode> findByFollowUpIdAndNodeId(@Param("followUpId") UUID followUpId,
+            @Param("nodeId") UUID nodeId);
 } 

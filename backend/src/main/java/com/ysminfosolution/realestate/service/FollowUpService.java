@@ -24,6 +24,9 @@ public interface FollowUpService {
 
     ResponseEntity<String> addNodeToFollowUp(UUID followUpId, FollowUpNodeRequestDTO nodeRequestDTO, AppUserDetails appUserDetails);
 
+    ResponseEntity<String> updateNodeToFollowUp(UUID followUpId, UUID nodeId, FollowUpNodeRequestDTO nodeRequestDTO,
+            AppUserDetails appUserDetails);
+
     ResponseEntity<Set<FollowUpResponseDTO>> getAllFollowUps(AppUserDetails appUserDetails);
 
     ResponseEntity<Set<FollowUpBasicInfoDTO>> getAllRemainingFollowUpsWithinRange(AppUserDetails appUserDetails,

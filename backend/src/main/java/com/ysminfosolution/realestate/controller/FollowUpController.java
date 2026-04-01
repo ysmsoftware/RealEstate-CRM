@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -90,6 +91,18 @@ public class FollowUpController {
         log.info("Path: [POST] /followUps/{followUpId}/node | Method: addNodeToFollowUp");
 
         return followUpService.addNodeToFollowUp(followUpId, nodeRequestDTO, appUserDetails);
+    }
+
+    @PutMapping("/{followUpId}/node/{nodeId}")
+    public ResponseEntity<String> updateNodeToFollowUp(@PathVariable @NotNull UUID followUpId,
+            @PathVariable @NotNull UUID nodeId,
+            @RequestBody FollowUpNodeRequestDTO nodeRequestDTO,
+            @AuthenticationPrincipal AppUserDetails appUserDetails) {
+
+        log.info("\n");
+        log.info("Path: [PUT] /followUps/{followUpId}/node/{nodeId} | Method: updateNodeToFollowUp");
+
+        return followUpService.updateNodeToFollowUp(followUpId, nodeId, nodeRequestDTO, appUserDetails);
     }
 
     @GetMapping("")

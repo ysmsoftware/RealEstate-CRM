@@ -1,6 +1,7 @@
 package com.ysminfosolution.realestate.service.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.ysminfosolution.realestate.model.User;
 import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
 import com.ysminfosolution.realestate.repository.EnquiryRepository;
 import com.ysminfosolution.realestate.repository.FollowUpRepository;
+import com.ysminfosolution.realestate.repository.FollowUpNodeRepository;
 import com.ysminfosolution.realestate.repository.ProjectRepository;
 import com.ysminfosolution.realestate.repository.TaskRepository;
 import com.ysminfosolution.realestate.resolver.ProjectResolver;
@@ -47,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FollowUpServiceImpl implements FollowUpService {
 
     private final FollowUpRepository followUpRepository;
+        private final FollowUpNodeRepository followUpNodeRepository;
     private final ProjectRepository projectRepository;
     private final EnquiryRepository enquiryRepository;
     private final EmployeeUserInfoRepository employeeUserInfoRepository;
@@ -166,6 +169,62 @@ public class FollowUpServiceImpl implements FollowUpService {
         followUpNodeService.createNodeForFollowUp(followUp, nodeRequestDTO, appUserDetails);
 
         return ResponseEntity.ok("Node Added To FollowUp Successfully");
+    }
+
+    @Override
+    public ResponseEntity<String> updateNodeToFollowUp(UUID followUpId, UUID nodeId, FollowUpNodeRequestDTO nodeRequestDTO,
+            AppUserDetails appUserDetails) {
+
+        log.info("\n");
+        log.info("Method: updateNodeToFollowUp");
+
+        FollowUp followUp = followUpRepository.findByFollowUpIdAndIsDeletedFalse(followUpId)
+                .orElseThrow(() -> new NotFoundException("FollowUp not found"));
+
+        Enquiry enquiry = followUp.getEnquiry();
+
+        if (enquiry.getStatus().equals(Enquiry.Status.CANCELLED) || enquiry.getStatus().equals(Enquiry.Status.BOOKED)) {
+            throw new ApiException(HttpStatus.METHOD_NOT_ALLOWED,
+                    "Cannot update follow-up activity for a completed enquiry or cancelled enquiry");
+        }
+
+        Project project = projectResolver.resolve(followUp.getEnquiry().getProject().getProjectId());
+        projectAuthorizationService.checkProjectAccess(appUserDetails, project);
+
+        FollowUpNode latestNode = followUpNodeRepository
+                .findFirstByFollowUp_FollowUpIdAndIsDeletedFalseOrderByFollowUpDateTimeDesc(followUpId)
+                .orElseThrow(() -> new NotFoundException("Follow-up node not found"));
+
+        FollowUpNode nodeToUpdate = followUpNodeRepository.findByFollowUpIdAndNodeId(followUpId, nodeId)
+                .orElseThrow(() -> new NotFoundException("Follow-up node not found"));
+
+        if (!latestNode.getFollowUpNodeId().equals(nodeToUpdate.getFollowUpNodeId())) {
+            throw new ApiException(HttpStatus.METHOD_NOT_ALLOWED,
+                    "Only the latest follow-up node can be edited");
+        }
+
+        LocalDateTime createdAt = nodeToUpdate.getCreatedAt();
+        LocalDateTime now = LocalDateTime.now();
+        if (createdAt == null || !createdAt.plusHours(24).isAfter(now)) {
+            throw new ApiException(HttpStatus.METHOD_NOT_ALLOWED,
+                    "Follow-up node can only be edited within 24 hours of creation");
+        }
+
+        followUp.setFollowUpNextDate(nodeRequestDTO.followUpNextDate());
+        if (followUp.getFollowUpNextDate().isBefore(LocalDate.now().plusDays(1))
+                && !taskRepository.existsByFollowUp(followUp)) {
+            Task task = new Task();
+            task.setFollowUp(followUp);
+            taskRepository.save(task);
+        }
+
+        nodeToUpdate.setBody(nodeRequestDTO.body());
+        nodeToUpdate.setTag(nodeRequestDTO.tag());
+
+        followUpRepository.save(followUp);
+        followUpNodeRepository.save(nodeToUpdate);
+
+        return ResponseEntity.ok("Node Updated Successfully");
     }
 
     @Override
@@ -290,6 +349,7 @@ public class FollowUpServiceImpl implements FollowUpService {
                 .map(node -> new FollowUpNodeResponseDTO(
                         node.getFollowUpNodeId(),
                         node.getFollowUpDateTime(),
+                        node.getCreatedAt(),
                         node.getBody(),
                         node.getTag(),
                         node.getUser().getFullName()))

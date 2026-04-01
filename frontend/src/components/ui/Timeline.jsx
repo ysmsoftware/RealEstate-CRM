@@ -1,6 +1,6 @@
-import { CheckCircle2, Circle } from "lucide-react"
+import { Pencil } from "lucide-react"
 
-export const Timeline = ({ events }) => {
+export const Timeline = ({ events, onEditEvent }) => {
   const getTagColor = (tag) => {
     const colors = {
       "Follow-up Created": "bg-blue-100 text-blue-700 border-blue-200",
@@ -68,6 +68,17 @@ export const Timeline = ({ events }) => {
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                         by {event.agent}
                       </span>
+                    )}
+                    {event.canEdit && onEditEvent && (
+                      <button
+                        type="button"
+                        onClick={() => onEditEvent(event)}
+                        className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+                        aria-label={`Edit ${event.title}`}
+                      >
+                        <Pencil size={12} />
+                        Edit
+                      </button>
                     )}
                   </div>
                   {event.description && (

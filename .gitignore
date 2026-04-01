@@ -1,0 +1,28 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+frontend/node_modules/
+backend/node_modules/
+
+# Build outputs
+backend/target/
+frontend/dist/
+frontend/.vite/
+**/dist/
+**/build/
+
+# Logs and crash dumps
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo

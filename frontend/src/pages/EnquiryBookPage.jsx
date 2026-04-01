@@ -18,7 +18,7 @@ import { enquiryService } from "../services/enquiryService"
 import { followUpService } from "../services/followUpService"
 import { projectService } from "../services/projectService"
 import { FOLLOWUP_EVENT_TAGS } from "../utils/constants"
-import { formatCurrency, formatDate, formatDateTime, validateEmail, validatePhone } from "../utils/helpers"
+import { formatCurrency, formatDate, formatDateTime, isWithinHours, validateEmail, validatePhone } from "../utils/helpers"
 
 const buildInitialForm = () => ({
     leadName: "",
@@ -110,6 +110,7 @@ export default function EnquiryBookPage() {
         tag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
         followUpNextDate: getDefaultFollowUpDate(),
     })
+    const [editingNode, setEditingNode] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -161,20 +162,25 @@ export default function EnquiryBookPage() {
     const timelineEvents = useMemo(() => {
         if (!followUp?.followUpNodes) return []
 
-        return [...followUp.followUpNodes]
+        const orderedNodes = [...followUp.followUpNodes]
             .sort((a, b) => new Date(b.followUpDateTime) - new Date(a.followUpDateTime))
-            .map((node) => ({
-                title: node.tag || "Note Added",
-                timestamp: formatDateTime(node.followUpDateTime),
-                groupDate: new Date(node.followUpDateTime).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                }),
-                description: node.body,
-                agent: node.agentName,
-                rawDate: new Date(node.followUpDateTime),
-            }))
+        const latestNodeId = orderedNodes[0]?.followUpNodeId
+
+        return orderedNodes.map((node) => ({
+            id: node.followUpNodeId,
+            title: node.tag || "Note Added",
+            timestamp: formatDateTime(node.followUpDateTime),
+            groupDate: new Date(node.followUpDateTime).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+            }),
+            description: node.body,
+            agent: node.agentName,
+            createdAt: node.createdAt,
+            canEdit: node.followUpNodeId === latestNodeId && isWithinHours(node.createdAt, 24),
+            rawDate: new Date(node.followUpDateTime),
+        }))
     }, [followUp])
 
     const noteEditingBlocked =
@@ -273,6 +279,7 @@ export default function EnquiryBookPage() {
         setTimelineLoading(true)
         setTimelineError("")
         setFollowUp(null)
+        setEditingNode(null)
 
         try {
             const response = await followUpService.getEnquiryFollowUps(enquiry.enquiryId)
@@ -291,6 +298,29 @@ export default function EnquiryBookPage() {
         }
     }, [error])
 
+    const resetNodeForm = useCallback(() => {
+        setEditingNode(null)
+        setNodeForm({
+            body: "",
+            tag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+            followUpNextDate: getDefaultFollowUpDate(),
+        })
+    }, [])
+
+    const handleEditTimelineNode = useCallback((event) => {
+        if (!followUp?.followUpNodes || !event?.id) return
+
+        const node = followUp.followUpNodes.find((item) => item.followUpNodeId === event.id)
+        if (!node) return
+
+        setEditingNode(node)
+        setNodeForm({
+            body: node.body || "",
+            tag: node.tag || FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+            followUpNextDate: getDefaultFollowUpDate(),
+        })
+    }, [followUp])
+
     const handleAddTimelineNote = useCallback(async () => {
         if (!followUp?.followUpId) {
             error("No follow-up thread found for this enquiry")
@@ -304,23 +334,24 @@ export default function EnquiryBookPage() {
 
         try {
             setAddingNote(true)
-            await followUpService.addFollowUpNode(followUp.followUpId, nodeForm)
+            if (editingNode) {
+                await followUpService.updateFollowUpNode(followUp.followUpId, editingNode.followUpNodeId, nodeForm)
+                success("Follow-up note updated successfully")
+            } else {
+                await followUpService.addFollowUpNode(followUp.followUpId, nodeForm)
+                success("Follow-up note added successfully")
+            }
             // Refresh follow-up data
             const refreshed = await followUpService.getEnquiryFollowUps(selectedEnquiry.enquiryId)
             setFollowUp(refreshed)
-            setNodeForm({
-                body: "",
-                tag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
-                followUpNextDate: getDefaultFollowUpDate(),
-            })
-            success("Follow-up note added successfully")
+            resetNodeForm()
         } catch (err) {
             console.error("Failed to add follow-up note:", err)
-            error(err.message || "Failed to add follow-up note")
+            error(err.message || "Failed to save follow-up note")
         } finally {
             setAddingNote(false)
         }
-    }, [followUp, nodeForm, selectedEnquiry, error, success])
+    }, [editingNode, error, followUp, nodeForm, resetNodeForm, selectedEnquiry, success])
 
     const scrollToAddNote = () => {
         const element = document.getElementById("enquiry-add-note-section")
@@ -659,7 +690,16 @@ export default function EnquiryBookPage() {
             {/* Timeline Modal - Same as FollowUp Page */}
             <TwoColumnModal
                 isOpen={showTimelineModal}
-                onClose={() => !addingNote && setShowTimelineModal(false)}
+                onClose={() => {
+                    if (addingNote) return
+                    setShowTimelineModal(false)
+                    setEditingNode(null)
+                    setNodeForm({
+                        body: "",
+                        tag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+                        followUpNextDate: getDefaultFollowUpDate(),
+                    })
+                }}
                 title="Follow-Up Timeline"
                 leftContent={
                     selectedEnquiry && (
@@ -700,7 +740,7 @@ export default function EnquiryBookPage() {
                                         {timelineError}
                                     </div>
                                 ) : timelineEvents.length > 0 ? (
-                                    <Timeline events={timelineEvents} />
+                                    <Timeline events={timelineEvents} onEditEvent={handleEditTimelineNode} />
                                 ) : (
                                     <div className="rounded-2xl border border-dashed border-gray-300 p-6 text-sm text-gray-500">
                                         No follow-up activity recorded yet.
@@ -725,7 +765,11 @@ export default function EnquiryBookPage() {
                             </ModalSection>
 
                             <div id="enquiry-add-note-section">
-                                <ModalSection title="Add New Note" icon={FileText} iconColor="text-green-600">
+                                <ModalSection
+                                    title={editingNode ? "Edit Note" : "Add New Note"}
+                                    icon={FileText}
+                                    iconColor="text-green-600"
+                                >
                                     <div className="space-y-3">
                                         {selectedEnquiry.status === "BOOKED" || selectedEnquiry.status === "CANCELLED" ? (
                                             <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -767,8 +811,25 @@ export default function EnquiryBookPage() {
                                         />
 
                                         <Button onClick={handleAddTimelineNote} variant="primary" className="w-full" loading={addingNote} disabled={noteEditingBlocked}>
-                                            Add Note
+                                            {editingNode ? "Save Changes" : "Add Note"}
                                         </Button>
+                                        {editingNode && (
+                                            <Button
+                                                variant="secondary"
+                                                className="w-full"
+                                                onClick={() => {
+                                                    setEditingNode(null)
+                                                    setNodeForm({
+                                                        body: "",
+                                                        tag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+                                                        followUpNextDate: getDefaultFollowUpDate(),
+                                                    })
+                                                }}
+                                                disabled={addingNote}
+                                            >
+                                                Cancel Edit
+                                            </Button>
+                                        )}
                                     </div>
                                 </ModalSection>
                             </div>

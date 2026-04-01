@@ -29,7 +29,7 @@ import { useToast } from "../components/ui/Toast"
 import { enquiryService } from "../services/enquiryService"
 import { followUpService } from "../services/followUpService"
 import { FOLLOWUP_EVENT_TAGS } from "../utils/constants"
-import { formatCurrency, formatDate, formatDateTime, validateEmail, validatePhone } from "../utils/helpers"
+import { formatCurrency, formatDate, formatDateTime, isWithinHours, validateEmail, validatePhone } from "../utils/helpers"
 
 const buildEditForm = (enquiry) => ({
     leadName: enquiry?.leadName || "",
@@ -84,6 +84,7 @@ export default function EnquiryDetailPage() {
     const [timelineOpen, setTimelineOpen] = useState(false)
     const [editForm, setEditForm] = useState(buildEditForm(null))
     const [noteForm, setNoteForm] = useState(buildInitialNoteForm())
+    const [editingNode, setEditingNode] = useState(null)
 
     useEffect(() => {
         const fetchEnquiry = async () => {
@@ -154,19 +155,24 @@ export default function EnquiryDetailPage() {
             return []
         }
 
-        return [...followUp.followUpNodes]
+        const orderedNodes = [...followUp.followUpNodes]
             .sort((a, b) => new Date(b.followUpDateTime) - new Date(a.followUpDateTime))
-            .map((node) => ({
-                title: node.tag || "Update",
-                timestamp: formatDateTime(node.followUpDateTime),
-                groupDate: new Date(node.followUpDateTime).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                }).toUpperCase(),
-                description: node.body,
-                agent: node.agentName || "System",
-            }))
+        const latestNodeId = orderedNodes[0]?.followUpNodeId
+
+        return orderedNodes.map((node) => ({
+            id: node.followUpNodeId,
+            title: node.tag || "Update",
+            timestamp: formatDateTime(node.followUpDateTime),
+            groupDate: new Date(node.followUpDateTime).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            }).toUpperCase(),
+            description: node.body,
+            agent: node.agentName || "System",
+            createdAt: node.createdAt,
+            canEdit: node.followUpNodeId === latestNodeId && isWithinHours(node.createdAt, 24),
+        }))
     }, [followUp])
 
     const noteEditingBlocked =
@@ -194,6 +200,7 @@ export default function EnquiryDetailPage() {
         setTimelineOpen(true)
         setTimelineLoading(true)
         setTimelineError("")
+        setEditingNode(null)
 
         try {
             const response = await refreshFollowUp()
@@ -230,6 +237,25 @@ export default function EnquiryDetailPage() {
         }
     }
 
+    const resetNoteForm = () => {
+        setEditingNode(null)
+        setNoteForm(buildInitialNoteForm())
+    }
+
+    const handleEditTimelineNode = (event) => {
+        if (!followUp?.followUpNodes || !event?.id) return
+
+        const node = followUp.followUpNodes.find((item) => item.followUpNodeId === event.id)
+        if (!node) return
+
+        setEditingNode(node)
+        setNoteForm({
+            body: node.body || "",
+            tag: node.tag || FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+            followUpNextDate: getDefaultFollowUpDate(),
+        })
+    }
+
     const handleAddNote = async () => {
         if (!followUp?.followUpId) {
             error("No follow-up thread found for this enquiry")
@@ -248,13 +274,19 @@ export default function EnquiryDetailPage() {
 
         try {
             setAddingNote(true)
-            await followUpService.addFollowUpNode(followUp.followUpId, noteForm)
-            const refreshedFollowUp = await refreshFollowUp()
+            if (editingNode) {
+                await followUpService.updateFollowUpNode(followUp.followUpId, editingNode.followUpNodeId, noteForm)
+                success("Follow-up note updated successfully")
+            } else {
+                await followUpService.addFollowUpNode(followUp.followUpId, noteForm)
+                success("Follow-up note added successfully")
+            }
+            await refreshFollowUp()
             setNoteForm(buildInitialNoteForm())
-            success("Follow-up note added successfully")
+            setEditingNode(null)
         } catch (err) {
             console.error("Failed to add follow-up note:", err)
-            error(err.message || "Failed to add follow-up note")
+            error(err.message || "Failed to save follow-up note")
         } finally {
             setAddingNote(false)
         }
@@ -512,7 +544,12 @@ export default function EnquiryDetailPage() {
             {/* Timeline Modal - Same as FollowUp Page */}
             <TwoColumnModal
                 isOpen={timelineOpen}
-                onClose={() => !addingNote && setTimelineOpen(false)}
+                onClose={() => {
+                    if (addingNote) return
+                    setTimelineOpen(false)
+                    setEditingNode(null)
+                    setNoteForm(buildInitialNoteForm())
+                }}
                 title="Follow-Up Timeline"
                 leftContent={
                     <div className="flex flex-col h-full">
@@ -555,7 +592,7 @@ export default function EnquiryDetailPage() {
                                     {timelineError}
                                 </div>
                             ) : timelineEvents.length > 0 ? (
-                                <Timeline events={timelineEvents} />
+                                <Timeline events={timelineEvents} onEditEvent={handleEditTimelineNode} />
                             ) : (
                                 <div className="rounded-2xl border border-dashed border-gray-300 p-6 text-sm text-gray-500">
                                     No follow-up activity recorded yet.
@@ -578,7 +615,11 @@ export default function EnquiryDetailPage() {
                         </ModalSection>
 
                         <div id="detail-add-note-section">
-                            <ModalSection title="Add New Note" icon={FileText} iconColor="text-green-600">
+                            <ModalSection
+                                title={editingNode ? "Edit Note" : "Add New Note"}
+                                icon={FileText}
+                                iconColor="text-green-600"
+                            >
                                 <div className="space-y-3">
                                     {enquiry.status === "BOOKED" || enquiry.status === "CANCELLED" ? (
                                         <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -620,8 +661,13 @@ export default function EnquiryDetailPage() {
                                     />
 
                                     <Button onClick={handleAddNote} variant="primary" className="w-full" loading={addingNote} disabled={noteEditingBlocked}>
-                                        Add Note
+                                        {editingNode ? "Save Changes" : "Add Note"}
                                     </Button>
+                                    {editingNode && (
+                                        <Button variant="secondary" className="w-full" onClick={resetNoteForm} disabled={addingNote}>
+                                            Cancel Edit
+                                        </Button>
+                                    )}
                                 </div>
                             </ModalSection>
                         </div>
