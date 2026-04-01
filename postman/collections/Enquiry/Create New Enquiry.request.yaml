@@ -43,10 +43,10 @@ scripts:
           pm.expect(pm.response.code).to.be.oneOf([200, 201]);
       });
 
-      // Update the global project Id
-      pm.globals.set("enquiry_id", pm.response.json().enquiryId);
-      pm.globals.set("clientId", pm.response.json().clientId);
+      // Update the selected environment enquiry Id
+      pm.environment.set("enquiry_id", pm.response.json().enquiryId);
+      pm.environment.set("clientId", pm.response.json().clientId);
 
-      pm.collectionVariables.set("enquiryId", pm.response.json().enquiryId);
+      pm.environment.set("enquiryId", pm.response.json().enquiryId);
     language: text/javascript
 order: 6000

@@ -18,8 +18,8 @@ scripts:
 
       \r
 
-      // Update the global amenity Id\r
+      // Update the selected environment amenity Id\r
 
-      pm.collectionVariables.set(\"amenity_id\", pm.response.json().amenityId);"
+      pm.environment.set(\"amenity_id\", pm.response.json().amenityId);"
     language: text/javascript
 order: 3000

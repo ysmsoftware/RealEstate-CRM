@@ -156,8 +156,8 @@ scripts:
           pm.expect(pm.response.code).to.be.oneOf([200, 201]);
       });
 
-      // Update the global project Id
-      pm.globals.set("project_id", pm.response.json().projectId);
+      // Update the selected environment project Id
+      pm.environment.set("project_id", pm.response.json().projectId);
 
     language: text/javascript
   - type: beforeRequest

@@ -1,9 +1,8 @@
 $kind: collection
+name: Employee
 variables:
   base_url: "{{url}}/employees"
 auth:
-  - id: ""
-    type: bearer
-    name: bearer auth
-    credentials:
-      token: "{{accessToken}}"
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

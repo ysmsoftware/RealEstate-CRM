@@ -1,9 +1,8 @@
 $kind: collection
+name: Project Detail PDF
 variables:
   base_url: ""
 auth:
-  - id: ""
-    type: bearer
-    name: bearer auth
-    credentials:
-      token: "{{accessToken}}"
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

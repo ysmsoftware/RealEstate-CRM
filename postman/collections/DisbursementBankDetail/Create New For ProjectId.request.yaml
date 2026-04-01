@@ -35,9 +35,9 @@ scripts:
 
       \r
 
-      // Update the global project Id\r
+      // Update the selected environment disbursement bank detail Id\r
 
-      pm.collectionVariables.set(\"disbursement_bank_detail_id\",
+      pm.environment.set(\"disbursement_bank_detail_id\",
       pm.response.json().bankDisbursementId);\r\n"
     language: text/javascript
 order: 3000

@@ -24,9 +24,9 @@ scripts:
 
       \r
 
-      // Update the global project Id\r
+      // Update the selected environment bank project info Id\r
 
-      pm.collectionVariables.set(\"bank_project_info_id\",
+      pm.environment.set(\"bank_project_info_id\",
       pm.response.json().bankProjectInfoId);\r\n"
     language: text/javascript
 order: 3000

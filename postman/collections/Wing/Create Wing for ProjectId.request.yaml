@@ -62,8 +62,8 @@ scripts:
 
       \r
 
-      // Update the global project Id\r
+      // Update the selected environment wing Id\r
 
-      pm.collectionVariables.set(\"wing_id\", pm.response.json().wingId);"
+      pm.environment.set(\"wing_id\", pm.response.json().wingId);"
     language: text/javascript
 order: 2000

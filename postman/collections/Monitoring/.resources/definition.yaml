@@ -1,9 +1,4 @@
 $kind: collection
+name: Monitoring
 variables:
   base_url: "{{url}}/actuator"
-auth:
-  - id: ""
-    type: bearer
-    name: bearer auth
-    credentials:
-      token: "{{accessToken}}"

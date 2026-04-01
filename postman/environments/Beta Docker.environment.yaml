@@ -1,9 +1,11 @@
 name: Beta Docker
 values:
   - key: url
-    value: http://localhost:8080
+    value: 'http://localhost:3000/api'
     enabled: true
   - key: mahareraNo
-    value: ""
+    value: ''
     enabled: true
-color: null
+  - key: org_id
+    value: ''
+    enabled: true

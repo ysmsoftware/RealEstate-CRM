@@ -25,9 +25,9 @@ scripts:
       });
 
 
-      // Update the global project Id
+      // Update the selected environment project detail PDF policy Id
 
-      pm.globals.set("projectDetailPdfPolicyId",
+      pm.environment.set("projectDetailPdfPolicyId",
       pm.response.json().projectDetailPdfPolicyId);
 
     language: text/javascript

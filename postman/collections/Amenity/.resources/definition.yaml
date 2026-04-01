@@ -1,10 +1,9 @@
 $kind: collection
+name: Amenity
 variables:
   base_url: "{{url}}/amenities"
   amenity_id: ""
 auth:
-  - id: ""
-    type: bearer
-    name: bearer auth
-    credentials:
-      token: "{{accessToken}}"
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"

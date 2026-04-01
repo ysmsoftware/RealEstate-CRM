@@ -18,9 +18,9 @@ scripts:
 
       \r
 
-      pm.globals.set(\"accessToken\", pm.response.json().accessToken);\r
+      await pm.vault.set(\"accessToken\", pm.response.json().accessToken);\r
 
-      pm.globals.set(\"refreshToken\", pm.response.json().refreshToken);\r
+      await pm.vault.set(\"refreshToken\", pm.response.json().refreshToken);\r
 
       \r\n"
     language: text/javascript
