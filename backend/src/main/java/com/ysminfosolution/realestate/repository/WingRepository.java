@@ -12,9 +12,8 @@ import com.ysminfosolution.realestate.model.Wing;
 public interface WingRepository extends JpaRepository<Wing, UUID> {
 
     // Existing methods (keep them)
-    Set<Wing> findAllByProject_ProjectId(UUID projectId);
+    Set<Wing> findAllByProject_Id(UUID projectId);
 
-    Set<Wing> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
 
     // ~ Full structure fetch (Wing → Floor → Flat)
     @Query("""
@@ -22,10 +21,10 @@ public interface WingRepository extends JpaRepository<Wing, UUID> {
         from Wing w
         left join fetch w.floors f
         left join fetch f.flats fl
-        where w.project.projectId = :projectId
-          and w.isDeleted = false
-          and (f is null or f.isDeleted = false)
-          and (fl is null or fl.isDeleted = false)
+        where w.project.id = :projectId
+          and w.deleted = false
+          and (f is null or f.deleted = false)
+          and (fl is null or fl.deleted = false)
     """)
     Set<Wing> fetchFullStructureByProjectId(@Param("projectId") UUID projectId);
 }

@@ -99,7 +99,7 @@ public class DocumentServiceImpl implements DocumentService {
         log.info("\n");
         log.info("Method: hardDeleteAllByProjectId");
 
-        documentRepository.deleteAllByProject_ProjectId(projectId);
+        documentRepository.deleteAllByProject_Id(projectId);
         log.info("Documents deleted successfully for projectId : " + projectId);
     }
 
@@ -165,7 +165,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        Set<DocumentResponseDTO> documents = documentRepository.findAllByProject_ProjectId(projectId)
+        Set<DocumentResponseDTO> documents = documentRepository.findAllByProject_Id(projectId)
                 .stream()
                 .filter(doc -> !doc.isDeleted())
                 .map(d -> new DocumentResponseDTO(d.getId(), d.getDocumentTitle(), d.getDocumentType(), d.getDocumentURL()))

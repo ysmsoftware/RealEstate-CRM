@@ -35,7 +35,7 @@ public class ProjectResolver {
 
     private Project resolveFromCacheOrDb(UUID projectId) {
         return projectRepository
-                .findWithOrganizationByProjectId(projectId)
+                .findWithOrganizationById(projectId)
                 .filter(p -> !p.isDeleted())
                 .orElseThrow(() ->
                         new NotFoundException("Project not found for id: " + projectId));

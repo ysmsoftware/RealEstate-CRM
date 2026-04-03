@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     private final UserProfileCacheService userProfileCacheService;
 
     public Organization getOrganizationById(UUID orgId) {
-        return organizationRepository.findByOrgIdAndIsDeletedFalse(orgId)
+        return organizationRepository.findById(orgId)
                 .orElseThrow(() -> new NotFoundException("Organization not found"));
     }
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         log.info("\n");
         log.info("Method: getAllUsersForOrganization");
 
-        Set<User> users = userRepository.findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId());
+        Set<User> users = userRepository.findAllByOrganization_Id(appUserDetails.getOrgId());
         Set<UserResponseDTO> userResponseDTOs = new HashSet<>();
 
         for (User user : users) {
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
             if (user.getRole() == Role.EMPLOYEE) {
                 Employee employee = employeeRepository
-                        .findByUser_UserId(user.getId()).orElse(null);
+                        .findByUser_Id(user.getId()).orElse(null);
 
                 Set<ProjectLeastInfoDTO> projects = new HashSet<>();
 
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 
         Set<Project> projects = new HashSet<>();
         if (createNewUserRequestDTO.projectIds() == null || createNewUserRequestDTO.projectIds().isEmpty()) {
-            projects.addAll(projectRepository.findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId()));
+            projects.addAll(projectRepository.findAllByOrganization_Id(appUserDetails.getOrgId()));
         } else {
             log.info("\n\nAssigning specific projects to the employee");
             for (UUID projectId : createNewUserRequestDTO.projectIds()) {
@@ -253,11 +253,11 @@ public class UserServiceImpl implements UserService {
                 adminRepository.save(admin);
             }
         } else if (changeUserInfoDTO.userType().equals(User.Role.EMPLOYEE)) {
-            if (!employeeRepository.existsByUser_UserId(user.getId())) {
+            if (!employeeRepository.existsByUser_Id(user.getId())) {
                 Employee employee = new Employee();
 
                 employee.setProjects(
-                        projectRepository.findAllByProjectIdInAndIsDeletedFalse(changeUserInfoDTO.projectIds()));
+                        projectRepository.findAllByIdIn(changeUserInfoDTO.projectIds()));
                 employee.setUser(user);
                 employee.setDeleted(false);
 
@@ -292,7 +292,7 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(false);
         userRepository.save(user);
 
-        employeeRepository.findByUser_UserId(userId).ifPresent(employee -> {
+        employeeRepository.findByUser_Id(userId).ifPresent(employee -> {
             employee.setDeleted(true);
             employeeRepository.save(employee);
         });

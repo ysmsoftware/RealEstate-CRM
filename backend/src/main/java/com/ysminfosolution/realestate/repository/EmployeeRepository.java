@@ -12,17 +12,17 @@ import com.ysminfosolution.realestate.model.Employee;
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Optional<Employee> findByUser_UserId(UUID userId);
+    Optional<Employee> findByUser_Id(UUID userId);
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Set<Employee> findAllByUser_Organization_OrgIdAndIsDeletedFalse(UUID orgId);
+    Set<Employee> findAllByUser_Organization_Id(UUID orgId);
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Employee findByEmployeeIdAndIsDeletedFalse(UUID employeeId);
+    Optional<Employee> findById(UUID employeeId);
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Set<Employee> findByProjects_ProjectIdAndIsDeletedFalse(UUID projectId);
+    Set<Employee> findByProjects_Id(UUID projectId);
 
-    boolean existsByUser_UserId(UUID userId);
+    boolean existsByUser_Id(UUID userId);
 
 }

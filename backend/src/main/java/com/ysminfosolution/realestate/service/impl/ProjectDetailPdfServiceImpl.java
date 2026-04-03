@@ -78,7 +78,7 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
         projectAuthorizationService.checkProjectAccess(user, project);
 
         ProjectDetailPdfPolicy policy = projectDetailPdfPolicyRepository
-                .findByProjectDetailPdfPolicyIdAndProject_ProjectId(policyId, projectId)
+                .findByIdAndProject_Id(policyId, projectId)
                 .orElseThrow(() -> new NotFoundException("Project detail PDF policy not found for id: " + policyId));
 
         List<UUID> requestedDocumentIds = policy.isIncludeDocuments()
@@ -102,15 +102,15 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
                 : Set.of();
 
         Set<Amenity> amenities = policy.isIncludeAmenities()
-                ? amenityRepository.findAllByProject_IdAndIsDeletedFalse(projectId)
+                ? amenityRepository.findAllByProject_Id(projectId)
                 : Set.of();
 
         Set<BankProjectInfo> bankProjectInfos = policy.isIncludeBankProjectInfo()
-                ? bankProjectInfoRepository.findAllByProject_IdAndIsDeletedFalse(projectId)
+                ? bankProjectInfoRepository.findAllByProject_Id(projectId)
                 : Set.of();
 
         Set<Disbursement> disbursements = policy.isIncludeDisbursements()
-                ? disbursementRepository.findAllByProject_ProjectIdAndIsDeletedFalse(projectId)
+                ? disbursementRepository.findAllByProject_Id(projectId)
                 : Set.of();
 
         List<Document> selectedDocuments = policy.isIncludeDocuments()
@@ -184,7 +184,7 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
         }
 
         List<Document> fetched = documentRepository
-                .findAllByProject_ProjectIdAndDocumentIdInAndIsDeletedFalse(projectId, requestedDocumentIds);
+                .findAllByProject_IdAndIdIn(projectId, requestedDocumentIds);
 
         if (fetched.isEmpty()) {
             return List.of();

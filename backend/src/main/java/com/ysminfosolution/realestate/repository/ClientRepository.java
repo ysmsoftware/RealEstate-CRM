@@ -12,11 +12,11 @@ import com.ysminfosolution.realestate.model.Client;
 
 public interface ClientRepository extends JpaRepository<Client, UUID> {
 
-    Optional<Client> findByClientIdAndIsDeletedFalse(UUID clientId);
+    Optional<Client> findById(UUID clientId);
 
     @Query("""
                 SELECT DISTINCT new com.ysminfosolution.realestate.dto.ClientBasicInfoDTO(
-                    c.clientId,
+                    c.id,
                     c.clientName,
                     c.mobileNumber,
                     c.email,
@@ -27,10 +27,10 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
                 JOIN b.client c
                 JOIN b.flat f
                 JOIN f.project p
-                WHERE p.organization.orgId = :orgId
-                  AND b.isDeleted = false
-                  AND p.isDeleted = false
-                  AND c.isDeleted = false
+                WHERE p.organization.id = :orgId
+                  AND b.deleted = false
+                  AND p.deleted = false
+                  AND c.deleted = false
             """)
     Set<ClientBasicInfoDTO> findClientBasicInfoByOrganization(UUID orgId);
 
@@ -38,7 +38,7 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
     
     @Query("""
                 SELECT DISTINCT new com.ysminfosolution.realestate.dto.ClientBasicInfoDTO(
-                    c.clientId,
+                    c.id,
                     c.clientName,
                     c.mobileNumber,
                     c.email,
@@ -49,10 +49,10 @@ public interface ClientRepository extends JpaRepository<Client, UUID> {
                 JOIN b.client c
                 JOIN b.flat f
                 JOIN f.project p
-                WHERE p.projectId IN :projectIds
-                  AND c.isDeleted = false
-                  AND b.isDeleted = false
-                  AND p.isDeleted = false
+                WHERE p.id IN :projectIds
+                  AND c.deleted = false
+                  AND b.deleted = false
+                  AND p.deleted = false
             """)
     Set<ClientBasicInfoDTO> findClientBasicInfoByProjectIds(Set<UUID> projectIds);
 

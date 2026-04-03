@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
                 : enquiryRepository.findById(newBookingDTO.enquiryId())
                         .orElseThrow(() -> new NotFoundException("Enquiry not found"));
 
-        Flat flat = flatRepository.findByPropertyIdAndIsDeletedFalse(newBookingDTO.propertyId())
+        Flat flat = flatRepository.findById(newBookingDTO.propertyId())
                 .orElseThrow(() -> new NotFoundException("Flat not found"));
 
         Project project = projectResolver.resolve(flat.getProject().getId());

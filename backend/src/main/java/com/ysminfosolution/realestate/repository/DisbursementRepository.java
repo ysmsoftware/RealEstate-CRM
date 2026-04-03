@@ -10,10 +10,8 @@ import com.ysminfosolution.realestate.model.Disbursement;
 
 public interface DisbursementRepository extends JpaRepository<Disbursement, UUID> {
 
-    void deleteAllByProject_ProjectId(UUID projectId);
+    void deleteAllByProject_Id(UUID projectId);
 
-    @NonNull Set<Disbursement> findAllByProject_ProjectId(UUID projectId);
-
-    @NonNull Set<Disbursement> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+    @NonNull Set<Disbursement> findAllByProject_Id(UUID projectId);
     
 }

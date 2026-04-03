@@ -12,13 +12,13 @@ import com.ysminfosolution.realestate.model.User;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    Set<User> findAllByOrganization_OrgIdAndIsDeletedFalse(UUID orgId);
+    Set<User> findAllByOrganization_Id(UUID orgId);
 
     @EntityGraph(attributePaths = "organization")
-    Optional<User> findByUsernameAndIsDeletedFalseAndEnabledTrueAndOrganization_IsDeletedFalse(String username);
+    Optional<User> findByUsernameAndEnabledTrueAndOrganization_DeletedFalse(String username);
 
     @EntityGraph(attributePaths = "organization")
-    Optional<User> findByOrganization_OrgIdAndUserIdAndIsDeletedFalseAndEnabledTrue(UUID orgId, UUID userId);
+    Optional<User> findByOrganization_IdAndIdAndEnabledTrue(UUID orgId, UUID userId);
 
     boolean existsByUsername(String username);
 

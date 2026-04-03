@@ -72,7 +72,7 @@ public class WingServiceImpl implements WingService {
         log.info("\n");
         log.info("Method: hardDeleteWingsRecursiveByProjectId");
 
-        Set<Wing> wings = wingRepository.findAllByProject_ProjectId(projectId);
+        Set<Wing> wings = wingRepository.findAllByProject_Id(projectId);
         for (Wing wing : wings) {
             floorService.hardDeleteFloorsRecursiveByWingId(wing.getId());
         }
@@ -126,7 +126,7 @@ public class WingServiceImpl implements WingService {
         log.info("\n");
         log.info("Method: deleteWingsRecursiveByProjectId");
 
-        Set<Wing> wings = wingRepository.findAllByProject_ProjectId(projectId);
+        Set<Wing> wings = wingRepository.findAllByProject_Id(projectId);
         for (Wing wing : wings) {
             floorService.deleteFloorsRecursiveByWingId(wing.getId());
             wing.setDeleted(true);
@@ -168,7 +168,7 @@ public class WingServiceImpl implements WingService {
             return Set.of();
         }
 
-        return wingRepository.findAllByProject_ProjectIdAndIsDeletedFalse(projectId);
+        return wingRepository.findAllByProject_Id(projectId);
     }
 
     @Override

@@ -12,12 +12,12 @@ import com.ysminfosolution.realestate.model.Project;
 
 public interface EnquiryRepository extends JpaRepository<Enquiry, UUID> {
 
-    Set<Enquiry> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+    Set<Enquiry> findAllByProject_Id(UUID projectId);
 
     @Query("""
                 SELECT new com.ysminfosolution.realestate.dto.EnquiryResponseDTO(
-                    e.enquiryId,
-                    p.projectId,
+                    e.id,
+                    p.id,
                     p.projectName,
                     e.propertyType,
                     e.property,
@@ -39,16 +39,16 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, UUID> {
                 FROM Enquiry e
                 JOIN e.project p
                 WHERE
-                    e.isDeleted = false
-                    AND p.isDeleted = false
-                    AND p.organization.orgId = :orgId
+                    e.deleted = false
+                    AND p.deleted = false
+                    AND p.organization.id = :orgId
             """)
     Set<EnquiryResponseDTO> findAllEnquiriesForOrg(UUID orgId);
 
     @Query("""
                 SELECT new com.ysminfosolution.realestate.dto.EnquiryResponseDTO(
-                    e.enquiryId,
-                    p.projectId,
+                    e.id,
+                    p.id,
                     p.projectName,
                     e.propertyType,
                     e.property,
@@ -70,8 +70,8 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, UUID> {
                 FROM Enquiry e
                 JOIN e.project p
                 WHERE
-                    e.isDeleted = false
-                    AND p.isDeleted = false
+                    e.deleted = false
+                    AND p.deleted = false
                     AND p IN :projects
             """)
     Set<EnquiryResponseDTO> findAllEnquiriesForProjects(Set<Project> projects);

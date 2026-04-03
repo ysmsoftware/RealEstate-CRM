@@ -80,7 +80,7 @@ public class SecurityConfig {
     UserDetailsService userDetailsService(UserRepository users) {
         return username -> {
 
-            return users.findByUsernameAndIsDeletedFalseAndEnabledTrueAndOrganization_IsDeletedFalse(username)
+            return users.findByUsernameAndEnabledTrueAndOrganization_DeletedFalse(username)
                     .map(AppUserDetails::new)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         };

@@ -20,29 +20,29 @@ public interface FlatRepository extends JpaRepository<Flat, UUID> {
         Long getTotalProperties();
     }
 
-    void deleteAllByFloor_FloorId(UUID floorId);
+    void deleteAllByFloor_Id(UUID floorId);
 
-    Set<Flat> findAllByFloor_FloorId(UUID floorId);
+    Set<Flat> findAllByFloor_Id(UUID floorId);
 
     // ~ Solves the lazy loading (Could Not Initialize Entity, No Active Session) problem by join fetching the specified columns
     @EntityGraph(attributePaths = {"wing", "floor", "project"})
-    Set<Flat> findAllByProject_ProjectId(UUID projectId);
+    Set<Flat> findAllByProject_Id(UUID projectId);
 
-    Set<Flat> findAllByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
+    Set<Flat> findAllByProject_IdIn(List<UUID> projectIds);
     
-    long countByProject_ProjectIdInAndIsDeletedFalse(List<UUID> projectIds);
+    long countByProject_IdIn(List<UUID> projectIds);
 
     @Query("""
-            SELECT f.project.projectId AS projectId, COUNT(f) AS totalProperties
+            SELECT f.project.id AS projectId, COUNT(f) AS totalProperties
             FROM Flat f
-            WHERE f.project.projectId IN :projectIds
-              AND f.isDeleted = false
-            GROUP BY f.project.projectId
+            WHERE f.project.id IN :projectIds
+              AND f.deleted = false
+            GROUP BY f.project.id
             """)
     List<ProjectFlatCount> countActiveFlatsByProjectIds(@Param("projectIds") List<UUID> projectIds);
 
-    Optional<Flat> findByPropertyIdAndIsDeletedFalse(UUID propertyId);
+    Optional<Flat> findById(UUID propertyId);
 
-    long countByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+    long countByProject_Id(UUID projectId);
     
 }

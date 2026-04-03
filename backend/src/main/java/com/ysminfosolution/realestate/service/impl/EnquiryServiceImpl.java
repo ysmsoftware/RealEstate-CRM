@@ -109,7 +109,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
         if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
             Employee employee = employeeRepository
-                    .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+                    .findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new AccessDeniedException("Employee not found"));
 
             Set<Project> allocatedProjects = employee.getProjects();
@@ -134,7 +134,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         Project project = projectResolver.resolve(projectId);
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        Set<EnquiryResponseDTO> enquiries = enquiryRepository.findAllByProject_ProjectIdAndIsDeletedFalse(projectId)
+        Set<EnquiryResponseDTO> enquiries = enquiryRepository.findAllByProject_Id(projectId)
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toSet());
@@ -188,7 +188,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         Set<EnquiryBasicInfoDTO> basicInfoDTOs = new HashSet<>();
 
         for (Project project : projects) {
-            Set<Enquiry> enquiries = enquiryRepository.findAllByProject_ProjectIdAndIsDeletedFalse(project.getId());
+            Set<Enquiry> enquiries = enquiryRepository.findAllByProject_Id(project.getId());
 
             for (Enquiry enquiry : enquiries) {
                 basicInfoDTOs.add(new EnquiryBasicInfoDTO(
@@ -336,11 +336,11 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     private Set<Project> resolveAccessibleProjects(AppUserDetails appUserDetails) {
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
-            return projectRepository.findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId());
+            return projectRepository.findAllByOrganization_Id(appUserDetails.getOrgId());
         }
 
         if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            return employeeRepository.findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+            return employeeRepository.findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new AccessDeniedException("Employee not found"))
                     .getProjects();
         }

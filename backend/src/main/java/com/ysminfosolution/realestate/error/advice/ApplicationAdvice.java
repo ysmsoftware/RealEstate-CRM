@@ -2,11 +2,15 @@ package com.ysminfosolution.realestate.error.advice;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.ysminfosolution.realestate.error.exception.ApiException;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.time.Instant;
@@ -14,6 +18,7 @@ import java.time.Instant;
 
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
+@Slf4j
 public class ApplicationAdvice {
 
     @ExceptionHandler(ApiException.class)
@@ -29,23 +34,24 @@ public class ApplicationAdvice {
         return pd;
     }
 
-    // TODO: Uncomment in production
-    // @ExceptionHandler(Exception.class)
-    // public ProblemDetail handleUnexpected(Exception ex) {
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleUnexpected(Exception ex) {
 
-    //     if (ex instanceof AuthorizationDeniedException) {
-    //         throw (AuthorizationDeniedException) ex;
-    //     }
+        log.error("Unexpected error occurred", ex);
 
-    //     ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-    //             HttpStatus.INTERNAL_SERVER_ERROR,
-    //             "An unexpected error occurred");
+        if (ex instanceof AuthorizationDeniedException) {
+            throw (AuthorizationDeniedException) ex;
+        }
 
-    //     pd.setTitle("Internal Server Error");
-    //     pd.setType(URI.create("https://api.realestate/errors/server-error"));
-    //     pd.setProperty("timestamp", Instant.now());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "An unexpected error occurred");
 
-    //     return pd;
-    // }
+        pd.setTitle("Internal Server Error");
+        pd.setType(URI.create("https://api.realestate/errors/server-error"));
+        pd.setProperty("timestamp", Instant.now());
+
+        return pd;
+    }
 
 }

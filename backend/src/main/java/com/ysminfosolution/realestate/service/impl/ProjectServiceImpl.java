@@ -97,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService {
         Organization organization = getOrganizationById(appUserDetails.getOrgId());
 
         // ^ Enforcing No more than one project name exists for a single Organization
-        if (projectRepository.existsByProjectNameAndOrganization_OrgId(
+        if (projectRepository.existsByProjectNameAndOrganization_Id(
                 newProjectDetails.projectName(),
                 organization.getId())) {
             throw new ConflictException("Project name already exists");
@@ -271,9 +271,9 @@ public class ProjectServiceImpl implements ProjectService {
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
         Set<Enquiry> projectEnquiries = enquiryRepository
-                .findAllByProject_ProjectIdAndIsDeletedFalse(project.getId());
+                .findAllByProject_Id(project.getId());
 
-        long projectTotalProperties = flatRepository.countByProject_ProjectIdAndIsDeletedFalse(project.getId());
+        long projectTotalProperties = flatRepository.countByProject_Id(project.getId());
 
         long projectBooked = projectEnquiries.stream()
                 .filter(e -> e.getStatus() == Enquiry.Status.BOOKED)
@@ -361,7 +361,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
             List<ProjectBasicInfoDTO> basicInfoDTOs = projectRepository
-                    .findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId()).stream()
+                    .findAllByOrganization_Id(appUserDetails.getOrgId()).stream()
                     .filter(p -> !p.isDeleted())
                     .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
                     .map(project -> new ProjectBasicInfoDTO(
@@ -379,7 +379,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
             Employee employee = employeeRepository
-                    .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+                    .findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                     .orElse(null);
             if (employee == null) {
                 return ResponseEntity.ok(List.of());

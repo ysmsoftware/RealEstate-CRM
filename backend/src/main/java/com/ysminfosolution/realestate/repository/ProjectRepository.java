@@ -13,17 +13,17 @@ import com.ysminfosolution.realestate.model.Project;
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
 
     @EntityGraph(attributePaths = "organization")
-    Optional<Project> findWithOrganizationByProjectId(UUID projectId);
+    Optional<Project> findWithOrganizationById(UUID projectId);
 
 
-    boolean existsByProjectNameAndOrganization_OrgId(String projectName, UUID organizationId);
+    boolean existsByProjectNameAndOrganization_Id(String projectName, UUID organizationId);
 
-    @Query("SELECT p FROM Project p WHERE p.organization.orgId = :orgId AND p.isDeleted = false")
-    Set<Project> findAllByOrganization_OrgIdAndIsDeletedFalse(UUID orgId);
+    @Query("SELECT p FROM Project p WHERE p.organization.id = :orgId AND p.deleted = false")
+    Set<Project> findAllByOrganization_Id(UUID orgId);
 
     boolean existsByMahareraNo(String mahareraNo);
 
 
-    Set<Project> findAllByProjectIdInAndIsDeletedFalse(Set<UUID> projectIds);
+    Set<Project> findAllByIdIn(Set<UUID> projectIds);
     
 }

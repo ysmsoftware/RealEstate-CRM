@@ -35,7 +35,7 @@ public class DailyTaskScheduler {
         taskRepository.deleteAllInBatch(); // ✅ executes immediately
         taskRepository.flush(); // Ensure deletion is flushed before proceeding
 
-        Set<FollowUp> dueFollowUps = followUpRepository.findByFollowUpNextDateAndIsDeletedFalse(today);
+        Set<FollowUp> dueFollowUps = followUpRepository.findByFollowUpNextDate(today);
 
         Set<Task> tasks = new HashSet<>(dueFollowUps.stream()
                 .map(f -> {

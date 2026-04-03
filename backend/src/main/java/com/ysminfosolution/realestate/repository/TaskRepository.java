@@ -21,7 +21,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
                 JOIN FETCH t.followUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                WHERE p IN :projects AND f.isDeleted = false
+                WHERE p IN :projects AND f.deleted = false
             """)
     Set<Task> findAllByProjectsWithFetch(@Param("projects") Set<Project> projects);
 

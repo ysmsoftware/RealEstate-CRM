@@ -62,7 +62,7 @@ public class FlatServiceImp implements FlatService {
         log.info("\n");
         log.info("Method: hardDeleteFlatsRecursiveByFloorId");
 
-        flatRepository.deleteAllByFloor_FloorId(floorId);
+        flatRepository.deleteAllByFloor_Id(floorId);
         log.info("Flats deleted successfully for floorId : " + floorId);
     }
 
@@ -85,7 +85,7 @@ public class FlatServiceImp implements FlatService {
         log.info("\n");
         log.info("Method: deleteFlatsRecursiveByFloorId");
 
-        Set<Flat> flats = flatRepository.findAllByFloor_FloorId(floorId);
+        Set<Flat> flats = flatRepository.findAllByFloor_Id(floorId);
         for (Flat flat : flats) {
             flat.setDeleted(true);
         }
@@ -103,7 +103,7 @@ public class FlatServiceImp implements FlatService {
             return null;
         }
 
-        return flatRepository.findAllByFloor_FloorId(floorId)
+        return flatRepository.findAllByFloor_Id(floorId)
             .stream()
             .filter(f -> !f.isDeleted())
             .collect(Collectors.toSet());

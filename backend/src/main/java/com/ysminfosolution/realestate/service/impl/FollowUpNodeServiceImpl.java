@@ -59,7 +59,7 @@ public class FollowUpNodeServiceImpl implements FollowUpNodeService {
         log.info("\n");
         log.info("Method: getAllByFollowUpId");
 
-        return followUpNodeRepository.findAllByFollowUp_FollowUpId(followUpId);
+        return followUpNodeRepository.findAllByFollowUp_Id(followUpId);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FollowUpNodeServiceImpl implements FollowUpNodeService {
         log.info("\n");
         log.info("Method: getAllByFollowUpId");
 
-        Set<FollowUpNode> followUpNodes = followUpNodeRepository.findAllByFollowUp_FollowUpId(followUpId);
+        Set<FollowUpNode> followUpNodes = followUpNodeRepository.findAllByFollowUp_Id(followUpId);
         for (FollowUpNode followUpNode : followUpNodes) {
             
             followUpNode.setDeleted(true);

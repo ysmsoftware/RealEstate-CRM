@@ -10,15 +10,15 @@ import com.ysminfosolution.realestate.model.ProjectDetailPdfPolicy;
 
 public interface ProjectDetailPdfPolicyRepository extends JpaRepository<ProjectDetailPdfPolicy, UUID> {
 
-    List<ProjectDetailPdfPolicy> findByProject_ProjectId(UUID projectId);
+    List<ProjectDetailPdfPolicy> findByProject_Id(UUID projectId);
 
-    Optional<ProjectDetailPdfPolicy> findByProjectDetailPdfPolicyIdAndProject_ProjectId(
+    Optional<ProjectDetailPdfPolicy> findByIdAndProject_Id(
             UUID projectDetailPdfPolicyId,
             UUID projectId);
 
-    boolean existsByProject_ProjectIdAndPolicyNameIgnoreCase(UUID projectId, String policyName);
+    boolean existsByProject_IdAndPolicyNameIgnoreCase(UUID projectId, String policyName);
 
-    boolean existsByProject_ProjectIdAndPolicyNameIgnoreCaseAndProjectDetailPdfPolicyIdNot(
+    boolean existsByProject_IdAndPolicyNameIgnoreCaseAndIdNot(
             UUID projectId,
             String policyName,
             UUID projectDetailPdfPolicyId);

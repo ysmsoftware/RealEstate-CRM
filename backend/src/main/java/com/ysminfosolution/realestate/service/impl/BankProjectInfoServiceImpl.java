@@ -112,7 +112,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         log.info("\n");
         log.info("Method: updateBankProjectInfo");
         
-        BankProjectInfo bankProjectInfoDB = bankProjectInfoRepository.findByBankProjectIdAndIsDeletedFalse(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
+        BankProjectInfo bankProjectInfoDB = bankProjectInfoRepository.findById(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
         
         bankProjectInfoDB.setBankName(bankProjectInfo.getBankName());
         bankProjectInfoDB.setBranchName(bankProjectInfo.getBranchName());
@@ -138,7 +138,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         log.info("\n");
         log.info("Method: deleteBankProjectInfo");
 
-        BankProjectInfo bankProjectInfo = bankProjectInfoRepository.findByBankProjectIdAndIsDeletedFalse(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
+        BankProjectInfo bankProjectInfo = bankProjectInfoRepository.findById(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
 
         bankProjectInfo.setDeleted(true);
         bankProjectInfoRepository.save(bankProjectInfo);
@@ -165,7 +165,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         log.info("\n");
         log.info("Method: getById");
 
-        BankProjectInfo bankProjectInfo = bankProjectInfoRepository.findByBankProjectIdAndIsDeletedFalse(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
+        BankProjectInfo bankProjectInfo = bankProjectInfoRepository.findById(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
 
         Project project = projectResolver.resolve(bankProjectInfo.getProject().getId());
 

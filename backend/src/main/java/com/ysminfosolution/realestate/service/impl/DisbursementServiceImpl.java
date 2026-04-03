@@ -72,7 +72,7 @@ public class DisbursementServiceImpl implements DisbursementService {
         log.info("\n");
         log.info("Method: hardDeleteAllByProjectId");
 
-        disbursementRepository.deleteAllByProject_ProjectId(projectId);
+        disbursementRepository.deleteAllByProject_Id(projectId);
         log.info("Disbursements deleted successfully for projectId : " + projectId);
     }
 
@@ -93,7 +93,7 @@ public class DisbursementServiceImpl implements DisbursementService {
         Project project = projectResolver.resolve(projectId);
         createDisbursementsForProject(project, disbursements);
 
-        Set<Disbursement> savedDisbursements = disbursementRepository.findAllByProject_ProjectId(projectId).stream()
+        Set<Disbursement> savedDisbursements = disbursementRepository.findAllByProject_Id(projectId).stream()
                 .filter(dis -> !dis.isDeleted()).collect(Collectors.toSet());
         return ResponseEntity.ok(savedDisbursements);
     }
@@ -103,7 +103,7 @@ public class DisbursementServiceImpl implements DisbursementService {
         log.info("\n");
         log.info("Method: deleteAllByProjectId");
 
-        Set<Disbursement> disbursements = disbursementRepository.findAllByProject_ProjectId(projectId);
+        Set<Disbursement> disbursements = disbursementRepository.findAllByProject_Id(projectId);
         for (Disbursement disbursement : disbursements) {
             disbursement.setDeleted(true);
         }
@@ -121,7 +121,7 @@ public class DisbursementServiceImpl implements DisbursementService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        return ResponseEntity.ok(disbursementRepository.findAllByProject_ProjectId(projectId)
+        return ResponseEntity.ok(disbursementRepository.findAllByProject_Id(projectId)
                 .stream()
                 .filter(dis -> !dis.isDeleted())
                 .collect(Collectors.toSet()));

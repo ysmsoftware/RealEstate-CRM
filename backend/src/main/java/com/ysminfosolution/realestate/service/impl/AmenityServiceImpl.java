@@ -150,7 +150,7 @@ public class AmenityServiceImpl implements AmenityService {
         log.info("\n");
         log.info("Method: getAmenityById");
 
-        Amenity amenity = amenityRepository.findByAmenityIdAndIsDeletedFalse(amenityId).orElseThrow(() -> new NotFoundException("Amenity not found"));
+        Amenity amenity = amenityRepository.findById(amenityId).orElseThrow(() -> new NotFoundException("Amenity not found"));
 
         Project project = projectResolver.resolve(amenity.getProject().getId());
 

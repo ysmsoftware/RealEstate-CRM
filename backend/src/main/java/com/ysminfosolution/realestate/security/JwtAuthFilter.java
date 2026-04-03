@@ -56,7 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UUID userId = UUID.fromString(claims.getStringClaim("userId"));
 
             User user = users
-                    .findByOrganization_OrgIdAndUserIdAndIsDeletedFalseAndEnabledTrue(orgId, userId)
+                    .findByOrganization_IdAndIdAndEnabledTrue(orgId, userId)
                     .orElseThrow(() -> new BadCredentialsException("User not found"));
 
             AppUserDetails details = new AppUserDetails(user);

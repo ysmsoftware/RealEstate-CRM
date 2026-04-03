@@ -17,7 +17,7 @@ public class OrganizationUserDetailsService {
   private final UserRepository users;
 
   public UserDetails load(UUID orgId, UUID userId) {
-    User user = users.findByOrganization_OrgIdAndUserIdAndIsDeletedFalseAndEnabledTrue(orgId, userId)
+    User user = users.findByOrganization_IdAndIdAndEnabledTrue(orgId, userId)
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     return new AppUserDetails(user);
   }

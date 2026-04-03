@@ -15,29 +15,29 @@ public interface FollowUpNodeRepository extends JpaRepository<FollowUpNode, UUID
     @Query("""
             SELECT fn FROM FollowUpNode fn
             JOIN FETCH fn.user
-            WHERE fn.followUp.followUpId = :followUpId
-            AND fn.isDeleted = false
+            WHERE fn.followUp.id = :followUpId
+            AND fn.deleted = false
             ORDER BY fn.followUpDateTime
             """)
-    Set<FollowUpNode> findAllByFollowUp_FollowUpId(@Param("followUpId") UUID followUpId);
+    Set<FollowUpNode> findAllByFollowUp_Id(@Param("followUpId") UUID followUpId);
 
     @Query("""
             SELECT fn FROM FollowUpNode fn
             JOIN FETCH fn.user
-            WHERE fn.followUp.followUpId IN :followUpIds
-            AND fn.isDeleted = false
-            ORDER BY fn.followUp.followUpId, fn.followUpDateTime
+            WHERE fn.followUp.id IN :followUpIds
+            AND fn.deleted = false
+            ORDER BY fn.followUp.id, fn.followUpDateTime
             """)
     Set<FollowUpNode> findAllByFollowUpIdsWithUser(@Param("followUpIds") Set<UUID> followUpIds);
 
-    Optional<FollowUpNode> findFirstByFollowUp_FollowUpIdAndIsDeletedFalseOrderByFollowUpDateTimeDesc(UUID followUpId);
+    Optional<FollowUpNode> findFirstByFollowUp_IdOrderByFollowUpDateTimeDesc(UUID followUpId);
 
     @Query("""
             SELECT fn FROM FollowUpNode fn
             JOIN FETCH fn.user
-            WHERE fn.followUp.followUpId = :followUpId
-            AND fn.followUpNodeId = :nodeId
-            AND fn.isDeleted = false
+            WHERE fn.followUp.id = :followUpId
+            AND fn.id = :nodeId
+            AND fn.deleted = false
             """)
     Optional<FollowUpNode> findByFollowUpIdAndNodeId(@Param("followUpId") UUID followUpId,
             @Param("nodeId") UUID nodeId);

@@ -15,22 +15,22 @@ import com.ysminfosolution.realestate.model.Project;
 
 public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
 
-    Optional<FollowUp> findByEnquiry_EnquiryId(UUID enquiryId);
+    Optional<FollowUp> findByEnquiry_Id(UUID enquiryId);
 
     @Query("""
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                WHERE p IN :projects AND f.isDeleted = false
+                WHERE p IN :projects AND f.deleted = false
             """)
     Set<FollowUp> findAllByProjectsWithFetch(@Param("projects") Set<Project> projects);
 
-    Set<FollowUp> findByFollowUpNextDateAndIsDeletedFalse(LocalDate today);
+    Set<FollowUp> findByFollowUpNextDate(LocalDate today);
 
     @Query("""
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
-                WHERE e IN :enquiries AND f.isDeleted = false
+                WHERE e IN :enquiries AND f.deleted = false
             """)
     Set<FollowUp> findAllByEnquiriesWithFetch(@Param("enquiries") Set<Enquiry> enquiries);
 
@@ -38,17 +38,17 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                WHERE p.projectId = :projectId 
-                AND f.isDeleted = false
-                AND e.isDeleted = false
+                WHERE p.id = :projectId 
+                AND f.deleted = false
+                AND e.deleted = false
             """)
     Set<FollowUp> findAllByProjectIdWithFetch(@Param("projectId") UUID projectId);
 
     @Query("""
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
-                WHERE e.enquiryId = :enquiryId 
-                AND f.isDeleted = false
+                WHERE e.id = :enquiryId 
+                AND f.deleted = false
             """)
     Optional<FollowUp> findByEnquiryIdWithFetch(@Param("enquiryId") UUID enquiryId);
 
@@ -56,11 +56,11 @@ public interface FollowUpRepository extends JpaRepository<FollowUp, UUID> {
                 SELECT DISTINCT f FROM FollowUp f
                 JOIN FETCH f.enquiry e
                 JOIN FETCH e.project p
-                WHERE f.followUpId = :followUpId 
-                AND f.isDeleted = false
+                WHERE f.id = :followUpId 
+                AND f.deleted = false
             """)
     Optional<FollowUp> findByIdWithFetch(@Param("followUpId") UUID followUpId);
 
-    Optional<FollowUp> findByFollowUpIdAndIsDeletedFalse(UUID followUpId);
+    Optional<FollowUp> findById(UUID followUpId);
 
 }

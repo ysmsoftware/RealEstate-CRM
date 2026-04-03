@@ -18,8 +18,8 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
                 JOIN FETCH b.flat f
                 JOIN FETCH f.project p
                 LEFT JOIN FETCH b.enquiry e
-                WHERE c.clientId = :clientId
-                  AND b.isDeleted = false
+                WHERE c.id = :clientId
+                  AND b.deleted = false
             """)
     Set<Booking> findAllByClientIdWithFetch(@Param("clientId") UUID clientId);
 }

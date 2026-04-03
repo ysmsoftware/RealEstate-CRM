@@ -145,7 +145,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("\n");
         log.info("Method: addNodeToFollowUp");
 
-        FollowUp followUp = followUpRepository.findByFollowUpIdAndIsDeletedFalse(followUpId)
+        FollowUp followUp = followUpRepository.findById(followUpId)
                 .orElseThrow(() -> new NotFoundException("FollowUp not found"));
 
         Enquiry enquiry = followUp.getEnquiry();
@@ -179,7 +179,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         log.info("\n");
         log.info("Method: updateNodeToFollowUp");
 
-        FollowUp followUp = followUpRepository.findByFollowUpIdAndIsDeletedFalse(followUpId)
+        FollowUp followUp = followUpRepository.findById(followUpId)
                 .orElseThrow(() -> new NotFoundException("FollowUp not found"));
 
         Enquiry enquiry = followUp.getEnquiry();
@@ -193,7 +193,7 @@ public class FollowUpServiceImpl implements FollowUpService {
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
         FollowUpNode latestNode = followUpNodeRepository
-                .findFirstByFollowUp_FollowUpIdAndIsDeletedFalseOrderByFollowUpDateTimeDesc(followUpId)
+                .findFirstByFollowUp_IdOrderByFollowUpDateTimeDesc(followUpId)
                 .orElseThrow(() -> new NotFoundException("Follow-up node not found"));
 
         FollowUpNode nodeToUpdate = followUpNodeRepository.findByFollowUpIdAndNodeId(followUpId, nodeId)
@@ -309,11 +309,11 @@ public class FollowUpServiceImpl implements FollowUpService {
 
     private Set<Project> resolveAccessibleProjects(AppUserDetails appUserDetails) {
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
-            return projectRepository.findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId());
+            return projectRepository.findAllByOrganization_Id(appUserDetails.getOrgId());
         }
 
         Employee employee = employeeRepository
-                .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+                .findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                 .orElseThrow(() -> new NotFoundException("Employee not found"));
 
         return employee.getProjects().stream()

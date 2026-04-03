@@ -45,7 +45,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
         Project project = resolveAuthorizedProject(projectId, user);
 
         String policyName = normalizePolicyName(request.policyName());
-        if (projectDetailPdfPolicyRepository.existsByProject_ProjectIdAndPolicyNameIgnoreCase(projectId, policyName)) {
+        if (projectDetailPdfPolicyRepository.existsByProject_IdAndPolicyNameIgnoreCase(projectId, policyName)) {
             throw new ConflictException("Policy name already exists for this project");
         }
 
@@ -61,7 +61,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
     public List<ProjectDetailPdfPolicyResponse> getPolicies(UUID projectId, AppUserDetails user) {
         resolveAuthorizedProject(projectId, user);
 
-        return projectDetailPdfPolicyRepository.findByProject_ProjectId(projectId)
+        return projectDetailPdfPolicyRepository.findByProject_Id(projectId)
                 .stream()
                 .sorted(Comparator.comparing(
                         ProjectDetailPdfPolicy::getCreatedAt,
@@ -89,7 +89,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
 
         String policyName = normalizePolicyName(request.policyName());
         if (projectDetailPdfPolicyRepository
-                .existsByProject_ProjectIdAndPolicyNameIgnoreCaseAndProjectDetailPdfPolicyIdNot(projectId, policyName,
+                .existsByProject_IdAndPolicyNameIgnoreCaseAndIdNot(projectId, policyName,
                         policyId)) {
             throw new ConflictException("Policy name already exists for this project");
         }
@@ -116,7 +116,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
 
     private ProjectDetailPdfPolicy getPolicyEntity(UUID projectId, UUID policyId) {
         return projectDetailPdfPolicyRepository
-                .findByProjectDetailPdfPolicyIdAndProject_ProjectId(policyId, projectId)
+                .findByIdAndProject_Id(policyId, projectId)
                 .orElseThrow(() -> new NotFoundException("Project detail PDF policy not found for id: " + policyId));
     }
 
@@ -160,7 +160,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
         }
 
         List<Document> validDocuments = documentRepository
-                .findAllByProject_ProjectIdAndDocumentIdInAndIsDeletedFalse(projectId, normalizedDocumentIds);
+                .findAllByProject_IdAndIdIn(projectId, normalizedDocumentIds);
 
         Map<UUID, Document> validDocumentById = validDocuments.stream()
                 .collect(Collectors.toMap(Document::getId, document -> document));

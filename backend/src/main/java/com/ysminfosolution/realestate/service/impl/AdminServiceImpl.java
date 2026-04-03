@@ -45,7 +45,7 @@ public class AdminServiceImpl implements AdminService {
         boolean partialSuccess = false;
 
         for (String employeeId : list) {
-            Employee employee = employeeRepository.findByUser_UserId(UUID.fromString(employeeId))
+            Employee employee = employeeRepository.findByUser_Id(UUID.fromString(employeeId))
                     .orElse(null);
 
             if (employee == null) {
@@ -78,7 +78,7 @@ public class AdminServiceImpl implements AdminService {
 
         Set<EmployeeResponseDTO> employeeResponseDTOs = new HashSet<>();
 
-        Set<Employee> employees = employeeRepository.findByProjects_ProjectIdAndIsDeletedFalse(projectId);
+        Set<Employee> employees = employeeRepository.findByProjects_Id(projectId);
 
         for (Employee employee : employees) {
             EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO(

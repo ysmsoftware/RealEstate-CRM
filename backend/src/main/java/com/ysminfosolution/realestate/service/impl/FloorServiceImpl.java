@@ -74,7 +74,7 @@ public class FloorServiceImpl implements FloorService {
         log.info("\n");
         log.info("Method: hardDeleteFloorsRecursiveByWingId");
 
-        Set<Floor> floors = floorRepository.findAllByWing_WingIdAndIsDeletedFalse(wingId);
+        Set<Floor> floors = floorRepository.findAllByWing_Id(wingId);
         for (Floor floor : floors) {
             flatService.hardDeleteFlatsRecursiveByFloorId(floor.getId());
         }
@@ -89,7 +89,7 @@ public class FloorServiceImpl implements FloorService {
         log.info("\n");
         log.info("Method: deleteFloorsRecursiveByWingId");
 
-        Set<Floor> floors = floorRepository.findAllByWing_WingIdAndIsDeletedFalse(wingId);
+        Set<Floor> floors = floorRepository.findAllByWing_Id(wingId);
         for (Floor floor : floors) {
             flatService.deleteFlatsRecursiveByFloorId(floor.getId());
             floor.setDeleted(true);
@@ -104,7 +104,7 @@ public class FloorServiceImpl implements FloorService {
         log.info("\n");
         log.info("Method: getAllFloorsForWing");
 
-        return floorRepository.findAllByWing_WingIdAndIsDeletedFalse(wingId)
+        return floorRepository.findAllByWing_Id(wingId)
             .stream()
             .filter(f -> !f.isDeleted())
             .collect(Collectors.toSet());

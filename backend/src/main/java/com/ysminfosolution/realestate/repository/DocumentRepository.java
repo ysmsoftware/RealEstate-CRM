@@ -11,10 +11,10 @@ import com.ysminfosolution.realestate.model.Document;
 
 public interface DocumentRepository extends JpaRepository<Document, UUID> {
 
-    Set<Document> findAllByProject_ProjectId(UUID projectId);
+    Set<Document> findAllByProject_Id(UUID projectId);
 
-    List<Document> findAllByProject_ProjectIdAndDocumentIdInAndIsDeletedFalse(UUID projectId, Collection<UUID> documentIds);
+    List<Document> findAllByProject_IdAndIdIn(UUID projectId, Collection<UUID> documentIds);
 
-    void deleteAllByProject_ProjectId(UUID projectId);
+    void deleteAllByProject_Id(UUID projectId);
     
 }

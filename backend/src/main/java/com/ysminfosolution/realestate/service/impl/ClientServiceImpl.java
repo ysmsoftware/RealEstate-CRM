@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
             clientBasicInfoDTOs = clientRepository.findClientBasicInfoByOrganization(appUserDetails.getOrgId());
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
             var employee = employeeRepository
-                    .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+                    .findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                     .orElse(null);
 
             if (employee != null && !employee.getProjects().isEmpty()) {
@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
         log.info("\n");
         log.info("Method: getClientBasicInfo");
 
-        Client client = clientRepository.findByClientIdAndIsDeletedFalse(clientId)
+        Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
         ensureAuthorizedClientAccess(clientId, appUserDetails);
@@ -164,7 +164,7 @@ public class ClientServiceImpl implements ClientService {
                     .collect(Collectors.toSet());
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
             Set<UUID> employeeProjectIds = employeeRepository
-                    .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+                    .findByUser_Id(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new NotFoundException("Employee not found"))
                     .getProjects()
                     .stream()
