@@ -10,8 +10,8 @@ export default function EnquiriesTab({ enquiries }) {
           <Table
             columns={[
               {
-                key: "clientName",
-                label: "Client Name",
+                key: "leadName",
+                label: "Lead Name",
                 render: (val) => <p className="font-medium text-gray-900">{val}</p>,
               },
               {

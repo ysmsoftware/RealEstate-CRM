@@ -1,5 +1,5 @@
 "use client"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom"
 import { AuthProvider } from "./contexts/AuthContext"
 import { DataProvider } from "./contexts/DataContext"
 import { useAuth } from "./contexts/AuthContext"
@@ -11,10 +11,9 @@ import ProjectsPage from "./pages/ProjectsPage"
 import ProjectDetailPage from "./pages/ProjectDetails/ProjectDetailPage"
 import RegistrationPage from "./pages/Registration/RegistrationPage"
 import EnquiryBookPage from "./pages/EnquiryBookPage"
+import EnquiryDetailPage from "./pages/EnquiryDetailPage"
 import FollowUpPage from "./pages/FollowUpPage"
 import BookingsPage from "./pages/BookingsPage"
-import ClientsPage from "./pages/ClientsPage"
-import ClientProfilePage from "./pages/ClientProfilePage"
 import PaymentsPage from "./pages/PaymentsPage"
 import NotificationsPage from "./pages/NotificationsPage"
 import UsersPage from "./pages/UsersPage"
@@ -99,6 +98,14 @@ function AppRoutes() {
                 }
             />
             <Route
+                path="/enquiry-book/:enquiryId"
+                element={
+                    <ProtectedRoute>
+                        <EnquiryDetailPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
                 path="/follow-up"
                 element={
                     <ProtectedRoute>
@@ -114,22 +121,8 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       /> */}
-            <Route
-                path="/clients"
-                element={
-                    <ProtectedRoute>
-                        <ClientsPage />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/clients/:clientId"
-                element={
-                    <ProtectedRoute>
-                        <ClientProfilePage />
-                    </ProtectedRoute>
-                }
-            />
+            <Route path="/leads" element={<Navigate to="/enquiry-book" replace />} />
+            <Route path="/leads/:enquiryId" element={<LegacyLeadDetailRedirect />} />
             {/* <Route
         path="/payments"
         element={
@@ -165,6 +158,12 @@ function AppRoutes() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
     )
+}
+
+function LegacyLeadDetailRedirect() {
+    const { enquiryId } = useParams()
+
+    return <Navigate to={`/enquiry-book/${enquiryId}`} replace />
 }
 
 export default function App() {

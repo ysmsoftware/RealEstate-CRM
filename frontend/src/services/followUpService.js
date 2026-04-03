@@ -97,5 +97,24 @@ export const followUpService = {
     }
   },
 
+  async updateFollowUpNode(followUpId, nodeId, nodeData) {
+    try {
+      const response = await apiClient.request(`/followUps/${followUpId}/node/${nodeId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          followUpNextDate: nodeData.followUpNextDate,
+          body: nodeData.body,
+          tag: nodeData.tag || null,
+        }),
+      })
+
+      console.log("Follow-up node updated:", followUpId, nodeId)
+      return response
+    } catch (error) {
+      console.error("Failed to update follow-up node:", error)
+      throw error
+    }
+  },
+
   
 }

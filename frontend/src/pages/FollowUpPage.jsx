@@ -13,6 +13,7 @@ import { Timeline } from "../components/ui/Timeline"
 import { FormSelect } from "../components/ui/FormSelect"
 import { CheckCircle2, Circle, Calendar, Phone, User, FileText, Plus } from "lucide-react"
 import { formatDateTime } from "../utils/helpers"
+import { isWithinHours } from "../utils/helpers"
 import { SkeletonLoader } from "../components/ui/SkeletonLoader"
 import { FOLLOWUP_EVENT_TAGS } from "../utils/constants"
 
@@ -23,9 +24,20 @@ const INITIAL_FORM_STATE = {
     description: "",
 }
 
+const getDefaultFollowUpDate = () => {
+    const d = new Date()
+    d.setDate(d.getDate() + 5)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 const INITIAL_NODE_FORM_STATE = {
     body: "",
-    followUpDateTime: new Date().toISOString().slice(0, 16),
+    followUpDateTime: getDefaultFollowUpDate(),
     eventTag: FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
 }
 
@@ -106,7 +118,7 @@ const FollowUpTable = ({ followUps, viewMode, onComplete, onViewTimeline }) => {
                 className={`border-b border-gray-200 hover:bg-gray-50 ${isComplete ? "bg-gray-50 opacity-60" : ""
                     } ${isOverdue ? "bg-red-50" : ""}`}
             >
-                <td className="px-4 md:px-6 py-4">
+                {/* <td className="px-4 md:px-6 py-4">
                     {viewMode === VIEW_MODES.TODAY && !isComplete ? (
                         <button
                             onClick={() => onComplete(followUp.followUpId)}
@@ -118,10 +130,10 @@ const FollowUpTable = ({ followUps, viewMode, onComplete, onViewTimeline }) => {
                     ) : (
                         <CheckCircle2 size={20} className={isComplete ? "text-green-600" : "text-gray-300"} />
                     )}
-                </td>
-                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.clientName}</td>
+                </td> */}
+                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.leadName}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{formatDate(followUp.followUpNextDate)}</td>
-                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.mobileNumber}</td>
+                <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.leadMobileNumber}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">{followUp.agentName || "Unassigned"}</td>
                 <td className="px-4 md:px-6 py-4 text-xs md:text-sm text-gray-900">
                     <p className="truncate max-w-xs">{followUp.description || "-"}</p>
@@ -153,6 +165,7 @@ export default function FollowUpPage() {
     const [selectedFollowUp, setSelectedFollowUp] = useState(null)
     const [viewMode, setViewMode] = useState(VIEW_MODES.TODAY)
     const [nodeForm, setNodeForm] = useState(INITIAL_NODE_FORM_STATE)
+    const [editingNode, setEditingNode] = useState(null)
     const [completeForm, setCompleteForm] = useState({
         remark: "",
         nextFollowUpDate: "",
@@ -212,7 +225,13 @@ export default function FollowUpPage() {
     const timelineEvents = useMemo(() => {
         if (!selectedFollowUp || !selectedFollowUp.followUpNodes) return []
 
-        return selectedFollowUp.followUpNodes.map((node) => ({
+        const orderedNodes = [...selectedFollowUp.followUpNodes].sort(
+            (a, b) => new Date(b.followUpDateTime) - new Date(a.followUpDateTime),
+        )
+        const latestNodeId = orderedNodes[0]?.followUpNodeId
+
+        return orderedNodes.map((node) => ({
+            id: node.followUpNodeId,
             title: node.tag || "Note Added",
             timestamp: formatDateTime(node.followUpDateTime),
             groupDate: new Date(node.followUpDateTime).toLocaleDateString("en-GB", {
@@ -222,8 +241,10 @@ export default function FollowUpPage() {
             }), // e.g., "30 Nov 2025"
             description: node.body,
             agent: node.agentName,
-            rawDate: new Date(node.followUpDateTime) // For sorting
-        })).sort((a, b) => b.rawDate - a.rawDate)
+            createdAt: node.createdAt,
+            canEdit: node.followUpNodeId === latestNodeId && isWithinHours(node.createdAt, 24),
+            rawDate: new Date(node.followUpDateTime), // For sorting
+        }))
     }, [selectedFollowUp])
 
     const handleAddNote = useCallback(async () => {
@@ -248,7 +269,7 @@ export default function FollowUpPage() {
             success("Note added successfully")
             setNodeForm({
                 ...INITIAL_NODE_FORM_STATE,
-                followUpDateTime: new Date().toISOString().slice(0, 16),
+                followUpDateTime: getDefaultFollowUpDate(),
             })
 
             // Refresh follow-up data
@@ -260,6 +281,74 @@ export default function FollowUpPage() {
             error(err.message || "Failed to add note")
         }
     }, [nodeForm, selectedFollowUp, error, success])
+
+    const resetNodeForm = useCallback(() => {
+        setEditingNode(null)
+        setNodeForm({
+            ...INITIAL_NODE_FORM_STATE,
+            followUpDateTime: getDefaultFollowUpDate(),
+        })
+    }, [])
+
+    const handleEditTimelineNode = useCallback(
+        (event) => {
+            if (!selectedFollowUp?.followUpNodes || !event?.id) return
+
+            const node = selectedFollowUp.followUpNodes.find((item) => item.followUpNodeId === event.id)
+            if (!node) return
+
+            setEditingNode(node)
+            setNodeForm({
+                body: node.body || "",
+                followUpDateTime: getDefaultFollowUpDate(),
+                eventTag: node.tag || FOLLOWUP_EVENT_TAGS.CLIENT_CALLED,
+            })
+        },
+        [selectedFollowUp],
+    )
+
+    const handleSubmitNodeForm = useCallback(async () => {
+        if (!nodeForm.body.trim()) {
+            error("Please enter a note")
+            return
+        }
+
+        if (!selectedFollowUp?.followUpId) {
+            error("No follow-up thread found")
+            return
+        }
+
+        try {
+            const nextDate =
+                nodeForm.followUpDateTime && nodeForm.followUpDateTime.trim() !== ""
+                    ? nodeForm.followUpDateTime.split("T")[0]
+                    : new Date().toISOString().split("T")[0]
+
+            if (editingNode) {
+                await followUpService.updateFollowUpNode(selectedFollowUp.followUpId, editingNode.followUpNodeId, {
+                    followUpNextDate: nextDate,
+                    body: nodeForm.body,
+                    tag: nodeForm.eventTag,
+                })
+                success("Note updated successfully")
+            } else {
+                await followUpService.addFollowUpNode(selectedFollowUp.followUpId, {
+                    followUpNextDate: nextDate,
+                    body: nodeForm.body,
+                    tag: nodeForm.eventTag,
+                })
+                success("Note added successfully")
+            }
+
+            const updatedFollowUp = await followUpService.getFollowUpById(selectedFollowUp.followUpId)
+            setFollowUps((prev) => prev.map((fu) => (fu.followUpId === selectedFollowUp.followUpId ? updatedFollowUp : fu)))
+            setSelectedFollowUp(updatedFollowUp)
+            resetNodeForm()
+        } catch (err) {
+            console.error("[v0] Failed to save note:", err)
+            error(err.message || "Failed to save note")
+        }
+    }, [editingNode, error, nodeForm, resetNodeForm, selectedFollowUp, success])
 
     const handleCompleteFollowUp = useCallback(
         (followUpId) => {
@@ -305,6 +394,11 @@ export default function FollowUpPage() {
                 try {
                     const fullFollowUp = await followUpService.getFollowUpById(followUp.followUpId)
                     setSelectedFollowUp(fullFollowUp)
+                    setEditingNode(null)
+                    setNodeForm({
+                        ...INITIAL_NODE_FORM_STATE,
+                        followUpDateTime: getDefaultFollowUpDate(),
+                    })
                     setShowTimelineModal(true)
                 } catch (err) {
                     console.error("Failed to fetch follow-up details:", err)
@@ -418,9 +512,9 @@ export default function FollowUpPage() {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-gray-200">
-                                        <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 w-12"></th>
+                                        {/* <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 w-12"></th> */}
                                         <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                            Client
+                                            Lead
                                         </th>
                                         <th className="px-4 md:px-6 py-3 text-left text-xs md:text-sm font-semibold text-gray-900 whitespace-nowrap">
                                             Follow-Up Date
@@ -461,9 +555,9 @@ export default function FollowUpPage() {
                 >
                     <div className="space-y-4">
                         <div>
-                            <p className="text-sm text-gray-600">Client</p>
+                            <p className="text-sm text-gray-600">Lead</p>
                             <p className="text-lg font-semibold text-gray-900">
-                                {selectedFollowUp ? selectedFollowUp.clientName : ""}
+                                {selectedFollowUp ? selectedFollowUp.leadName : ""}
                             </p>
                         </div>
 
@@ -508,17 +602,24 @@ export default function FollowUpPage() {
                 {/* Timeline Modal */}
                 <TwoColumnModal
                     isOpen={showTimelineModal}
-                    onClose={() => setShowTimelineModal(false)}
+                    onClose={() => {
+                        setShowTimelineModal(false)
+                        setEditingNode(null)
+                        setNodeForm({
+                            ...INITIAL_NODE_FORM_STATE,
+                            followUpDateTime: getDefaultFollowUpDate(),
+                        })
+                    }}
                     title="Follow-Up Timeline"
                     leftContent={
                         selectedFollowUp && (
                             <div className="flex flex-col h-full">
 
                                 <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100 flex items-center justify-between">
-                                    <p className="text-md font-bold text-gray-900">{selectedFollowUp.clientName}</p>
+                                    <p className="text-md font-bold text-gray-900">{selectedFollowUp.leadName}</p>
                                     <div className="flex items-center gap-2">
                                         <Phone size={14} className="text-gray-400" />
-                                        <span className="text-sm font-medium text-gray-700">{selectedFollowUp.mobileNumber}</span>
+                                        <span className="text-sm font-medium text-gray-700">{selectedFollowUp.leadMobileNumber}</span>
                                     </div>
                                 </div>
 
@@ -538,7 +639,7 @@ export default function FollowUpPage() {
                                         </button>
                                     </div>
 
-                                    <Timeline events={timelineEvents} />
+                                    <Timeline events={timelineEvents} onEditEvent={handleEditTimelineNode} />
                                 </div>
                             </div>
                         )
@@ -559,7 +660,11 @@ export default function FollowUpPage() {
 
                                 {/* Add Note Section with ID for scrolling */}
                                 <div id="add-note-section">
-                                    <ModalSection title="Add New Note" icon={FileText} iconColor="text-green-600">
+                                    <ModalSection
+                                        title={editingNode ? "Edit Note" : "Add New Note"}
+                                        icon={FileText}
+                                        iconColor="text-green-600"
+                                    >
                                         <div className="space-y-3">
                                             <FormInput
                                                 value={nodeForm.body}
@@ -583,9 +688,20 @@ export default function FollowUpPage() {
                                                 onChange={(e) => setNodeForm({ ...nodeForm, followUpDateTime: e.target.value })}
                                             />
 
-                                            <Button onClick={handleAddNote} variant="primary" className="w-full">
-                                                Add Note
-                                            </Button>
+                                            <div className="flex flex-col gap-2 sm:flex-row">
+                                                {editingNode && (
+                                                    <Button
+                                                        onClick={resetNodeForm}
+                                                        variant="secondary"
+                                                        className="w-full sm:w-auto"
+                                                    >
+                                                        Cancel Edit
+                                                    </Button>
+                                                )}
+                                                <Button onClick={handleSubmitNodeForm} variant="primary" className="w-full">
+                                                    {editingNode ? "Save Changes" : "Add Note"}
+                                                </Button>
+                                            </div>
                                         </div>
                                     </ModalSection>
                                 </div>

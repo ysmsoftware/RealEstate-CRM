@@ -1,6 +1,6 @@
 package com.ysminfosolution.realestate.controller;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.MediaType;
@@ -46,7 +46,7 @@ public class ProjectController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Set<Project>> getAllProjects() {
+    public ResponseEntity<List<Project>> getAllProjects() {
 
         log.info("\n");
         log.info("Path: [GET] /projects | Method: getAllProjects");
@@ -64,7 +64,7 @@ public class ProjectController {
     }
     
     @GetMapping("/basicinfolist")
-    public ResponseEntity<Set<ProjectBasicInfoDTO>> getListofBasicProjectInfo(@AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public ResponseEntity<List<ProjectBasicInfoDTO>> getListofBasicProjectInfo(@AuthenticationPrincipal AppUserDetails appUserDetails) {
         
         log.info("\n");
         log.info("Path: [GET] /projects/basicinfolist | Method: getListofBasicProjectInfo");

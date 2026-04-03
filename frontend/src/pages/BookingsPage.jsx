@@ -33,14 +33,12 @@ export default function BookingsPage() {
 
     // State for Add Booking Modal
     const [showAddBookingModal, setShowAddBookingModal] = useState(false)
-    const [createNewClient, setCreateNewClient] = useState(false)
     const [modalSelectedProject, setModalSelectedProject] = useState("")
     const [modalSelectedWing, setModalSelectedWing] = useState("")
     const [selectedFlatForBooking, setSelectedFlatForBooking] = useState(null)
 
     // Booking form
     const [bookingForm, setBookingForm] = useState({
-        clientId: "",
         bookingAmount: "",
         agreementAmount: "",
         bookingDate: new Date().toISOString().split("T")[0],
@@ -120,20 +118,14 @@ export default function BookingsPage() {
             }))
     }, [data.flats, modalSelectedWing])
 
-    const clients = useMemo(() => {
-        return data.clients
-            .filter((c) => !c.isDeleted)
-            .map((c) => ({ value: c.clientId, label: `${c.clientName} - ${c.mobileNumber}` }))
-    }, [data.clients])
-
     const enquiries = useMemo(() => {
         return data.enquiries
             .filter((e) => !e.isDeleted && e.status === "ONGOING")
-            .map((e) => {
-                const client = data.clients.find((c) => c.clientId === e.clientId)
-                return { value: e.enquiryId, label: `${client?.clientName || 'N/A'} - ${e.budget}` }
-            })
-    }, [data.enquiries, data.clients])
+            .map((e) => ({
+                value: e.enquiryId,
+                label: `${e.leadName || "N/A"} - ${e.leadMobileNumber || "No mobile"} - ${e.budget}`,
+            }))
+    }, [data.enquiries])
 
     // Modal: Projects (formatted for FormSelect)
     const modalProjects = useMemo(() => {
@@ -156,30 +148,75 @@ export default function BookingsPage() {
         return { floorCount, vacantCount, bookedCount, registeredCount }
     }, [flats, floors, selectedWing])
 
+    const selectedLead = useMemo(() => {
+        if (!bookingForm.enquiryId) return null
+
+        return data.enquiries.find((enquiry) => enquiry.enquiryId === bookingForm.enquiryId && !enquiry.isDeleted) || null
+    }, [data.enquiries, bookingForm.enquiryId])
+
 
     // --- Event Handlers ---
 
+    const buildBookedClientPayload = () => {
+        if (selectedLead) {
+            return {
+                clientId: uuidv4(),
+                clientName: selectedLead.leadName,
+                email: selectedLead.leadEmail,
+                mobileNumber: selectedLead.leadMobileNumber,
+                landlineNumber: selectedLead.leadLandlineNumber || "",
+                city: selectedLead.leadCity || "",
+                address: selectedLead.leadAddress || "",
+                occupation: selectedLead.leadOccupation || "",
+                company: selectedLead.leadCompany || "",
+                dob: "",
+                panNo: "",
+                aadharNo: "",
+                isDeleted: false,
+            }
+        }
+
+        if (!newClientForm.clientName || !newClientForm.mobileNumber || !newClientForm.email) {
+            error("Please fill client details for a direct booking")
+            return null
+        }
+
+        if (!/^\d{10}$/.test(newClientForm.mobileNumber)) {
+            error("Mobile number must be 10 digits")
+            return null
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newClientForm.email)) {
+            error("Invalid email format")
+            return null
+        }
+
+        return {
+            clientId: uuidv4(),
+            clientName: newClientForm.clientName,
+            email: newClientForm.email,
+            mobileNumber: newClientForm.mobileNumber,
+            landlineNumber: "",
+            city: "",
+            address: "",
+            occupation: "",
+            company: "",
+            dob: "",
+            panNo: "",
+            aadharNo: "",
+            isDeleted: false,
+        }
+    }
+
+    const createBookedClient = () => {
+        const clientPayload = buildBookedClientPayload()
+        if (!clientPayload) return null
+
+        const createdClient = addClient(clientPayload)
+        return createdClient.clientId
+    }
+
     const handleAddBookingFromModal = () => {
-        if (createNewClient) {
-            if (!newClientForm.clientName || !newClientForm.mobileNumber || !newClientForm.email) {
-                error("Please fill all client details")
-                return
-            }
-            if (!/^\d{10}$/.test(newClientForm.mobileNumber)) {
-                error("Mobile number must be 10 digits")
-                return
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newClientForm.email)) {
-                error("Invalid email format")
-                return
-            }
-        }
-
-        if (!bookingForm.clientId && !createNewClient) {
-            error("Please select or create a client")
-            return
-        }
-
         if (!selectedFlatForBooking) {
             error("Please select a flat")
             return
@@ -190,28 +227,8 @@ export default function BookingsPage() {
             return
         }
 
-        let clientId = bookingForm.clientId
-
-        // Create new client if needed
-        if (createNewClient) {
-            const newClient = {
-                clientId: uuidv4(),
-                clientName: newClientForm.clientName,
-                email: newClientForm.email,
-                mobileNumber: newClientForm.mobileNumber,
-                dob: "",
-                city: "",
-                address: "",
-                occupation: "",
-                company: "",
-                panNo: "",
-                aadharNo: "",
-                createdDate: new Date().toISOString().split("T[0]"),
-                isDeleted: false,
-            }
-            const createdClient = addClient(newClient)
-            clientId = createdClient.clientId
-        }
+        const clientId = createBookedClient()
+        if (!clientId) return
 
         const booking = {
             bookingId: uuidv4(),
@@ -244,7 +261,6 @@ export default function BookingsPage() {
     // Reset function for Add Booking modal
     const resetAddBookingForm = () => {
         setBookingForm({
-            clientId: "",
             bookingAmount: "",
             agreementAmount: "",
             bookingDate: new Date().toISOString().split("T")[0],
@@ -258,21 +274,23 @@ export default function BookingsPage() {
             mobileNumber: "",
         })
         setSelectedFlatForBooking(null)
-        setCreateNewClient(false)
         setModalSelectedProject("")
         setModalSelectedWing("")
     }
 
     const handleBookUnit = () => {
-        if (!bookingForm.clientId || !bookingForm.bookingAmount || !bookingForm.agreementAmount) {
+        if (!bookingForm.bookingAmount || !bookingForm.agreementAmount) {
             error("Please fill all required fields")
             return
         }
 
+        const clientId = createBookedClient()
+        if (!clientId) return
+
         const booking = {
             bookingId: uuidv4(),
             projectId: selectedProject,
-            clientId: bookingForm.clientId,
+            clientId,
             propertyId: selectedUnit.propertyId,
             enquiryId: bookingForm.enquiryId || null,
             bookingAmount: bookingForm.bookingAmount,
@@ -324,7 +342,6 @@ export default function BookingsPage() {
 
     const resetForms = () => {
         setBookingForm({
-            clientId: "",
             bookingAmount: "",
             agreementAmount: "",
             bookingDate: new Date().toISOString().split("T")[0],
@@ -334,6 +351,11 @@ export default function BookingsPage() {
         })
         setRegistrationForm({ registrationDate: new Date().toISOString().split("T")[0] })
         setCancellationForm({ reason: "" })
+        setNewClientForm({
+            clientName: "",
+            email: "",
+            mobileNumber: "",
+        })
     }
 
     // --- Styling Helpers ---
@@ -353,10 +375,6 @@ export default function BookingsPage() {
             default:
                 return "bg-gray-50 text-gray-900 border-gray-200/80 hover:bg-gray-100 hover:border-gray-300"
         }
-    }
-
-    const getClientName = (clientId) => {
-        return data.clients.find((c) => c.clientId === clientId)?.clientName || "Unknown"
     }
 
     const getBookingForUnit = (propertyId) => {
@@ -631,21 +649,43 @@ export default function BookingsPage() {
                             {activeTab === "book" && selectedUnit.status === FLAT_STATUS.VACANT && (
                                 <form onSubmit={(e) => { e.preventDefault(); handleBookUnit(); }} className="space-y-4">
                                     <FormSelect
-                                        label="Client"
-                                        value={bookingForm.clientId}
-                                        onChange={(e) => setBookingForm({ ...bookingForm, clientId: e.target.value })}
-                                        options={clients}
-                                        placeholder="Select a client"
-                                        required
-                                    />
-
-                                    <FormSelect
-                                        label="Link Enquiry (Optional)"
+                                        label="Lead to Convert (Optional)"
                                         value={bookingForm.enquiryId}
                                         onChange={(e) => setBookingForm({ ...bookingForm, enquiryId: e.target.value })}
                                         options={enquiries}
-                                        placeholder="Select an enquiry"
+                                        placeholder="Select a lead"
                                     />
+
+                                    {selectedLead ? (
+                                        <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+                                            <p className="text-sm font-medium text-indigo-900">Lead will be converted into a client at booking time</p>
+                                            <p className="mt-1 text-sm text-indigo-800">{selectedLead.leadName}</p>
+                                            <p className="text-sm text-indigo-700">{selectedLead.leadMobileNumber || "No mobile"} · {selectedLead.leadEmail || "No email"}</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                                            <p className="text-sm font-medium text-gray-900">Direct booking client details</p>
+                                            <FormInput
+                                                label="Client Name"
+                                                value={newClientForm.clientName}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, clientName: e.target.value })}
+                                                required
+                                            />
+                                            <FormInput
+                                                label="Mobile Number"
+                                                value={newClientForm.mobileNumber}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, mobileNumber: e.target.value.replace(/\D/g, "").slice(0, 10) })}
+                                                required
+                                            />
+                                            <FormInput
+                                                label="Email Address"
+                                                type="email"
+                                                value={newClientForm.email}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+                                    )}
 
                                     <FormInput
                                         label="Booking Amount"
@@ -698,7 +738,7 @@ export default function BookingsPage() {
                                             <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                                 <div>
                                                     <p className="text-sm text-gray-600">Client</p>
-                                                    <p className="text-lg font-semibold text-gray-900">{client?.label || "Unknown"}</p>
+                                                    <p className="text-lg font-semibold text-gray-900">{client?.clientName || "Unknown"}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-sm text-gray-600">Booking Amount</p>
@@ -813,61 +853,50 @@ export default function BookingsPage() {
                                 )}
                             </ModalSection>
 
-                            {/* Client Information Section */}
-                            <ModalSection title="Client Information" icon={User}>
-                                {!createNewClient ? (
-                                    <div className="space-y-3">
-                                        <FormSelect
-                                            label="Client"
-                                            required
-                                            value={bookingForm.clientId}
-                                            onChange={(e) => setBookingForm({ ...bookingForm, clientId: e.target.value })}
-                                            options={clients}
-                                            placeholder="Select Client"
-                                        />
+                            {/* Lead Conversion Section */}
+                            <ModalSection title="Lead Conversion" icon={User}>
+                                <div className="space-y-3">
+                                    <FormSelect
+                                        label="Lead to Convert (Optional)"
+                                        value={bookingForm.enquiryId}
+                                        onChange={(e) => setBookingForm({ ...bookingForm, enquiryId: e.target.value })}
+                                        options={enquiries}
+                                        placeholder="Select Lead"
+                                    />
 
-
-                                        <button
-                                            onClick={() => {
-                                                setCreateNewClient(true)
-                                                setBookingForm({ ...bookingForm, clientId: "" })
-                                            }}
-                                            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
-                                        >
-                                            <span className="text-lg">+</span> Create New Client
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-3 p-4 bg-gradient-to-br from-gray-50 to-indigo-50 rounded-xl border border-indigo-100">
-                                        <input
-                                            type="text"
-                                            value={newClientForm.clientName}
-                                            onChange={(e) => setNewClientForm({ ...newClientForm, clientName: e.target.value })}
-                                            placeholder="Client Name"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
-                                        />
-                                        <input
-                                            type="tel"
-                                            value={newClientForm.mobileNumber}
-                                            onChange={(e) => setNewClientForm({ ...newClientForm, mobileNumber: e.target.value })}
-                                            placeholder="Mobile Number"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
-                                        />
-                                        <input
-                                            type="email"
-                                            value={newClientForm.email}
-                                            onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
-                                            placeholder="Email Address"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
-                                        />
-                                        <button
-                                            onClick={() => setCreateNewClient(false)}
-                                            className="text-sm text-gray-600 hover:text-gray-700 font-medium flex items-center gap-1"
-                                        >
-                                            ← Use Existing Client
-                                        </button>
-                                    </div>
-                                )}
+                                    {selectedLead ? (
+                                        <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4">
+                                            <p className="text-sm font-semibold text-indigo-900">Lead details will be copied into the new client record</p>
+                                            <p className="mt-2 text-sm text-indigo-800">{selectedLead.leadName}</p>
+                                            <p className="text-sm text-indigo-700">{selectedLead.leadMobileNumber || "No mobile"} · {selectedLead.leadEmail || "No email"}</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3 p-4 bg-gradient-to-br from-gray-50 to-indigo-50 rounded-xl border border-indigo-100">
+                                            <p className="text-sm font-semibold text-gray-900">Direct booking client details</p>
+                                            <input
+                                                type="text"
+                                                value={newClientForm.clientName}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, clientName: e.target.value })}
+                                                placeholder="Client Name"
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                                            />
+                                            <input
+                                                type="tel"
+                                                value={newClientForm.mobileNumber}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, mobileNumber: e.target.value.replace(/\D/g, "").slice(0, 10) })}
+                                                placeholder="Mobile Number"
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                                            />
+                                            <input
+                                                type="email"
+                                                value={newClientForm.email}
+                                                onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
+                                                placeholder="Email Address"
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </ModalSection>
                         </>
                     }
@@ -916,13 +945,6 @@ export default function BookingsPage() {
                                         value={bookingForm.gstPercentage}
                                         onChange={(e) => setBookingForm({ ...bookingForm, gstPercentage: e.target.value })}
                                         placeholder="18"
-                                    />
-                                    <FormSelect
-                                        label="Link Enquiry"
-                                        value={bookingForm.enquiryId}
-                                        onChange={(e) => setBookingForm({ ...bookingForm, enquiryId: e.target.value })}
-                                        options={enquiries}
-                                        placeholder="Optional"
                                     />
                                 </div>
 

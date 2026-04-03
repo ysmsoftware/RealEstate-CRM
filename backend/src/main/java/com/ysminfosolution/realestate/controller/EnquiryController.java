@@ -86,16 +86,6 @@ public class EnquiryController {
         return enquiryService.getById(enquiryId, appUserDetails);
     }
   
-    @GetMapping("/basicinfolist/client/{clientId}")
-    public ResponseEntity<Set<EnquiryBasicInfoDTO>> getListOfEnquiryBasicInfoForClient(@AuthenticationPrincipal AppUserDetails appUserDetails, @PathVariable @NotNull UUID clientId) {
-     
-        log.info("\n");
-        log.info("Path: [GET] /enquiries/basicinfolist/client/{clientId} | Method: getListOfEnquiryBasicInfoForClient");
-
-        return enquiryService.getListOfEnquiryBasicInfoForClient(appUserDetails, clientId);
-        
-    }
-    
     @GetMapping("/propertyOptions/forProject/{projectId}")
     public ResponseEntity<EnquiryPropertyOptions> getAllPropertyOptionsForProject(@PathVariable @NotNull UUID projectId, @AuthenticationPrincipal AppUserDetails appUserDetails) {
 
@@ -113,15 +103,6 @@ public class EnquiryController {
         log.info("Path: [POST] /enquiries | Method: createEnquiry");
 
         return enquiryService.createNewEnquiry(newEnquiryDTO, appUserDetails);
-    }
-
-    @PostMapping("/client/{clientId}")
-    public ResponseEntity<EnquiryResponseDTO> createEnquiryWithClientId(@RequestBody @NonNull @Valid NewEnquiryDTO newEnquiryDTO, @PathVariable @NonNull UUID clientId, @AuthenticationPrincipal AppUserDetails appUserDetails) {
-
-        log.info("\n");
-        log.info("Path: [POST] /enquiries/client/{clientId} | Method: createEnquiryWithClientId");
-
-        return enquiryService.createNewEnquiryForClient(newEnquiryDTO, clientId, appUserDetails);
     }
 
     @PutMapping("/{enquiryId}")

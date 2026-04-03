@@ -33,6 +33,14 @@ export const formatDateTime = (dateString) => {
     })
 }
 
+export const isWithinHours = (dateString, hours) => {
+    if (!dateString) return false
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return false
+
+    return Date.now() - date.getTime() < hours * 60 * 60 * 1000
+}
+
 export const getTimeAgo = (dateString) => {
     const date = new Date(dateString)
     const now = new Date()

@@ -1,9 +1,10 @@
-import { CheckCircle2, Circle } from "lucide-react"
+import { Pencil } from "lucide-react"
 
-export const Timeline = ({ events }) => {
+export const Timeline = ({ events, onEditEvent }) => {
   const getTagColor = (tag) => {
     const colors = {
       "Follow-up Created": "bg-blue-100 text-blue-700 border-blue-200",
+      "Lead Called": "bg-green-100 text-green-700 border-green-200",
       "Client Called": "bg-green-100 text-green-700 border-green-200",
       "Site Visit Scheduled": "bg-purple-100 text-purple-700 border-purple-200",
       "Site Visit Completed": "bg-indigo-100 text-indigo-700 border-indigo-200",
@@ -15,6 +16,7 @@ export const Timeline = ({ events }) => {
       "Document Sent": "bg-pink-100 text-pink-700 border-pink-200",
       "Document Received": "bg-rose-100 text-rose-700 border-rose-200",
       "Query Resolved": "bg-lime-100 text-lime-700 border-lime-200",
+      "Waiting for Lead": "bg-gray-100 text-gray-700 border-gray-200",
       "Waiting for Client": "bg-gray-100 text-gray-700 border-gray-200",
       "Follow-up Completed": "bg-green-100 text-green-700 border-green-200",
     }
@@ -66,6 +68,17 @@ export const Timeline = ({ events }) => {
                       <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                         by {event.agent}
                       </span>
+                    )}
+                    {event.canEdit && onEditEvent && (
+                      <button
+                        type="button"
+                        onClick={() => onEditEvent(event)}
+                        className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+                        aria-label={`Edit ${event.title}`}
+                      >
+                        <Pencil size={12} />
+                        Edit
+                      </button>
                     )}
                   </div>
                   {event.description && (

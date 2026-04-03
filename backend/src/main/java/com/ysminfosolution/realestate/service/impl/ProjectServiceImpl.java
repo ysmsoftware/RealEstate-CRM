@@ -1,6 +1,8 @@
 package com.ysminfosolution.realestate.service.impl;
 
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -151,13 +153,17 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Set<Project>> getAllProjects() {
+    public ResponseEntity<List<Project>> getAllProjects() {
 
         log.info("\n");
         log.info("Method: getAllProjects");
 
-        return ResponseEntity.ok(projectRepository.findAll()
-                .stream().filter(p -> !p.isDeleted()).collect(Collectors.toSet()));
+        List<Project> projects = projectRepository.findAll()
+            .stream().filter(p -> !p.isDeleted()).collect(Collectors.toList());
+
+        projects.sort((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()));
+
+        return ResponseEntity.ok(projects);
     }
 
     
@@ -348,60 +354,55 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Set<ProjectBasicInfoDTO>> getListofBasicProjectInfo(AppUserDetails appUserDetails) {
+    public ResponseEntity<List<ProjectBasicInfoDTO>> getListofBasicProjectInfo(AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Method: getListofBasicProjectInfo");
 
-        Set<ProjectBasicInfoDTO> basicInfoDTOs = new HashSet<>();
-
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
-            Set<Project> projects = projectRepository
+            List<ProjectBasicInfoDTO> basicInfoDTOs = projectRepository
                     .findAllByOrganization_OrgIdAndIsDeletedFalse(appUserDetails.getOrgId()).stream()
-                    .filter(p -> !p.isDeleted()).collect(Collectors.toSet());
+                    .filter(p -> !p.isDeleted())
+                    .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
+                    .map(project -> new ProjectBasicInfoDTO(
+                            project.getProjectId(),
+                            project.getProjectName(),
+                            project.getProjectAddress(),
+                            project.getPincode(),
+                            project.getStatus(),
+                            project.getProgress(),
+                            project.getStartDate(),
+                            project.getCompletionDate()))
+                    .toList();
 
-            for (Project project : projects) {
-
-                ProjectBasicInfoDTO dto = new ProjectBasicInfoDTO(
-                        project.getProjectId(),
-                        project.getProjectName(),
-                        project.getProjectAddress(),
-                        project.getPincode(),
-                        project.getStatus(),
-                        project.getProgress(),
-                        project.getStartDate(),
-                        project.getCompletionDate());
-
-                basicInfoDTOs.add(dto);
-            }
+            return ResponseEntity.ok(basicInfoDTOs);
 
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
             EmployeeUserInfo employee = employeeUserInfoRepository
                     .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElse(null);
             if (employee == null) {
-                return ResponseEntity.ok(Set.of());
+                return ResponseEntity.ok(List.of());
             }
-            Set<Project> projects = employee.getProjects();
+            List<ProjectBasicInfoDTO> basicInfoDTOs = employee.getProjects().stream()
+                    .filter(project -> !project.isDeleted())
+                    .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
+                    .map(project -> new ProjectBasicInfoDTO(
+                            project.getProjectId(),
+                            project.getProjectName(),
+                            project.getProjectAddress(),
+                            project.getPincode(),
+                            project.getStatus(),
+                            project.getProgress(),
+                            project.getStartDate(),
+                            project.getCompletionDate()))
+                    .toList();
 
-            for (Project project : projects) {
-
-                ProjectBasicInfoDTO dto = new ProjectBasicInfoDTO(
-                        project.getProjectId(),
-                        project.getProjectName(),
-                        project.getProjectAddress(),
-                        project.getPincode(),
-                        project.getStatus(),
-                        project.getProgress(),
-                        project.getStartDate(),
-                        project.getCompletionDate());
-
-                basicInfoDTOs.add(dto);
-            }
+            return ResponseEntity.ok(basicInfoDTOs);
 
         }
 
-        return ResponseEntity.ok(basicInfoDTOs);
+        return ResponseEntity.ok(List.of());
 
     }
 
