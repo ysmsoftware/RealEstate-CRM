@@ -1,16 +1,8 @@
 package com.ysminfosolution.realestate.model;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -25,12 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class FollowUpNode {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "follow_up_node_id", nullable = false)
-    private UUID followUpNodeId;
+public class FollowUpNode extends BaseEntity {
 
     @Column(name = "follow_up_date_time", nullable = false)
     private LocalDateTime followUpDateTime;
@@ -42,22 +29,11 @@ public class FollowUpNode {
     private String tag;
 
     @ManyToOne
-    @JoinColumn(name = "follow_up_id", referencedColumnName = "follow_up_id", nullable = false)
+    @JoinColumn(name = "follow_up_id", referencedColumnName = "id", nullable = false)
     private FollowUp followUp;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
 }

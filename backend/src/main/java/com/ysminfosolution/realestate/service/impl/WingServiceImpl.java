@@ -74,7 +74,7 @@ public class WingServiceImpl implements WingService {
 
         Set<Wing> wings = wingRepository.findAllByProject_ProjectId(projectId);
         for (Wing wing : wings) {
-            floorService.hardDeleteFloorsRecursiveByWingId(wing.getWingId());
+            floorService.hardDeleteFloorsRecursiveByWingId(wing.getId());
         }
         wingRepository.deleteAll(wings);
         log.info("Wings deleted successfully for projectId : " + projectId);
@@ -96,7 +96,7 @@ public class WingServiceImpl implements WingService {
         deleteWingRecursiveByWingtId(wingId);
 
         // * Then we create the wing from scratch
-        return createWingForProjectId(wing.getProject().getProjectId(), wingCreationDTO);
+        return createWingForProjectId(wing.getProject().getId(), wingCreationDTO);
 
     }
 
@@ -128,7 +128,7 @@ public class WingServiceImpl implements WingService {
 
         Set<Wing> wings = wingRepository.findAllByProject_ProjectId(projectId);
         for (Wing wing : wings) {
-            floorService.deleteFloorsRecursiveByWingId(wing.getWingId());
+            floorService.deleteFloorsRecursiveByWingId(wing.getId());
             wing.setDeleted(true);
         }
         wingRepository.saveAll(wings);
@@ -150,7 +150,7 @@ public class WingServiceImpl implements WingService {
         Wing savedWing = wingRepository.save(wing);
 
         if (!floorService.createFloorsForWing(savedWing, wingDTO.floors())) {
-            floorService.deleteFloorsRecursiveByWingId(savedWing.getWingId());
+            floorService.deleteFloorsRecursiveByWingId(savedWing.getId());
             wingRepository.delete(savedWing);
             return ResponseEntity.internalServerError().build();
         }

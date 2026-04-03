@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.ysminfosolution.realestate.dto.ClientBasicInfoDTO;
-import com.ysminfosolution.realestate.model.ClientUserInfo;
+import com.ysminfosolution.realestate.model.Client;
 
-public interface ClientUserInfoRepository extends JpaRepository<ClientUserInfo, UUID> {
+public interface ClientRepository extends JpaRepository<Client, UUID> {
 
-    Optional<ClientUserInfo> findByClientIdAndIsDeletedFalse(UUID clientId);
+    Optional<Client> findByClientIdAndIsDeletedFalse(UUID clientId);
 
     @Query("""
                 SELECT DISTINCT new com.ysminfosolution.realestate.dto.ClientBasicInfoDTO(

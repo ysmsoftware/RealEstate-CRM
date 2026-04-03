@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ysminfosolution.realestate.dto.NewOrganizationRequestDTO;
 import com.ysminfosolution.realestate.dto.NewOrganizationResponseDTO;
 import com.ysminfosolution.realestate.error.exception.ConflictException;
-import com.ysminfosolution.realestate.model.AdminUserInfo;
+import com.ysminfosolution.realestate.model.Admin;
 import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.User;
-import com.ysminfosolution.realestate.repository.AdminUserInfoRepository;
+import com.ysminfosolution.realestate.repository.AdminRepository;
 import com.ysminfosolution.realestate.repository.OrganizationRepository;
 import com.ysminfosolution.realestate.repository.UserRepository;
 import com.ysminfosolution.realestate.service.OrganizationService;
@@ -31,7 +31,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
-    private final AdminUserInfoRepository adminUserInfoRepository;
+    private final AdminRepository adminRepository;
     private final S3StorageService s3StorageService;
 
     @Override
@@ -62,7 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization = organizationRepository.save(organization);
         
         if (logo != null && !logo.isEmpty()) {
-            organization.setLogoUrl(uploadOrganizationLogo(organization.getOrgId(), logo));
+            organization.setLogoUrl(uploadOrganizationLogo(organization.getId(), logo));
             organization = organizationRepository.save(organization);
         }
         
@@ -83,15 +83,15 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         user = userRepository.save(user);
 
-        AdminUserInfo adminUserInfo = new AdminUserInfo();
-        adminUserInfo.setUser(user);
-        adminUserInfo.setDeleted(false);
-        adminUserInfo.setSuperAdmin(true);
+        Admin admin = new Admin();
+        admin.setUser(user);
+        admin.setDeleted(false);
+        admin.setSuperAdmin(true);
 
-        adminUserInfoRepository.save(adminUserInfo);
+        adminRepository.save(admin);
 
         NewOrganizationResponseDTO responseDTO = new NewOrganizationResponseDTO(
-            organization.getOrgId(), 
+            organization.getId(), 
             organization.getOrgName(), 
             organization.getOrgEmail()
         );

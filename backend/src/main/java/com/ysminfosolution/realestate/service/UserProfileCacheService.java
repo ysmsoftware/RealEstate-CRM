@@ -36,9 +36,9 @@ public class UserProfileCacheService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         return new UserResponseDTO(
-                user.getUserId(),
+                user.getId(),
                 new NewOrganizationResponseDTO(
-                        organization.getOrgId(),
+                        organization.getId(),
                         organization.getOrgName(),
                         organization.getOrgEmail()),
                 user.getUsername(),

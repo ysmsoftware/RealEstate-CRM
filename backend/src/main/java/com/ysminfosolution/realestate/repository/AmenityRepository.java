@@ -10,11 +10,11 @@ import com.ysminfosolution.realestate.model.Amenity;
 
 public interface AmenityRepository extends JpaRepository<Amenity, UUID> {
 
-    Set<Amenity> findAllByProject_ProjectId(UUID projectId);
+    Set<Amenity> findAllByProject_Id(UUID projectId);
 
-    Set<Amenity> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+    Set<Amenity> findAllByProject_IdAndIsDeletedFalse(UUID projectId);
 
-    void deleteAllByProject_ProjectId(UUID projectId);
+    void deleteAllByProject_Id(UUID projectId);
 
     Optional<Amenity> findByAmenityIdAndIsDeletedFalse(UUID amenityId);
 

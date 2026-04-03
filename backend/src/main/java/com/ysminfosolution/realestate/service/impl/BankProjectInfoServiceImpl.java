@@ -72,7 +72,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         log.info("\n");
         log.info("Method: hardDeleteAllByProjectId");
 
-        bankProjectInfoRepository.deleteAllByProject_ProjectId(projectId);
+        bankProjectInfoRepository.deleteAllByProject_Id(projectId);
         
         log.info("BankProjectInfo deleted successfully for projectId : " + projectId);
     }
@@ -94,12 +94,12 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         BankProjectInfo savedBankProjectInfo = bankProjectInfoRepository.save(bankProjectInfo);
 
         NewBankProjectInfoResponseDTO bankProjectInfoResponseDTO = new NewBankProjectInfoResponseDTO(
-            savedBankProjectInfo.getBankProjectId(),
+            savedBankProjectInfo.getId(),
             savedBankProjectInfo.getBankName(),
             savedBankProjectInfo.getBranchName(),
             savedBankProjectInfo.getContactPerson(),
             savedBankProjectInfo.getContactNumber(),
-            savedBankProjectInfo.getProject().getProjectId()
+            savedBankProjectInfo.getProject().getId()
         );
 
         return ResponseEntity.ok(bankProjectInfoResponseDTO);
@@ -122,12 +122,12 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         BankProjectInfo savedBankProjectInfo = bankProjectInfoRepository.save(bankProjectInfoDB);
 
         NewBankProjectInfoResponseDTO bankProjectInfoResponseDTO = new NewBankProjectInfoResponseDTO(
-            savedBankProjectInfo.getBankProjectId(), 
+            savedBankProjectInfo.getId(), 
             savedBankProjectInfo.getBankName(), 
             savedBankProjectInfo.getBranchName(),
             savedBankProjectInfo.getContactPerson(),
             savedBankProjectInfo.getContactNumber(),
-            savedBankProjectInfo.getProject().getProjectId()
+            savedBankProjectInfo.getProject().getId()
         );
         return ResponseEntity.ok(bankProjectInfoResponseDTO);
     }
@@ -155,7 +155,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        return ResponseEntity.ok(bankProjectInfoRepository.findAllByProject_ProjectId(projectId)
+        return ResponseEntity.ok(bankProjectInfoRepository.findAllByProject_Id(projectId)
             .stream().filter(bpi -> !bpi.isDeleted()).collect(Collectors.toSet()));
     }
 
@@ -167,7 +167,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
 
         BankProjectInfo bankProjectInfo = bankProjectInfoRepository.findByBankProjectIdAndIsDeletedFalse(bankProjectInfoId).orElseThrow(() -> new NotFoundException("Bank Project Info not found"));
 
-        Project project = projectResolver.resolve(bankProjectInfo.getProject().getProjectId());
+        Project project = projectResolver.resolve(bankProjectInfo.getProject().getId());
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
@@ -188,7 +188,7 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         }
 
         for (BankProjectInfo bankProjectInfo : bankProjectInfos) {
-            deleteBankProjectInfo(bankProjectInfo.getBankProjectId());
+            deleteBankProjectInfo(bankProjectInfo.getId());
         }
     }
 

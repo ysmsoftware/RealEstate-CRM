@@ -103,7 +103,7 @@ public class S3StorageService {
             s3Client.deleteObjects(deleteReq);
 
             log.info("ROLLBACK STATUS : S3 Directory deleted successfully for projectId : {}",
-                    project.getProjectId());
+                    project.getId());
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete S3 directory with prefix: " + prefix, e);

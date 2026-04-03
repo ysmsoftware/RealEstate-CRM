@@ -66,7 +66,7 @@ public class AmenityServiceImpl implements AmenityService {
         log.info("\n");
         log.info("Method: hardDeleteAllByProjectId");
 
-        amenityRepository.deleteAllByProject_ProjectId(projectId);
+        amenityRepository.deleteAllByProject_Id(projectId);
         log.info("Amenities deleted successfully for projectId : {}", projectId);
     }
 
@@ -87,9 +87,9 @@ public class AmenityServiceImpl implements AmenityService {
         Amenity savedAmenity = amenityRepository.save(amenity);
 
         NewAmenityResponse amenityResponse = new NewAmenityResponse(
-            savedAmenity.getAmenityId(),
+            savedAmenity.getId(),
             savedAmenity.getAmenityName(),
-            savedAmenity.getProject().getProjectId()
+            savedAmenity.getProject().getId()
         );
 
         return ResponseEntity.ok(amenityResponse);
@@ -107,9 +107,9 @@ public class AmenityServiceImpl implements AmenityService {
         Amenity savedAmenity = amenityRepository.save(amenity);
 
         NewAmenityResponse amenityResponse = new NewAmenityResponse(
-            savedAmenity.getAmenityId(),
+            savedAmenity.getId(),
             savedAmenity.getAmenityName(),
-            savedAmenity.getProject().getProjectId()
+            savedAmenity.getProject().getId()
         );
 
         return ResponseEntity.ok(amenityResponse);
@@ -140,7 +140,7 @@ public class AmenityServiceImpl implements AmenityService {
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
-        return ResponseEntity.ok(amenityRepository.findAllByProject_ProjectId(projectId)
+        return ResponseEntity.ok(amenityRepository.findAllByProject_Id(projectId)
             .stream().filter(amenity -> !amenity.isDeleted()).collect(Collectors.toSet()));
     }
 
@@ -152,7 +152,7 @@ public class AmenityServiceImpl implements AmenityService {
 
         Amenity amenity = amenityRepository.findByAmenityIdAndIsDeletedFalse(amenityId).orElseThrow(() -> new NotFoundException("Amenity not found"));
 
-        Project project = projectResolver.resolve(amenity.getProject().getProjectId());
+        Project project = projectResolver.resolve(amenity.getProject().getId());
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
@@ -172,7 +172,7 @@ public class AmenityServiceImpl implements AmenityService {
         }
 
         for (Amenity amenity : amenities) {
-            deleteById(amenity.getAmenityId());
+            deleteById(amenity.getId());
         }
     }
     

@@ -25,7 +25,7 @@ import com.ysminfosolution.realestate.dto.maincreationformdtos.ProjectCreationDT
 import com.ysminfosolution.realestate.error.exception.ApiException;
 import com.ysminfosolution.realestate.error.exception.ConflictException;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
-import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Employee;
 import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.Flat;
 import com.ysminfosolution.realestate.model.Floor;
@@ -34,7 +34,7 @@ import com.ysminfosolution.realestate.model.User;
 import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.Wing;
 import com.ysminfosolution.realestate.model.Project.Status;
-import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.EmployeeRepository;
 import com.ysminfosolution.realestate.repository.EnquiryRepository;
 import com.ysminfosolution.realestate.repository.FlatRepository;
 import com.ysminfosolution.realestate.repository.OrganizationRepository;
@@ -62,7 +62,7 @@ public class ProjectServiceImpl implements ProjectService {
     // * Repository
     private final ProjectRepository projectRepository;
     private final OrganizationRepository organizationRepository;
-    private final EmployeeUserInfoRepository employeeUserInfoRepository;
+    private final EmployeeRepository employeeRepository;
     private final EnquiryRepository enquiryRepository;
     private final FlatRepository flatRepository;
 
@@ -99,7 +99,7 @@ public class ProjectServiceImpl implements ProjectService {
         // ^ Enforcing No more than one project name exists for a single Organization
         if (projectRepository.existsByProjectNameAndOrganization_OrgId(
                 newProjectDetails.projectName(),
-                organization.getOrgId())) {
+                organization.getId())) {
             throw new ConflictException("Project name already exists");
         }
 
@@ -175,13 +175,13 @@ public class ProjectServiceImpl implements ProjectService {
         log.info("Method: hardDeleteProjectRecursive");
 
         deleteProjectDirectoryFromS3(project, appUserDetails);
-        wingService.hardDeleteWingsRecursiveByProjectId(project.getProjectId());
-        bankProjectInfoService.hardDeleteAllByProjectId(project.getProjectId());
-        amenityService.hardDeleteAllByProjectId(project.getProjectId());
-        documentService.hardDeleteAllByProjectId(project.getProjectId());
-        disbursementService.hardDeleteAllByProjectId(project.getProjectId());
+        wingService.hardDeleteWingsRecursiveByProjectId(project.getId());
+        bankProjectInfoService.hardDeleteAllByProjectId(project.getId());
+        amenityService.hardDeleteAllByProjectId(project.getId());
+        documentService.hardDeleteAllByProjectId(project.getId());
+        disbursementService.hardDeleteAllByProjectId(project.getId());
 
-        projectRepository.deleteById(project.getProjectId());
+        projectRepository.deleteById(project.getId());
         log.info("ROLLBACK SUCCESSFULY COMPLETED");
     }
 
@@ -271,9 +271,9 @@ public class ProjectServiceImpl implements ProjectService {
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
         Set<Enquiry> projectEnquiries = enquiryRepository
-                .findAllByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
+                .findAllByProject_ProjectIdAndIsDeletedFalse(project.getId());
 
-        long projectTotalProperties = flatRepository.countByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
+        long projectTotalProperties = flatRepository.countByProject_ProjectIdAndIsDeletedFalse(project.getId());
 
         long projectBooked = projectEnquiries.stream()
                 .filter(e -> e.getStatus() == Enquiry.Status.BOOKED)
@@ -286,7 +286,7 @@ public class ProjectServiceImpl implements ProjectService {
         int projectAvailable = (int) (projectTotalProperties - projectBooked);
 
         ProjectDTO projectDTO = new ProjectDTO(
-                project.getProjectId(),
+                project.getId(),
                 project.getProjectName(),
                 projectTotalProperties,
                 projectBooked,
@@ -308,7 +308,7 @@ public class ProjectServiceImpl implements ProjectService {
                 continue;
 
             WingDTO wingDTO = new WingDTO(
-                    wing.getWingId(),
+                    wing.getId(),
                     wing.getWingName(),
                     wing.getNoOfFloors(),
                     wing.getNoOfProperties(),
@@ -320,7 +320,7 @@ public class ProjectServiceImpl implements ProjectService {
                     continue;
 
                 FloorDTO floorDTO = new FloorDTO(
-                        floor.getFloorId(),
+                        floor.getId(),
                         floor.getFloorNo(),
                         floor.getFloorName(),
                         floor.getPropertyType(),
@@ -335,7 +335,7 @@ public class ProjectServiceImpl implements ProjectService {
                         continue;
 
                     FlatDTO flatDTO = new FlatDTO(
-                            flat.getPropertyId(),
+                            flat.getId(),
                             flat.getPropertyNumber(),
                             flat.getStatus(),
                             flat.getArea());
@@ -365,7 +365,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .filter(p -> !p.isDeleted())
                     .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
                     .map(project -> new ProjectBasicInfoDTO(
-                            project.getProjectId(),
+                            project.getId(),
                             project.getProjectName(),
                             project.getProjectAddress(),
                             project.getPincode(),
@@ -378,7 +378,7 @@ public class ProjectServiceImpl implements ProjectService {
             return ResponseEntity.ok(basicInfoDTOs);
 
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            EmployeeUserInfo employee = employeeUserInfoRepository
+            Employee employee = employeeRepository
                     .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElse(null);
             if (employee == null) {
@@ -388,7 +388,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .filter(project -> !project.isDeleted())
                     .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
                     .map(project -> new ProjectBasicInfoDTO(
-                            project.getProjectId(),
+                            project.getId(),
                             project.getProjectName(),
                             project.getProjectAddress(),
                             project.getPincode(),

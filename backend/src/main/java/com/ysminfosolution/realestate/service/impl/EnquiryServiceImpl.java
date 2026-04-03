@@ -24,13 +24,13 @@ import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.PropertyOptions
 import com.ysminfosolution.realestate.dto.enquiryPropertyOptions.PropertyTypeOption;
 import com.ysminfosolution.realestate.error.exception.ApiException;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
-import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Employee;
 import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.Enquiry.Status;
 import com.ysminfosolution.realestate.model.Floor.PropertyType;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.model.User;
-import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.EmployeeRepository;
 import com.ysminfosolution.realestate.repository.EnquiryRepository;
 import com.ysminfosolution.realestate.repository.FloorRepository;
 import com.ysminfosolution.realestate.repository.ProjectRepository;
@@ -52,7 +52,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     private final EnquiryRepository enquiryRepository;
     private final ProjectRepository projectRepository;
-    private final EmployeeUserInfoRepository employeeUserInfoRepository;
+    private final EmployeeRepository employeeRepository;
     private final TaskRepository taskRepository;
     private final FloorRepository floorRepository;
 
@@ -108,7 +108,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
 
         if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            EmployeeUserInfo employee = employeeUserInfoRepository
+            Employee employee = employeeRepository
                     .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new AccessDeniedException("Employee not found"));
 
@@ -188,15 +188,15 @@ public class EnquiryServiceImpl implements EnquiryService {
         Set<EnquiryBasicInfoDTO> basicInfoDTOs = new HashSet<>();
 
         for (Project project : projects) {
-            Set<Enquiry> enquiries = enquiryRepository.findAllByProject_ProjectIdAndIsDeletedFalse(project.getProjectId());
+            Set<Enquiry> enquiries = enquiryRepository.findAllByProject_ProjectIdAndIsDeletedFalse(project.getId());
 
             for (Enquiry enquiry : enquiries) {
                 basicInfoDTOs.add(new EnquiryBasicInfoDTO(
-                        enquiry.getEnquiryId(),
+                        enquiry.getId(),
                         enquiry.getCreatedAt(),
                         enquiry.getLeadName(),
                         enquiry.getLeadMobileNumber(),
-                        project.getProjectId(),
+                        project.getId(),
                         project.getProjectName(),
                         enquiry.getBudget(),
                         enquiry.getStatus()));
@@ -263,7 +263,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         log.info("\nMethod: getAllPropertyOptionsForProject");
 
         Project project = projectResolver.resolve(projectId);
-        if (!project.getOrganization().getOrgId().equals(appUserDetails.getOrgId())) {
+        if (!project.getOrganization().getId().equals(appUserDetails.getOrgId())) {
             throw new AccessDeniedException("User is not authorized to access this project");
         }
 
@@ -340,7 +340,7 @@ public class EnquiryServiceImpl implements EnquiryService {
         }
 
         if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            return employeeUserInfoRepository.findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
+            return employeeRepository.findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new AccessDeniedException("Employee not found"))
                     .getProjects();
         }
@@ -404,8 +404,8 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     private EnquiryResponseDTO toResponseDTO(Enquiry enquiry) {
         return new EnquiryResponseDTO(
-                enquiry.getEnquiryId(),
-                enquiry.getProject().getProjectId(),
+                enquiry.getId(),
+                enquiry.getProject().getId(),
                 enquiry.getProject().getProjectName(),
                 enquiry.getPropertyType(),
                 enquiry.getProperty(),

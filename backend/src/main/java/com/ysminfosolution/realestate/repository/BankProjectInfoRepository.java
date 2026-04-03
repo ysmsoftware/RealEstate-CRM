@@ -10,11 +10,11 @@ import com.ysminfosolution.realestate.model.BankProjectInfo;
 
 public interface BankProjectInfoRepository extends JpaRepository<BankProjectInfo, UUID> {
 
-    Set<BankProjectInfo> findAllByProject_ProjectId(UUID projectId);
+    Set<BankProjectInfo> findAllByProject_Id(UUID projectId);
 
-    Set<BankProjectInfo> findAllByProject_ProjectIdAndIsDeletedFalse(UUID projectId);
+    Set<BankProjectInfo> findAllByProject_IdAndIsDeletedFalse(UUID projectId);
 
-    void deleteAllByProject_ProjectId(UUID projectId);
+    void deleteAllByProject_Id(UUID projectId);
 
 
     Optional<BankProjectInfo> findByBankProjectIdAndIsDeletedFalse(UUID bankProjectInfoId);

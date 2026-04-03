@@ -21,7 +21,7 @@ public class ProjectAuthorizationService {
         }
 
         return project.getOrganization()
-                      .getOrgId()
+                      .getId()
                       .equals(user.getOrgId());
     }
 

@@ -42,7 +42,7 @@ public class AppUserDetails implements UserDetails {
     }
 
     public UUID getOrgId() {
-        return user.getOrganization().getOrgId();
+        return user.getOrganization().getId();
     }
 
     public String getEmail() {
@@ -54,7 +54,7 @@ public class AppUserDetails implements UserDetails {
     }
 
     public String getUserId() {
-        return user.getUserId().toString();
+        return user.getId().toString();
     }
 
     @Override

@@ -2,25 +2,15 @@ package com.ysminfosolution.realestate.model;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,13 +22,12 @@ import lombok.Setter;
         @UniqueConstraint(columnNames = {"org_id", "project_name"})
     }
 )
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Project {
+public class Project extends BaseEntity {
 
     public enum Status {
         UPCOMING,
@@ -46,14 +35,8 @@ public class Project {
         COMPLETED
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
-    @Column(name = "project_id", nullable = false)
-    private UUID projectId;
-
     @ManyToOne
-    @JoinColumn(name = "org_id", referencedColumnName = "org_id", nullable = false)
+    @JoinColumn(name = "org_id", referencedColumnName = "id", nullable = false)
     private Organization organization;
 
     @Column(name = "project_name", nullable = false)
@@ -84,17 +67,5 @@ public class Project {
 
     @Column(name = "letterhead_url", nullable = false)
     private String letterheadUrl;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
 
 }

@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ysminfosolution.realestate.dto.EmployeeResponseDTO;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
-import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Employee;
 import com.ysminfosolution.realestate.model.Project;
-import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.EmployeeRepository;
 import com.ysminfosolution.realestate.resolver.ProjectResolver;
 import com.ysminfosolution.realestate.service.AdminService;
 
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
-    private final EmployeeUserInfoRepository employeeUserInfoRepository;
+    private final EmployeeRepository employeeRepository;
     private final ProjectResolver projectResolver;
 
     
@@ -45,16 +45,16 @@ public class AdminServiceImpl implements AdminService {
         boolean partialSuccess = false;
 
         for (String employeeId : list) {
-            EmployeeUserInfo employeeUserInfo = employeeUserInfoRepository.findByUser_UserId(UUID.fromString(employeeId))
+            Employee employee = employeeRepository.findByUser_UserId(UUID.fromString(employeeId))
                     .orElse(null);
 
-            if (employeeUserInfo == null) {
+            if (employee == null) {
                 partialSuccess = true;
                 continue;
             }
 
-            employeeUserInfo.getProjects().add(project);
-            employeeUserInfoRepository.save(employeeUserInfo);
+            employee.getProjects().add(project);
+            employeeRepository.save(employee);
         }
 
         if (partialSuccess) {
@@ -78,11 +78,11 @@ public class AdminServiceImpl implements AdminService {
 
         Set<EmployeeResponseDTO> employeeResponseDTOs = new HashSet<>();
 
-        Set<EmployeeUserInfo> employees = employeeUserInfoRepository.findByProjects_ProjectIdAndIsDeletedFalse(projectId);
+        Set<Employee> employees = employeeRepository.findByProjects_ProjectIdAndIsDeletedFalse(projectId);
 
-        for (EmployeeUserInfo employee : employees) {
+        for (Employee employee : employees) {
             EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO(
-                employee.getUser().getUserId(), 
+                employee.getUser().getId(), 
                 employee.getUser().getFullName(), 
                 null, null, null);
 

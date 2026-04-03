@@ -168,7 +168,7 @@ public class DocumentServiceImpl implements DocumentService {
         Set<DocumentResponseDTO> documents = documentRepository.findAllByProject_ProjectId(projectId)
                 .stream()
                 .filter(doc -> !doc.isDeleted())
-                .map(d -> new DocumentResponseDTO(d.getDocumentId(), d.getDocumentTitle(), d.getDocumentType(), d.getDocumentURL()))
+                .map(d -> new DocumentResponseDTO(d.getId(), d.getDocumentTitle(), d.getDocumentType(), d.getDocumentURL()))
                 .collect(Collectors.toSet());
 
         documents.add(new DocumentResponseDTO(projectId, "Project LetterHead", DocumentType.LetterHead, project.getLetterheadUrl()));
@@ -184,7 +184,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         Document document = documentRepository.findById(documentId).orElseThrow(() -> new NotFoundException("Document not found"));
 
-        Project project = projectResolver.resolve(document.getProject().getProjectId());
+        Project project = projectResolver.resolve(document.getProject().getId());
 
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 

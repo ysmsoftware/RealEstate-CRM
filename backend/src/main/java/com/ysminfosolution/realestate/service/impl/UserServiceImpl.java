@@ -18,14 +18,14 @@ import com.ysminfosolution.realestate.dto.UserResponseDTO;
 import com.ysminfosolution.realestate.error.exception.ApiException;
 import com.ysminfosolution.realestate.error.exception.ConflictException;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
-import com.ysminfosolution.realestate.model.AdminUserInfo;
-import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Admin;
+import com.ysminfosolution.realestate.model.Employee;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.model.Organization;
 import com.ysminfosolution.realestate.model.User;
 import com.ysminfosolution.realestate.model.User.Role;
-import com.ysminfosolution.realestate.repository.AdminUserInfoRepository;
-import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.AdminRepository;
+import com.ysminfosolution.realestate.repository.EmployeeRepository;
 import com.ysminfosolution.realestate.repository.OrganizationRepository;
 import com.ysminfosolution.realestate.repository.ProjectRepository;
 import com.ysminfosolution.realestate.repository.UserRepository;
@@ -43,8 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final EmployeeUserInfoRepository employeeUserInfoRepository;
-    private final AdminUserInfoRepository adminUserInfoRepository;
+    private final EmployeeRepository employeeRepository;
+    private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final OrganizationRepository organizationRepository;
     private final ProjectRepository projectRepository;
@@ -80,19 +80,19 @@ public class UserServiceImpl implements UserService {
             UserResponseDTO userResponseDTO;
 
             if (user.getRole() == Role.EMPLOYEE) {
-                EmployeeUserInfo employeeUserInfo = employeeUserInfoRepository
-                        .findByUser_UserId(user.getUserId()).orElse(null);
+                Employee employee = employeeRepository
+                        .findByUser_UserId(user.getId()).orElse(null);
 
                 Set<ProjectLeastInfoDTO> projects = new HashSet<>();
 
-                employeeUserInfo.getProjects().stream()
+                employee.getProjects().stream()
                         .filter(p -> !p.isDeleted())
                         .forEach(project -> {
-                            projects.add(new ProjectLeastInfoDTO(project.getProjectId(), project.getProjectName()));
+                            projects.add(new ProjectLeastInfoDTO(project.getId(), project.getProjectName()));
                         });
 
                 userResponseDTO = new UserResponseDTO(
-                        user.getUserId(),
+                        user.getId(),
                         null,
                         user.getUsername(),
                         user.getEmail(),
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
             } else {
                 userResponseDTO = new UserResponseDTO(
-                        user.getUserId(),
+                        user.getId(),
                         null,
                         user.getUsername(),
                         user.getEmail(),
@@ -172,12 +172,12 @@ public class UserServiceImpl implements UserService {
 
             user = userRepository.save(user);
 
-            AdminUserInfo adminUserInfo = new AdminUserInfo();
-            adminUserInfo.setDeleted(false);
-            adminUserInfo.setSuperAdmin(true);
-            adminUserInfo.setUser(user);
+            Admin admin = new Admin();
+            admin.setDeleted(false);
+            admin.setSuperAdmin(true);
+            admin.setUser(user);
 
-            adminUserInfoRepository.save(adminUserInfo);
+            adminRepository.save(admin);
 
             // * For EMPLOYEE Role
         } else if (createNewUserRequestDTO.userType().equals(User.Role.EMPLOYEE)) {
@@ -185,15 +185,15 @@ public class UserServiceImpl implements UserService {
 
             user = userRepository.save(user);
 
-            EmployeeUserInfo employeeUserInfo = new EmployeeUserInfo();
-            employeeUserInfo.getProjects().addAll(projects);
-            employeeUserInfo.setUser(user);
-            employeeUserInfo.setDeleted(false);
+            Employee employee = new Employee();
+            employee.getProjects().addAll(projects);
+            employee.setUser(user);
+            employee.setDeleted(false);
 
-            employeeUserInfoRepository.save(employeeUserInfo);
+            employeeRepository.save(employee);
         }
 
-        return ResponseEntity.ok(user.getUserId().toString());
+        return ResponseEntity.ok(user.getId().toString());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // * Authorization Check: Only users from same organization can update user info
-        if (!user.getOrganization().getOrgId().equals(appUserDetails.getOrgId())) {
+        if (!user.getOrganization().getId().equals(appUserDetails.getOrgId())) {
             throw new AccessDeniedException("Unauthorized to change user info");
         }
 
@@ -236,32 +236,32 @@ public class UserServiceImpl implements UserService {
         }
 
         if (changeUserInfoDTO.userType().equals(User.Role.ADMIN)) {
-            if (!adminUserInfoRepository.existsByUser_UserId(user.getUserId())) {
-                AdminUserInfo adminUserInfo = new AdminUserInfo();
-                adminUserInfo.setDeleted(false);
-                adminUserInfo.setUser(user);
+            if (!adminRepository.existsByUser_Id(user.getId())) {
+                Admin admin = new Admin();
+                admin.setDeleted(false);
+                admin.setUser(user);
 
                 if (changeUserInfoDTO.isEnabled() != null) {
 
-                    if (adminUserInfo.isSuperAdmin() && !changeUserInfoDTO.isEnabled()) {
+                    if (admin.isSuperAdmin() && !changeUserInfoDTO.isEnabled()) {
                         throw new ApiException(HttpStatus.BAD_REQUEST, "Cannot disable super admin");
                     }
 
                     user.setEnabled(changeUserInfoDTO.isEnabled());
                 }
 
-                adminUserInfoRepository.save(adminUserInfo);
+                adminRepository.save(admin);
             }
         } else if (changeUserInfoDTO.userType().equals(User.Role.EMPLOYEE)) {
-            if (!employeeUserInfoRepository.existsByUser_UserId(user.getUserId())) {
-                EmployeeUserInfo employeeUserInfo = new EmployeeUserInfo();
+            if (!employeeRepository.existsByUser_UserId(user.getId())) {
+                Employee employee = new Employee();
 
-                employeeUserInfo.setProjects(
+                employee.setProjects(
                         projectRepository.findAllByProjectIdInAndIsDeletedFalse(changeUserInfoDTO.projectIds()));
-                employeeUserInfo.setUser(user);
-                employeeUserInfo.setDeleted(false);
+                employee.setUser(user);
+                employee.setDeleted(false);
 
-                employeeUserInfoRepository.save(employeeUserInfo);
+                employeeRepository.save(employee);
 
             }
 
@@ -284,7 +284,7 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("User not found for id: " + userId);
         }
 
-        if (!user.getOrganization().getOrgId().equals(appUserDetails.getOrgId())) {
+        if (!user.getOrganization().getId().equals(appUserDetails.getOrgId())) {
             throw new AccessDeniedException("Unauthorized to delete user");
         }
 
@@ -292,17 +292,17 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(false);
         userRepository.save(user);
 
-        employeeUserInfoRepository.findByUser_UserId(userId).ifPresent(employeeUserInfo -> {
-            employeeUserInfo.setDeleted(true);
-            employeeUserInfoRepository.save(employeeUserInfo);
+        employeeRepository.findByUser_UserId(userId).ifPresent(employee -> {
+            employee.setDeleted(true);
+            employeeRepository.save(employee);
         });
 
-        adminUserInfoRepository.findByUser_UserId(userId).ifPresent(adminUserInfo -> {
-            if (adminUserInfo.isSuperAdmin()) {
+        adminRepository.findByUser_Id(userId).ifPresent(admin -> {
+            if (admin.isSuperAdmin()) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Cannot delete super admin user");
             }
-            adminUserInfo.setDeleted(true);
-            adminUserInfoRepository.save(adminUserInfo);
+            admin.setDeleted(true);
+            adminRepository.save(admin);
         });
 
         return ResponseEntity.ok("User deleted successfully");

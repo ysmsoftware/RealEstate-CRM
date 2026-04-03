@@ -102,11 +102,11 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
                 : Set.of();
 
         Set<Amenity> amenities = policy.isIncludeAmenities()
-                ? amenityRepository.findAllByProject_ProjectIdAndIsDeletedFalse(projectId)
+                ? amenityRepository.findAllByProject_IdAndIsDeletedFalse(projectId)
                 : Set.of();
 
         Set<BankProjectInfo> bankProjectInfos = policy.isIncludeBankProjectInfo()
-                ? bankProjectInfoRepository.findAllByProject_ProjectIdAndIsDeletedFalse(projectId)
+                ? bankProjectInfoRepository.findAllByProject_IdAndIsDeletedFalse(projectId)
                 : Set.of();
 
         Set<Disbursement> disbursements = policy.isIncludeDisbursements()
@@ -192,7 +192,7 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
 
         Map<UUID, Document> documentById = new HashMap<>();
         for (Document document : fetched) {
-            documentById.put(document.getDocumentId(), document);
+            documentById.put(document.getId(), document);
         }
 
         List<Document> ordered = new ArrayList<>();
@@ -257,7 +257,7 @@ public class ProjectDetailPdfServiceImpl implements ProjectDetailPdfService {
             } catch (Exception ex) {
                 log.warn(
                         "Skipping selected document {} because it could not be downloaded: {}",
-                        selectedDocument.getDocumentId(),
+                        selectedDocument.getId(),
                         ex.getMessage());
             }
         }

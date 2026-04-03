@@ -136,7 +136,7 @@ Main backend modules and base paths:
 ## Domain Model Coverage
 
 Core entities include:
-- `Organization`, `User`, `AdminUserInfo`, `EmployeeUserInfo`, `ClientUserInfo`
+- `Organization`, `User`, `Admin`, `employee`, `Client`
 - `Project`, `Wing`, `Floor`, `Flat`
 - `Enquiry`, `FollowUp`, `FollowUpNode`, `Task`, `Booking`
 - `Document`, `Amenity`, `BankProjectInfo`, `Disbursement`

@@ -1,11 +1,5 @@
 package com.ysminfosolution.realestate.model;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,24 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Task {
-
-    @Id
-    @Column(name = "task_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID taskId;
+public class Task extends BaseEntity {
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "follow_up_id", referencedColumnName = "follow_up_id", nullable = false)
+    @JoinColumn(name = "follow_up_id", referencedColumnName = "id", nullable = false)
     private FollowUp followUp;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
 
 }

@@ -10,13 +10,13 @@ import com.ysminfosolution.realestate.dto.NewBookingDTO;
 import com.ysminfosolution.realestate.error.exception.ApiException;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Booking;
-import com.ysminfosolution.realestate.model.ClientUserInfo;
+import com.ysminfosolution.realestate.model.Client;
 import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.Enquiry.Status;
 import com.ysminfosolution.realestate.model.Flat;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.repository.BookingRepository;
-import com.ysminfosolution.realestate.repository.ClientUserInfoRepository;
+import com.ysminfosolution.realestate.repository.ClientRepository;
 import com.ysminfosolution.realestate.repository.EnquiryRepository;
 import com.ysminfosolution.realestate.repository.FlatRepository;
 import com.ysminfosolution.realestate.repository.TaskRepository;
@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
     private final ProjectResolver projectResolver;
     private final ProjectAuthorizationService projectAuthorizationService;
 
-    private final ClientUserInfoRepository clientRepository;
+    private final ClientRepository clientRepository;
     private final BookingRepository bookingRepository;
     private final FlatRepository flatRepository;
     private final EnquiryRepository enquiryRepository;
@@ -56,18 +56,18 @@ public class BookingServiceImpl implements BookingService {
         Flat flat = flatRepository.findByPropertyIdAndIsDeletedFalse(newBookingDTO.propertyId())
                 .orElseThrow(() -> new NotFoundException("Flat not found"));
 
-        Project project = projectResolver.resolve(flat.getProject().getProjectId());
+        Project project = projectResolver.resolve(flat.getProject().getId());
         projectAuthorizationService.checkProjectAccess(appUserDetails, project);
 
         if (enquiry != null) {
             validateEnquiryForBooking(enquiry, flat);
         }
 
-        ClientUserInfo clientUserInfo = enquiry != null
+        Client client = enquiry != null
                 ? buildClientFromEnquiry(enquiry, newBookingDTO)
                 : buildClientFromBooking(newBookingDTO);
 
-        clientUserInfo = clientRepository.save(clientUserInfo);
+        client = clientRepository.save(client);
 
         if (enquiry != null) {
             enquiry.setStatus(Status.BOOKED);
@@ -81,7 +81,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingDate(newBookingDTO.bookingDate());
         booking.setChequeDate(newBookingDTO.chequeDate());
         booking.setChequeNo(newBookingDTO.chequeNo());
-        booking.setClient(clientUserInfo);
+        booking.setClient(client);
         booking.setEnquiry(enquiry);
         booking.setFlat(flat);
         booking.setRate(newBookingDTO.rate());
@@ -96,10 +96,10 @@ public class BookingServiceImpl implements BookingService {
         booking = bookingRepository.save(booking);
 
         return ResponseEntity.ok(new BookingDTO(
-                booking.getBookingId(),
-                booking.getClient().getClientId(),
-                booking.getEnquiry() == null ? null : booking.getEnquiry().getEnquiryId(),
-                booking.getFlat().getPropertyId(),
+                booking.getId(),
+                booking.getClient().getId(),
+                booking.getEnquiry() == null ? null : booking.getEnquiry().getId(),
+                booking.getFlat().getId(),
                 booking.getAgreementAmount(),
                 booking.getBookingAmount(),
                 booking.getBookingDate(),
@@ -130,47 +130,47 @@ public class BookingServiceImpl implements BookingService {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Booking already exists for this enquiry");
         }
 
-        if (!enquiry.getProject().getProjectId().equals(flat.getProject().getProjectId())) {
+        if (!enquiry.getProject().getId().equals(flat.getProject().getId())) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Enquiry and booking property must belong to the same project");
         }
     }
 
-    private ClientUserInfo buildClientFromEnquiry(Enquiry enquiry, NewBookingDTO newBookingDTO) {
-        ClientUserInfo clientUserInfo = new ClientUserInfo();
-        clientUserInfo.setClientName(enquiry.getLeadName());
-        clientUserInfo.setMobileNumber(enquiry.getLeadMobileNumber());
-        clientUserInfo.setLandlineNumber(enquiry.getLeadLandlineNumber());
-        clientUserInfo.setEmail(enquiry.getLeadEmail());
-        clientUserInfo.setCity(enquiry.getLeadCity());
-        clientUserInfo.setAddress(enquiry.getLeadAddress());
-        clientUserInfo.setOccupation(enquiry.getLeadOccupation());
-        clientUserInfo.setCompany(enquiry.getLeadCompany());
-        applyBookingKyc(clientUserInfo, newBookingDTO);
-        clientUserInfo.setDeleted(false);
-        return clientUserInfo;
+    private Client buildClientFromEnquiry(Enquiry enquiry, NewBookingDTO newBookingDTO) {
+        Client client = new Client();
+        client.setClientName(enquiry.getLeadName());
+        client.setMobileNumber(enquiry.getLeadMobileNumber());
+        client.setLandlineNumber(enquiry.getLeadLandlineNumber());
+        client.setEmail(enquiry.getLeadEmail());
+        client.setCity(enquiry.getLeadCity());
+        client.setAddress(enquiry.getLeadAddress());
+        client.setOccupation(enquiry.getLeadOccupation());
+        client.setCompany(enquiry.getLeadCompany());
+        applyBookingKyc(client, newBookingDTO);
+        client.setDeleted(false);
+        return client;
     }
 
-    private ClientUserInfo buildClientFromBooking(NewBookingDTO newBookingDTO) {
+    private Client buildClientFromBooking(NewBookingDTO newBookingDTO) {
         validateDirectClientDetails(newBookingDTO);
 
-        ClientUserInfo clientUserInfo = new ClientUserInfo();
-        clientUserInfo.setClientName(newBookingDTO.clientName());
-        clientUserInfo.setMobileNumber(newBookingDTO.mobileNumber());
-        clientUserInfo.setLandlineNumber(newBookingDTO.landlineNumber());
-        clientUserInfo.setEmail(newBookingDTO.email());
-        clientUserInfo.setCity(newBookingDTO.city());
-        clientUserInfo.setAddress(newBookingDTO.address());
-        clientUserInfo.setOccupation(newBookingDTO.occupation());
-        clientUserInfo.setCompany(newBookingDTO.company());
-        applyBookingKyc(clientUserInfo, newBookingDTO);
-        clientUserInfo.setDeleted(false);
-        return clientUserInfo;
+        Client client = new Client();
+        client.setClientName(newBookingDTO.clientName());
+        client.setMobileNumber(newBookingDTO.mobileNumber());
+        client.setLandlineNumber(newBookingDTO.landlineNumber());
+        client.setEmail(newBookingDTO.email());
+        client.setCity(newBookingDTO.city());
+        client.setAddress(newBookingDTO.address());
+        client.setOccupation(newBookingDTO.occupation());
+        client.setCompany(newBookingDTO.company());
+        applyBookingKyc(client, newBookingDTO);
+        client.setDeleted(false);
+        return client;
     }
 
-    private void applyBookingKyc(ClientUserInfo clientUserInfo, NewBookingDTO newBookingDTO) {
-        clientUserInfo.setDob(newBookingDTO.dob());
-        clientUserInfo.setPanNo(newBookingDTO.panNo());
-        clientUserInfo.setAadharNo(newBookingDTO.aadharNo());
+    private void applyBookingKyc(Client client, NewBookingDTO newBookingDTO) {
+        client.setDob(newBookingDTO.dob());
+        client.setPanNo(newBookingDTO.panNo());
+        client.setAadharNo(newBookingDTO.aadharNo());
     }
 
     private void validateDirectClientDetails(NewBookingDTO newBookingDTO) {

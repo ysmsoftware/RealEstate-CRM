@@ -7,21 +7,21 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ysminfosolution.realestate.model.EmployeeUserInfo;
+import com.ysminfosolution.realestate.model.Employee;
 
-public interface EmployeeUserInfoRepository extends JpaRepository<EmployeeUserInfo, UUID> {
-
-    @EntityGraph(attributePaths = {"projects", "user"})
-    Optional<EmployeeUserInfo> findByUser_UserId(UUID userId);
+public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Set<EmployeeUserInfo> findAllByUser_Organization_OrgIdAndIsDeletedFalse(UUID orgId);
+    Optional<Employee> findByUser_UserId(UUID userId);
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    EmployeeUserInfo findByEmployeeIdAndIsDeletedFalse(UUID employeeId);
+    Set<Employee> findAllByUser_Organization_OrgIdAndIsDeletedFalse(UUID orgId);
 
     @EntityGraph(attributePaths = {"projects", "user"})
-    Set<EmployeeUserInfo> findByProjects_ProjectIdAndIsDeletedFalse(UUID projectId);
+    Employee findByEmployeeIdAndIsDeletedFalse(UUID employeeId);
+
+    @EntityGraph(attributePaths = {"projects", "user"})
+    Set<Employee> findByProjects_ProjectIdAndIsDeletedFalse(UUID projectId);
 
     boolean existsByUser_UserId(UUID userId);
 

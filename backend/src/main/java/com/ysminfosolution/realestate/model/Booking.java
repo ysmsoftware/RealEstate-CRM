@@ -1,17 +1,8 @@
 package com.ysminfosolution.realestate.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -27,16 +18,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Booking {
-    
-    @Id
-    @Column(name = "booking_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID bookingId;
+public class Booking extends BaseEntity {
 
     @OneToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", nullable = false)
-    private ClientUserInfo client;
+    @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+    private Client client;
 
     @Column(name = "agreement_amount", nullable = false, length = 20)
     private String agreementAmount;
@@ -69,7 +55,7 @@ public class Booking {
     private String rate;
 
     @OneToOne
-    @JoinColumn(name = "property_id", referencedColumnName = "property_id", nullable = false)
+    @JoinColumn(name = "property_id", referencedColumnName = "id", nullable = false)
     private Flat flat;
 
     @Column(name = "is_registered", nullable = false)
@@ -81,9 +67,8 @@ public class Booking {
     @Column(name = "reg_date", nullable = true)
     private LocalDate regDate;
 
-    // ! This field can be omitted
     @OneToOne
-    @JoinColumn(name = "enquiry_id", referencedColumnName = "enquiry_id", nullable = true)
+    @JoinColumn(name = "enquiry_id", referencedColumnName = "id", nullable = true)
     private Enquiry enquiry;
 
     @Column(name = "is_cancelled", nullable = false)
@@ -91,16 +76,4 @@ public class Booking {
 
     @Column(name = "remark", nullable = true)
     private String remark;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
 }

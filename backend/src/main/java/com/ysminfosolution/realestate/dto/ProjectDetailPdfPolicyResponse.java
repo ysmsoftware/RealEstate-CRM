@@ -1,6 +1,6 @@
 package com.ysminfosolution.realestate.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +16,6 @@ public record ProjectDetailPdfPolicyResponse(
         boolean includeDisbursements,
         boolean includeDocuments,
         List<UUID> documentIds,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        Instant createdAt,
+        Instant updatedAt) {
 }

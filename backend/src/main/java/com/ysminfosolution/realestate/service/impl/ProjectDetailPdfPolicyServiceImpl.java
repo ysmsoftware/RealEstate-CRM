@@ -163,7 +163,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
                 .findAllByProject_ProjectIdAndDocumentIdInAndIsDeletedFalse(projectId, normalizedDocumentIds);
 
         Map<UUID, Document> validDocumentById = validDocuments.stream()
-                .collect(Collectors.toMap(Document::getDocumentId, document -> document));
+                .collect(Collectors.toMap(Document::getId, document -> document));
 
         List<UUID> orderedValidDocumentIds = normalizedDocumentIds.stream()
                 .filter(validDocumentById::containsKey)
@@ -191,7 +191,7 @@ public class ProjectDetailPdfPolicyServiceImpl implements ProjectDetailPdfPolicy
 
     private ProjectDetailPdfPolicyResponse toResponse(ProjectDetailPdfPolicy policy) {
         return new ProjectDetailPdfPolicyResponse(
-                policy.getProjectDetailPdfPolicyId(),
+                policy.getId(),
                 policy.getPolicyName(),
                 policy.isIncludeProjectOverview(),
                 policy.isIncludeWings(),

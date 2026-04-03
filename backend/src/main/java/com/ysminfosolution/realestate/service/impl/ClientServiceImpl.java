@@ -14,14 +14,14 @@ import com.ysminfosolution.realestate.dto.ClientBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.ClientDetailsDTO;
 import com.ysminfosolution.realestate.error.exception.NotFoundException;
 import com.ysminfosolution.realestate.model.Booking;
-import com.ysminfosolution.realestate.model.ClientUserInfo;
+import com.ysminfosolution.realestate.model.Client;
 import com.ysminfosolution.realestate.model.Enquiry;
 import com.ysminfosolution.realestate.model.FollowUp;
 import com.ysminfosolution.realestate.model.Project;
 import com.ysminfosolution.realestate.model.User;
 import com.ysminfosolution.realestate.repository.BookingRepository;
-import com.ysminfosolution.realestate.repository.ClientUserInfoRepository;
-import com.ysminfosolution.realestate.repository.EmployeeUserInfoRepository;
+import com.ysminfosolution.realestate.repository.ClientRepository;
+import com.ysminfosolution.realestate.repository.EmployeeRepository;
 import com.ysminfosolution.realestate.repository.FollowUpRepository;
 import com.ysminfosolution.realestate.security.AppUserDetails;
 import com.ysminfosolution.realestate.service.ClientService;
@@ -35,8 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientUserInfoRepository clientRepository;
-    private final EmployeeUserInfoRepository employeeUserInfoRepository;
+    private final ClientRepository clientRepository;
+    private final EmployeeRepository employeeRepository;
     private final BookingRepository bookingRepository;
     private final FollowUpRepository followUpRepository;
 
@@ -51,13 +51,13 @@ public class ClientServiceImpl implements ClientService {
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
             clientBasicInfoDTOs = clientRepository.findClientBasicInfoByOrganization(appUserDetails.getOrgId());
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            var employee = employeeUserInfoRepository
+            var employee = employeeRepository
                     .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElse(null);
 
             if (employee != null && !employee.getProjects().isEmpty()) {
                 var projectIds = employee.getProjects().stream()
-                        .map(Project::getProjectId)
+                        .map(Project::getId)
                         .collect(Collectors.toSet());
 
                 clientBasicInfoDTOs = clientRepository.findClientBasicInfoByProjectIds(projectIds);
@@ -73,13 +73,13 @@ public class ClientServiceImpl implements ClientService {
         log.info("\n");
         log.info("Method: getClientBasicInfo");
 
-        ClientUserInfo client = clientRepository.findByClientIdAndIsDeletedFalse(clientId)
+        Client client = clientRepository.findByClientIdAndIsDeletedFalse(clientId)
                 .orElseThrow(() -> new NotFoundException("Client not found"));
 
         ensureAuthorizedClientAccess(clientId, appUserDetails);
 
         return ResponseEntity.ok(new ClientBasicInfoDTO(
-                client.getClientId(),
+                client.getId(),
                 client.getClientName(),
                 client.getMobileNumber(),
                 client.getEmail(),
@@ -94,7 +94,7 @@ public class ClientServiceImpl implements ClientService {
         log.info("Method: getClientDetails");
 
         Set<Booking> bookings = getAuthorizedBookings(clientId, appUserDetails);
-        ClientUserInfo client = bookings.iterator().next().getClient();
+        Client client = bookings.iterator().next().getClient();
 
         Set<Enquiry> enquiries = bookings.stream()
                 .map(Booking::getEnquiry)
@@ -102,17 +102,17 @@ public class ClientServiceImpl implements ClientService {
                 .collect(Collectors.toSet());
 
         Set<UUID> enquiryIds = enquiries.stream()
-                .map(Enquiry::getEnquiryId)
+                .map(Enquiry::getId)
                 .collect(Collectors.toSet());
 
         Set<UUID> followUpIds = enquiries.isEmpty()
                 ? Set.of()
                 : followUpRepository.findAllByEnquiriesWithFetch(enquiries).stream()
-                        .map(FollowUp::getFollowUpId)
+                        .map(FollowUp::getId)
                         .collect(Collectors.toSet());
 
         return ResponseEntity.ok(new ClientDetailsDTO(
-                client.getClientId(),
+                client.getId(),
                 client.getClientName(),
                 client.getEmail(),
                 client.getMobileNumber(),
@@ -138,7 +138,7 @@ public class ClientServiceImpl implements ClientService {
         log.info("Method: changeClientInfo");
 
         Set<Booking> bookings = getAuthorizedBookings(clientId, appUserDetails);
-        ClientUserInfo client = bookings.iterator().next().getClient();
+        Client client = bookings.iterator().next().getClient();
 
         updateClientFields(client, clientInfo);
         clientRepository.save(client);
@@ -159,20 +159,20 @@ public class ClientServiceImpl implements ClientService {
         Set<Booking> authorizedBookings;
         if (appUserDetails.getRole().equals(User.Role.ADMIN)) {
             authorizedBookings = bookings.stream()
-                    .filter(booking -> booking.getFlat().getProject().getOrganization().getOrgId()
+                    .filter(booking -> booking.getFlat().getProject().getOrganization().getId()
                             .equals(appUserDetails.getOrgId()))
                     .collect(Collectors.toSet());
         } else if (appUserDetails.getRole().equals(User.Role.EMPLOYEE)) {
-            Set<UUID> employeeProjectIds = employeeUserInfoRepository
+            Set<UUID> employeeProjectIds = employeeRepository
                     .findByUser_UserId(UUID.fromString(appUserDetails.getUserId()))
                     .orElseThrow(() -> new NotFoundException("Employee not found"))
                     .getProjects()
                     .stream()
-                    .map(Project::getProjectId)
+                    .map(Project::getId)
                     .collect(Collectors.toSet());
 
             authorizedBookings = bookings.stream()
-                    .filter(booking -> employeeProjectIds.contains(booking.getFlat().getProject().getProjectId()))
+                    .filter(booking -> employeeProjectIds.contains(booking.getFlat().getProject().getId()))
                     .collect(Collectors.toSet());
         } else {
             throw new AccessDeniedException("User not authorized for this client");
@@ -185,7 +185,7 @@ public class ClientServiceImpl implements ClientService {
         return authorizedBookings;
     }
 
-    private void updateClientFields(ClientUserInfo client, ClientDetailsDTO dto) {
+    private void updateClientFields(Client client, ClientDetailsDTO dto) {
         if (dto.clientName() != null)
             client.setClientName(dto.clientName());
         if (dto.email() != null)
