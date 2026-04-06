@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { X, AlertCircle, CheckCircle, Info, AlertTriangle, ChevronUp, ChevronDown } from "lucide-react"
 

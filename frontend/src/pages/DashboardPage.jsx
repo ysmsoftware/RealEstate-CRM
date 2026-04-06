@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
 import { AppLayout } from "../components/layout/AppLayout"
 import { Table } from "../components/ui/Table"
-import { dashboardService } from "../services/dashboardService"
 import ErrorBoundary from "../components/common/ErrorBoundary"
 
 const MonthlyEnquiriesChart = lazy(() => import("../components/dashboard/MonthlyEnquiriesChart"))
@@ -21,31 +20,21 @@ import {
 } from "recharts"
 import { Users, Home, DollarSign, Building2, TrendingUp, Activity, Clock, RefreshCw } from "lucide-react"
 
+import { useDashboard } from "../api/hooks/useDashboard"
+
 export default function DashboardPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
-    const [dashboardData, setDashboardData] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [lastUpdated, setLastUpdated] = useState(new Date())
-    const [refreshing, setRefreshing] = useState(false)
 
-    const fetchDashboard = async () => {
-        setRefreshing(true)
-        try {
-            const data = await dashboardService.getDashboard()
-            setDashboardData(data)
-            setLastUpdated(new Date())
-        } catch (error) {
-            console.error("Failed to fetch dashboard data:", error)
-        } finally {
-            setLoading(false)
-            setRefreshing(false)
-        }
-    }
+    const {
+        data: dashboardData,
+        isLoading: loading,
+        isFetching: refreshing,
+        refetch,
+        dataUpdatedAt,
+    } = useDashboard()
 
-    useEffect(() => {
-        fetchDashboard()
-    }, [])
+    const lastUpdated = new Date(dataUpdatedAt || Date.now())
 
     // Calculate statistics from dashboardData
     const stats = useMemo(() => {
@@ -297,7 +286,7 @@ export default function DashboardPage() {
                             <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
                         </div>
                         <button
-                            onClick={fetchDashboard}
+                            onClick={() => refetch()}
                             disabled={refreshing}
                             className={`p-2 rounded-full hover:bg-slate-100 transition-all ${refreshing ? 'animate-spin text-primary' : 'text-slate-500 hover:text-primary'}`}
                             title="Refresh Dashboard"

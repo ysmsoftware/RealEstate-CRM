@@ -1,5 +1,5 @@
-"use client"
 import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AuthProvider } from "./contexts/AuthContext"
 import { DataProvider } from "./contexts/DataContext"
 import { useAuth } from "./contexts/AuthContext"
@@ -166,15 +166,26 @@ function LegacyLeadDetailRedirect() {
     return <Navigate to={`/enquiry-book/${enquiryId}`} replace />
 }
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 30_000,
+            retry: 1,
+        },
+    },
+})
+
 export default function App() {
     return (
-        <Router>
-            <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+            <Router>
                 <DataProvider>
-                    <ToastContainer />
-                    <AppRoutes />
+                    <AuthProvider>
+                        <ToastContainer />
+                        <AppRoutes />
+                    </AuthProvider>
                 </DataProvider>
-            </AuthProvider>
-        </Router>
+            </Router>
+        </QueryClientProvider>
     )
 }

@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
+import { useQueryClient } from "@tanstack/react-query"
+import { useProjects } from "../api/hooks/useProjects"
+import { KEYS } from "../api/keys"
 import { useToast } from "../components/ui/Toast"
 import { AppLayout } from "../components/layout/AppLayout"
 import { ProgressBar } from "../components/ui/ProgressBar"
@@ -20,34 +23,16 @@ export default function ProjectsPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
     const { success, error } = useToast()
-    const [projects, setProjects] = useState([])
-    const [loading, setLoading] = useState(true)
+    const queryClient = useQueryClient()
     const [deleteConfirm, setDeleteConfirm] = useState(null)
     const isAdmin = user?.role === ROLES.ADMIN
 
-    useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                setLoading(true)
-                console.log("Fetching projects...")
-                const data = await projectService.getProjects()
-                setProjects(data)
-                console.log("Projects fetched:", data)
-            } catch (err) {
-                console.error("Failed to fetch projects:", err)
-                error(err.message || "Failed to load projects")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchProjects()
-    }, [])
+    const { data: projects = [], isLoading: loading } = useProjects()
 
     const handleDelete = async (projectId) => {
         try {
             await projectService.deleteProject(projectId)
-            setProjects(projects.filter((p) => p.projectId !== projectId))
+            queryClient.invalidateQueries({ queryKey: KEYS.projects() })
             setDeleteConfirm(null)
             success("Project deleted successfully")
         } catch (err) {

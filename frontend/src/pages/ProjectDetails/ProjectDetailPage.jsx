@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react"
 import { useParams, useNavigate } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { useToast } from "../../components/ui/Toast" // Adjusted path
+import { useProject, useProjectEnquiries, useDisbursements, useAmenities, useBanks, useDocuments } from "../../api/hooks/useProjects"
+import { KEYS } from "../../api/keys"
 import { useAuth } from "../../contexts/AuthContext"
 import { AppLayout } from "../../components/layout/AppLayout"
 import { Tabs } from "../../components/ui/Tabs"
@@ -24,67 +27,23 @@ export default function ProjectDetailPage() {
     const { error: toastError } = useToast()
     const { user } = useAuth()
 
-    const [project, setProject] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const queryClient = useQueryClient()
 
-    // Detached Lists State
-    const [enquiries, setEnquiries] = useState([])
-    const [disbursements, setDisbursements] = useState([])
-    const [amenities, setAmenities] = useState([])
-    const [banks, setBanks] = useState([])
-    const [documents, setDocuments] = useState([])
+    const { data: project, isLoading: loading } = useProject(projectId)
+    const { data: enquiries = [] } = useProjectEnquiries(projectId)
+    const { data: disbursements = [] } = useDisbursements(projectId)
+    const { data: amenities = [] } = useAmenities(projectId)
+    const { data: banks = [] } = useBanks(projectId)
+    const { data: documents = [] } = useDocuments(projectId)
 
-    // --- Data Fetching ---
-    const fetchData = useCallback(async () => {
-        try {
-            setLoading(true)
-            const [pData, eData, dData, aData, bData, docData] = await Promise.all([
-                projectService.getProjectById(projectId).catch((err) => {
-                    console.error("Error fetching project:", err)
-                    return null
-                }),
-                projectService.getProjectEnquiries(projectId).catch(() => []),
-                projectService.getDisbursements(projectId).catch(() => []),
-                projectService.getAmenitiesByProject(projectId).catch(() => []),
-                projectService.getBanksByProject(projectId).catch(() => []),
-                projectService.getDocumentsByProject(projectId).catch(() => []),
-            ])
-
-            if (pData) setProject(pData)
-            setEnquiries(eData || [])
-            setDisbursements(dData || [])
-            setAmenities(aData || [])
-            setBanks(bData || [])
-            setDocuments(docData || [])
-        } catch (err) {
-            console.error("Failed to load details:", err)
-            toastError(err.message || "Failed to load project details")
-        } finally {
-            setLoading(false)
-        }
-    }, [projectId])
-
-    // Specific refreshers to avoid reloading the whole page when small things change
-    const refreshBanks = async () => {
-        const data = await projectService.getBanksByProject(projectId)
-        setBanks(data || [])
+    const refreshBanks = () => queryClient.invalidateQueries({ queryKey: KEYS.banks(projectId) })
+    const refreshAmenities = () => queryClient.invalidateQueries({ queryKey: KEYS.amenities(projectId) })
+    const refreshDocuments = () => queryClient.invalidateQueries({ queryKey: KEYS.documents(projectId) })
+    const fetchData = () => {
+        queryClient.invalidateQueries({ queryKey: KEYS.project(projectId) })
+        queryClient.invalidateQueries({ queryKey: KEYS.projectEnquiries(projectId) })
+        queryClient.invalidateQueries({ queryKey: KEYS.disbursements(projectId) })
     }
-
-    const refreshAmenities = async () => {
-        const data = await projectService.getAmenitiesByProject(projectId)
-        setAmenities(data || [])
-    }
-
-    const refreshDocuments = async () => {
-        const data = await projectService.getDocumentsByProject(projectId)
-        setDocuments(data || [])
-    }
-
-    useEffect(() => {
-        if (projectId) {
-            fetchData()
-        }
-    }, [projectId, fetchData])
 
     // --- Main Render Helpers ---
     if (loading) {
