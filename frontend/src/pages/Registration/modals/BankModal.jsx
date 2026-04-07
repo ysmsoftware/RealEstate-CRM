@@ -1,39 +1,28 @@
 import { Modal } from "../../../components/ui/Modal"
 import { Button } from "../../../components/ui/Button"
 import { FormInput } from "../../../components/ui/FormInput"
-import { useToast } from "../../../components/ui/Toast"
-
+import { AlertCircle } from "lucide-react"
 
 export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAdd }) {
-    const { error: toastError } = useToast()
-
-    const handleAdd = () => {
-        // Validate required fields
-        if (
-            !bankForm.bankName ||
-            !bankForm.branchName ||
-            !bankForm.accountNo ||
-            !bankForm.ifsc ||
-            !bankForm.contactPerson ||
-            !bankForm.contactNumber
-        ) {
-            toastError("All fields are required")
-            return
-        }
-
-        // Validate Account Number length
-        if (bankForm.accountNo.length < 10) {
-            toastError("Account Number must be at least 10 digits")
-            return
-        }
-
-        // Validate Contact Number length
-        if (bankForm.contactNumber.length !== 10) {
-            toastError("Contact Number must be 10 digits")
-            return
-        }
-
-        onAdd()
+    let isError = false
+    let errorMsg = ""
+    
+    if (
+        !bankForm.bankName ||
+        !bankForm.branchName ||
+        !bankForm.accountNo ||
+        !bankForm.ifsc ||
+        !bankForm.contactPerson ||
+        !bankForm.contactNumber
+    ) {
+        isError = true
+        errorMsg = "All fields are required"
+    } else if (bankForm.accountNo.length < 10) {
+        isError = true
+        errorMsg = "Account Number must be at least 10 digits"
+    } else if (bankForm.contactNumber.length !== 10) {
+        isError = true
+        errorMsg = "Contact Number must be 10 digits"
     }
 
     return (
@@ -120,10 +109,27 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                     required
                 />
             </div>
+            
+            {isError && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
+                    <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
+                    <div>
+                        <span className="font-semibold block">Validation Error</span>
+                        <span className="text-red-600">{errorMsg}</span>
+                    </div>
+                </div>
+            )}
 
             <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end mt-6">
                 <Button onClick={onClose} variant="secondary" className="w-full sm:w-auto">Cancel</Button>
-                <Button onClick={handleAdd} variant="primary" className="w-full sm:w-auto">Add Bank</Button>
+                <Button 
+                  onClick={onAdd} 
+                  disabled={isError} 
+                  variant="primary" 
+                  className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Add Bank
+                </Button>
             </div>
         </Modal>
     )

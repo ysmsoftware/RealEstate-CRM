@@ -87,6 +87,14 @@ export default function WingsTab({ project, projectId, onRefresh }) {
 
     const handleAddOrUpdateFloorRow = () => {
         if (!floorInput.floorName) { toastError("Floor Name is required"); return }
+        
+        const duplicateCheckName = floorInput.floorName.trim().toLowerCase();
+        const isDuplicate = currentWingFloors.some((f, idx) => idx !== editingFloorIndex && f.floorName?.trim().toLowerCase() === duplicateCheckName);
+        if (isDuplicate) {
+            toastError("Floor Name already exists. No duplicates allowed.");
+            return;
+        }
+
         if (!floorInput.propertyType) { toastError("Property Type is required"); return }
         if (!floorInput.property) { toastError("Property is required"); return }
         if (!floorInput.area || parseFloat(floorInput.area) <= 0) { toastError("Valid Area is required"); return }

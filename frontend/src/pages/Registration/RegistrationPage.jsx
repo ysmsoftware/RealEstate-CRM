@@ -153,6 +153,7 @@ export default function RegistrationPage() {
                 <DisbursementModal
                     isOpen={showDisbursementModal} onClose={() => setShowDisbursementModal(false)}
                     form={disbursementForm} setForm={setDisbursementForm} onAdd={handleAddDisbursement}
+                    currentDisbursements={disbursements}
                 />
 
                 <PreviewModal

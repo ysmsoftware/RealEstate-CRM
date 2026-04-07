@@ -1,7 +1,7 @@
 import { Modal } from "../../../components/ui/Modal"
 import { Button } from "../../../components/ui/Button"
 import { FormInput } from "../../../components/ui/FormInput"
-import { Plus, Save, Edit, Trash2 } from "lucide-react"
+import { Plus, Save, Edit, Trash2, AlertCircle } from "lucide-react"
 
 export default function WingModal({
     isOpen, onClose, onSave,
@@ -12,6 +12,26 @@ export default function WingModal({
     onAddFloor, onEditFloor, onDeleteFloor,
     onUpdateFloor
 }) {
+    // 1. Calculate duplicates in the table
+    const floorNamesMap = {};
+    currentWingFloors.forEach(f => {
+        const name = (f.floorName || "").trim().toLowerCase();
+        if (name) {
+            floorNamesMap[name] = (floorNamesMap[name] || 0) + 1;
+        }
+    });
+
+    const isDuplicate = (floorName) => {
+        const name = (floorName || "").trim().toLowerCase();
+        return name && floorNamesMap[name] > 1;
+    };
+
+    const hasDuplicateFloorsInTable = currentWingFloors.some(f => isDuplicate(f.floorName));
+
+    // 2. Check duplicate for new manual floor input
+    const newFloorName = (floorInput.floorName || "").trim().toLowerCase();
+    const isNewFloorDuplicate = newFloorName && currentWingFloors.some((f, idx) => idx !== editingFloorIndex && (f.floorName || "").trim().toLowerCase() === newFloorName);
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Fill Wing Information" size="4xl" variant="form">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -77,11 +97,12 @@ export default function WingModal({
                             Floor Name <span className="text-red-500">*</span>
                         </label>
                         <input
-                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-indigo-500 outline-none"
+                            className={`w-full px-2 py-1.5 text-sm border rounded outline-none transition-all focus:ring-1 ${isNewFloorDuplicate ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
                             value={floorInput.floorName}
                             onChange={(e) => setFloorInput({ ...floorInput, floorName: e.target.value })}
                             placeholder="Ground"
                         />
+                        {isNewFloorDuplicate && <span className="block text-[10px] text-red-500 mt-1">Duplicate Name</span>}
                     </div>
                     <div className="col-span-2 md:col-span-2">
                         <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -162,7 +183,13 @@ export default function WingModal({
                         />
                     </div>
                     <div className="col-span-2 md:col-span-1">
-                        <Button onClick={onAddFloor} size="sm" variant="primary" className="w-full h-[34px] flex items-center justify-center">
+                        <Button 
+                            onClick={onAddFloor} 
+                            disabled={isNewFloorDuplicate}
+                            size="sm" 
+                            variant="primary" 
+                            className="w-full h-[34px] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             {editingFloorIndex >= 0 ? <Save size={16} /> : <Plus size={16} />}
                         </Button>
                     </div>
@@ -196,10 +223,11 @@ export default function WingModal({
                                 </td>
                                 <td className="px-2 py-2">
                                     <input
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 hover:border-indigo-300 focus:border-indigo-500 rounded-lg outline-none bg-white transition-all focus:ring-1 focus:ring-indigo-500"
+                                        className={`w-full px-3 py-2 text-sm border rounded-lg outline-none bg-white transition-all focus:ring-1 ${isDuplicate(floor.floorName) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 hover:border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500'}`}
                                         value={floor.floorName}
                                         onChange={(e) => onUpdateFloor(index, 'floorName', e.target.value)}
                                     />
+                                    {isDuplicate(floor.floorName) && <span className="block text-[10px] text-red-500 mt-1">Duplicate</span>}
                                 </td>
                                 <td className="px-2 py-2">
                                     <select
@@ -230,17 +258,39 @@ export default function WingModal({
                                 <td className="px-2 py-2">
                                     <input
                                         type="number"
+                                        min="1"
                                         className="w-full px-3 py-2 text-sm border border-gray-200 hover:border-indigo-300 focus:border-indigo-500 rounded-lg outline-none bg-white transition-all focus:ring-1 focus:ring-indigo-500"
                                         value={floor.area}
-                                        onChange={(e) => onUpdateFloor(index, 'area', e.target.value)}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === "" || (parseFloat(val) >= 0 && !val.includes('-'))) {
+                                                onUpdateFloor(index, 'area', val)
+                                            }
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '-' || e.key === 'e') {
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     />
                                 </td>
                                 <td className="px-2 py-2 text-center">
                                     <input
                                         type="number"
+                                        min="1"
                                         className="w-full px-2 py-2 text-sm border border-gray-200 hover:border-indigo-300 focus:border-indigo-500 rounded-lg outline-none bg-white text-center transition-all focus:ring-1 focus:ring-indigo-500"
                                         value={floor.quantity}
-                                        onChange={(e) => onUpdateFloor(index, 'quantity', e.target.value)}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === "" || (parseInt(val) >= 0 && !val.includes('-'))) {
+                                                onUpdateFloor(index, 'quantity', val)
+                                            }
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === '-' || e.key === 'e') {
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     />
                                 </td>
                                 <td className="px-2 py-2 flex justify-center gap-2">
@@ -266,10 +316,25 @@ export default function WingModal({
                 <span>{currentWingFloors.reduce((sum, f) => sum + (parseInt(f.quantity) || 0), 0)}</span>
             </div>
 
+            {hasDuplicateFloorsInTable && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
+                    <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
+                    <div>
+                        <span className="font-semibold block">Validation Error</span>
+                        <span className="text-red-600">Please fix duplicate floor names to continue.</span>
+                    </div>
+                </div>
+            )}
+            
             <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end mt-6">
                 <Button onClick={onClose} variant="secondary" className="w-full sm:w-auto">Cancel</Button>
-                <Button onClick={onSave} variant="primary" className="w-full sm:w-auto">
-                    <Plus size={18} className="mr-1" /> Add Wing
+                <Button 
+                    onClick={onSave} 
+                    disabled={hasDuplicateFloorsInTable} 
+                    variant="primary" 
+                    className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Save size={18} className="mr-1" /> {wingForm.wingId ? "Update Wing" : "Add Wing"}
                 </Button>
             </div>
         </Modal>

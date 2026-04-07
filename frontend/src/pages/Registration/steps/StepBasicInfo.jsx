@@ -38,8 +38,16 @@ export default function StepBasicInfo({ basicInfo, setBasicInfo }) {
             />
             <FormInput
                 label="Maharera Number"
-                value={basicInfo.mahareraNo}
-                onChange={(e) => setBasicInfo({ ...basicInfo, mahareraNo: e.target.value })}
+                value={basicInfo.mahareraNo || ""}
+                onChange={(e) => {
+                    const val = e.target.value.toUpperCase();
+                    // Only allow letters and digits, convert to uppercase, and enforce 12-character max length limit
+                    if (val === "" || (/^[A-Z0-9]+$/.test(val) && val.length <= 12)) {
+                        setBasicInfo({ ...basicInfo, mahareraNo: val });
+                    }
+                }}
+                maxLength={12}
+                minLength={12}
                 placeholder="P52100012345"
                 required
             />
@@ -65,21 +73,40 @@ export default function StepBasicInfo({ basicInfo, setBasicInfo }) {
                     required
                 />
             </div>
-            <FormSelect
-                label="Status"
-                value={basicInfo.status}
-                onChange={(e) => setBasicInfo({ ...basicInfo, status: e.target.value })}
-                options={[
-                    { value: "UPCOMING", label: "Upcoming" },
-                    { value: "IN_PROGRESS", label: "In Progress" },
-                    { value: "COMPLETED", label: "Completed" },
-                ]}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormSelect
+                    label="Status"
+                    value={basicInfo.status}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, status: e.target.value })}
+                    options={[
+                        { value: "UPCOMING", label: "Upcoming" },
+                        { value: "IN_PROGRESS", label: "In Progress" },
+                        { value: "COMPLETED", label: "Completed" },
+                    ]}
+                />
+                <FormInput
+                    label="Pincode"
+                    type="text"
+                    pattern="\d{6}"
+                    maxLength={6}
+                    minLength={6}
+                    value={basicInfo.pincode || ""}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === "" || (/^\d+$/.test(val) && val.length <= 6)) {
+                            setBasicInfo({ ...basicInfo, pincode: val })
+                        }
+                    }}
+                    required
+                />
+            </div>
             <FormTextarea
                 label="Address"
-                value={basicInfo.address}
+                value={basicInfo.address || ""}
                 onChange={(e) => setBasicInfo({ ...basicInfo, address: e.target.value })}
+                required
             />
+
         </div>
     )
 }

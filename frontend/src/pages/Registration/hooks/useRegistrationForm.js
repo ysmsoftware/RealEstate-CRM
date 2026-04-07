@@ -211,6 +211,22 @@ export function useRegistrationForm() {
                 error("Start date must be before completion date"); return false
             }
         }
+        
+        if (currentStep === 3) {
+            if (!letterHead) {
+                error("Project letter head is required")
+                return false
+            }
+        }
+        
+        if (currentStep === 4) {
+            const totalPercentage = disbursements.reduce((sum, d) => sum + Number.parseFloat(d.percentage), 0)
+            if (totalPercentage !== 100) {
+                error(`Total disbursement percentage must be exactly 100%. Current total is ${totalPercentage}%`)
+                return false
+            }
+        }
+        
         return true
     }
 
