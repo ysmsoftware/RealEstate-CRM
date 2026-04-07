@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useMemo } from "react"
 import { useData } from "../contexts/DataContext"

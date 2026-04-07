@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { useToast } from "../components/ui/Toast"
 import { followUpService } from "../services/followUpService"
 import { AppLayout } from "../components/layout/AppLayout"
-import { StatCard, CompactStatsRow } from "../components/ui/Card"
+import { StatCard } from "../components/ui/Card"
 import { Card } from "../components/ui/Card"
 import { Button } from "../components/ui/Button"
 import { Modal, TwoColumnModal, ModalSection } from "../components/ui/Modal"
@@ -12,8 +12,10 @@ import { FormTextarea } from "../components/ui/FormTextarea"
 import { Timeline } from "../components/ui/Timeline"
 import { FormSelect } from "../components/ui/FormSelect"
 import { CheckCircle2, Circle, Calendar, Phone, User, FileText, Plus } from "lucide-react"
-import { formatDateTime } from "../utils/helpers"
-import { isWithinHours } from "../utils/helpers"
+import { formatDateTime, isWithinHours, formatDate } from "../utils/helpers"
+import { useQueryClient } from "@tanstack/react-query"
+import { useFollowUpTasks } from "../api/hooks/useFollowUps"
+import { KEYS } from "../api/keys"
 import { SkeletonLoader } from "../components/ui/SkeletonLoader"
 import { FOLLOWUP_EVENT_TAGS } from "../utils/constants"
 
@@ -55,14 +57,6 @@ const normalizeDate = (date) => {
     const d = new Date(date)
     d.setHours(0, 0, 0, 0)
     return d
-}
-
-const formatDate = (date) => {
-    try {
-        return new Date(date).toLocaleDateString()
-    } catch {
-        return "Invalid Date"
-    }
 }
 
 const formatDateForAPI = (date) => {
@@ -155,9 +149,9 @@ const FollowUpTable = ({ followUps, viewMode, onComplete, onViewTimeline }) => {
 export default function FollowUpPage() {
     const { user } = useAuth()
     const { success, error } = useToast()
+    const queryClient = useQueryClient()
 
-    const [followUps, setFollowUps] = useState([])
-    const [loading, setLoading] = useState(true)
+    const { data: followUps = [], isLoading: loading } = useFollowUpTasks()
 
     // State
     const [showTimelineModal, setShowTimelineModal] = useState(false)
@@ -171,26 +165,6 @@ export default function FollowUpPage() {
         nextFollowUpDate: "",
         eventTag: FOLLOWUP_EVENT_TAGS.FOLLOW_UP_COMPLETED,
     })
-
-    // Toggle between Design 1 and Design 3
-    const [useCompactStats, setUseCompactStats] = useState(false)
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true)
-                const [followUpsData] = await Promise.all([followUpService.getFollowUpTasks()])
-                setFollowUps(followUpsData || [])
-            } catch (err) {
-                console.error("[v0] Failed to fetch follow-up data:", err)
-                error(err.message || "Failed to load follow-ups")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchData()
-    }, [])
 
 
 
@@ -274,8 +248,8 @@ export default function FollowUpPage() {
 
             // Refresh follow-up data
             const updatedFollowUp = await followUpService.getFollowUpById(selectedFollowUp.followUpId)
-            setFollowUps((prev) => prev.map((fu) => (fu.followUpId === selectedFollowUp.followUpId ? updatedFollowUp : fu)))
             setSelectedFollowUp(updatedFollowUp)
+            queryClient.invalidateQueries({ queryKey: KEYS.followUpTasks() })
         } catch (err) {
             console.error("[v0] Failed to add note:", err)
             error(err.message || "Failed to add note")
@@ -341,8 +315,8 @@ export default function FollowUpPage() {
             }
 
             const updatedFollowUp = await followUpService.getFollowUpById(selectedFollowUp.followUpId)
-            setFollowUps((prev) => prev.map((fu) => (fu.followUpId === selectedFollowUp.followUpId ? updatedFollowUp : fu)))
             setSelectedFollowUp(updatedFollowUp)
+            queryClient.invalidateQueries({ queryKey: KEYS.followUpTasks() })
             resetNodeForm()
         } catch (err) {
             console.error("[v0] Failed to save note:", err)
@@ -380,8 +354,7 @@ export default function FollowUpPage() {
             setSelectedFollowUp(null)
 
             // Refresh data
-            const followUpsData = await followUpService.getFollowUpTasks()
-            setFollowUps(followUpsData || [])
+            queryClient.invalidateQueries({ queryKey: KEYS.followUpTasks() })
         } catch (err) {
             console.error("[v0] Failed to complete follow-up:", err)
             error(err.message || "Failed to complete follow-up")
@@ -419,31 +392,6 @@ export default function FollowUpPage() {
         }
     }
 
-    // Prepare stats array for CompactStatsRow
-    const statsArray = useMemo(
-        () => [
-            {
-                label: "Overdue",
-                value: stats.overdue,
-                trend: stats.overdue > 0 ? "up" : "down",
-                trendDirection: stats.overdue > 0 ? "negative" : "positive",
-            },
-            {
-                label: "Today's Pending",
-                value: stats.todayPending,
-                trend: stats.todayPending > 0 ? "up" : "down",
-                trendDirection: stats.todayPending > 0 ? "neutral" : "positive",
-            },
-            {
-                label: "Completed",
-                value: stats.completedToday,
-                trend: stats.completedToday > 0 ? "up" : "down",
-                trendDirection: stats.completedToday > 0 ? "positive" : "neutral",
-            },
-        ],
-        [stats],
-    )
-
     if (loading) {
         return (
             <AppLayout>
@@ -464,30 +412,26 @@ export default function FollowUpPage() {
                 </div>
 
                 {/* Stats Section */}
-                {useCompactStats ? (
-                    <CompactStatsRow stats={statsArray} />
-                ) : (
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-                        <StatCard
-                            label="Overdue"
-                            value={stats.overdue}
-                            trend={stats.overdue > 0 ? "up" : "down"}
-                            trendDirection={stats.overdue > 0 ? "negative" : "positive"}
-                        />
-                        <StatCard
-                            label="Today's Pending"
-                            value={stats.todayPending}
-                            trend={stats.todayPending > 0 ? "up" : "down"}
-                            trendDirection={stats.todayPending > 0 ? "neutral" : "positive"}
-                        />
-                        <StatCard
-                            label="Completed"
-                            value={stats.completedToday}
-                            trend={stats.completedToday > 0 ? "up" : "down"}
-                            trendDirection={stats.completedToday > 0 ? "positive" : "neutral"}
-                        />
-                    </div>
-                )}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
+                    <StatCard
+                        label="Overdue"
+                        value={stats.overdue}
+                        trend={stats.overdue > 0 ? "up" : "down"}
+                        trendDirection={stats.overdue > 0 ? "negative" : "positive"}
+                    />
+                    <StatCard
+                        label="Today's Pending"
+                        value={stats.todayPending}
+                        trend={stats.todayPending > 0 ? "up" : "down"}
+                        trendDirection={stats.todayPending > 0 ? "neutral" : "positive"}
+                    />
+                    <StatCard
+                        label="Completed"
+                        value={stats.completedToday}
+                        trend={stats.completedToday > 0 ? "up" : "down"}
+                        trendDirection={stats.completedToday > 0 ? "positive" : "neutral"}
+                    />
+                </div>
 
                 <div className="flex gap-2 flex-wrap">
                     <Button

@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "./Button"
 
 export const EmptyState = ({ icon: Icon, title, message, action, actionLabel }) => {

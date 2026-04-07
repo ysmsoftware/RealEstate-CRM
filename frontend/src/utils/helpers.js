@@ -126,3 +126,9 @@ export const exportToCSV = (data, filename) => {
     a.click()
     window.URL.revokeObjectURL(url)
 }
+
+export const getDefaultFollowUpDate = () => {
+    const d = new Date()
+    d.setDate(d.getDate() + 5)
+    return d.toISOString().split("T")[0]
+}

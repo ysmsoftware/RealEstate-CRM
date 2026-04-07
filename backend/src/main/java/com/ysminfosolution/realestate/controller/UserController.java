@@ -72,7 +72,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changeUserInfo(@PathVariable UUID userId, @RequestBody @NotNull ChangeUserInfoDTO changeUserInfoDTO, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public ResponseEntity<String> changeUserInfo(@PathVariable UUID userId, @RequestBody @Valid ChangeUserInfoDTO changeUserInfoDTO, @AuthenticationPrincipal AppUserDetails appUserDetails) {
         
         log.info("\n");
         log.info("Path: [PUT] /users/{userId} | Method: changeUserInfo");

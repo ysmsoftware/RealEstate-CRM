@@ -16,7 +16,6 @@ public record ChangeUserInfoDTO(
     @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "username contains invalid characters")
     String username,
 
-    @NotBlank
     @Pattern(regexp = "^[\\p{L}0-9\\s\\-&,./()']+$", message = "password contains invalid characters")
     String password,
 

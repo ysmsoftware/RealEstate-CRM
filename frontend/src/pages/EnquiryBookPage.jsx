@@ -18,7 +18,10 @@ import { enquiryService } from "../services/enquiryService"
 import { followUpService } from "../services/followUpService"
 import { projectService } from "../services/projectService"
 import { FOLLOWUP_EVENT_TAGS } from "../utils/constants"
-import { formatCurrency, formatDate, formatDateTime, isWithinHours, validateEmail, validatePhone } from "../utils/helpers"
+import { useQueryClient } from "@tanstack/react-query"
+import { useEnquiries, useCreateEnquiry, useUpdateEnquiry } from "../api/hooks/useEnquiries"
+import { useProjects } from "../api/hooks/useProjects"
+import { formatCurrency, formatDate, formatDateTime, isWithinHours, validateEmail, validatePhone, getDefaultFollowUpDate } from "../utils/helpers"
 
 const buildInitialForm = () => ({
     leadName: "",
@@ -77,21 +80,12 @@ const buildCreatePayload = (form) => ({
     referenceName: form.referenceName,
 })
 
-const getDefaultFollowUpDate = () => {
-    const d = new Date()
-    d.setDate(d.getDate() + 5)
-    return d.toISOString().split("T")[0]
-}
-
 export default function EnquiryBookPage() {
     const navigate = useNavigate()
     const { success, error } = useToast()
 
-    const [enquiries, setEnquiries] = useState([])
-    const [projects, setProjects] = useState([])
+    const queryClient = useQueryClient()
     const [propertyOptions, setPropertyOptions] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [submitting, setSubmitting] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [filters, setFilters] = useState({ projectId: "", status: "" })
@@ -112,27 +106,12 @@ export default function EnquiryBookPage() {
     })
     const [editingNode, setEditingNode] = useState(null)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true)
-                const [enquiryData, projectData] = await Promise.all([
-                    enquiryService.getAllEnquiries(),
-                    projectService.getProjects(),
-                ])
+    const { data: enquiries = [], isLoading: loading } = useEnquiries()
 
-                setEnquiries(enquiryData || [])
-                setProjects(projectData || [])
-            } catch (err) {
-                console.error("Failed to load enquiry book:", err)
-                error(err.message || "Failed to load enquiry book")
-            } finally {
-                setLoading(false)
-            }
-        }
+    const { data: projects = [] } = useProjects()
 
-        fetchData()
-    }, [error])
+    const createMutation = useCreateEnquiry()
+    const updateMutation = useUpdateEnquiry()
 
     const filteredEnquiries = useMemo(() => {
         return enquiries.filter((item) => {
@@ -371,30 +350,42 @@ export default function EnquiryBookPage() {
             return
         }
 
-        try {
-            setSubmitting(true)
-
-            if (editingEnquiry) {
-                await enquiryService.updateEnquiry(editingEnquiry.enquiryId, buildUpdatePayload(form))
-                success("Enquiry updated successfully")
-            } else {
-                await enquiryService.createEnquiry(buildCreatePayload(form))
-                success("Enquiry created successfully")
-            }
-
-            const refreshedEnquiries = await enquiryService.getAllEnquiries()
-            setEnquiries(refreshedEnquiries || [])
-            setShowModal(false)
-            setEditingEnquiry(null)
-            setForm(buildInitialForm())
-            setPropertyOptions(null)
-        } catch (err) {
-            console.error("Failed to save enquiry:", err)
-            error(err.message || "Failed to save enquiry")
-        } finally {
-            setSubmitting(false)
+        if (editingEnquiry) {
+            updateMutation.mutate(
+                { id: editingEnquiry.enquiryId, payload: buildUpdatePayload(form) },
+                {
+                    onSuccess: () => {
+                        success("Enquiry updated successfully")
+                        setShowModal(false)
+                        setEditingEnquiry(null)
+                        setForm(buildInitialForm())
+                        setPropertyOptions(null)
+                    },
+                    onError: (err) => {
+                        error(err.message || "Failed to update enquiry")
+                    }
+                }
+            )
+        } else {
+            createMutation.mutate(
+                buildCreatePayload(form),
+                {
+                    onSuccess: () => {
+                        success("Enquiry created successfully")
+                        setShowModal(false)
+                        setEditingEnquiry(null)
+                        setForm(buildInitialForm())
+                        setPropertyOptions(null)
+                    },
+                    onError: (err) => {
+                        error(err.message || "Failed to create enquiry")
+                    }
+                }
+            )
         }
     }
+
+    const isSubmitting = createMutation.isPending || updateMutation.isPending
 
     const columns = [
         {
@@ -519,18 +510,18 @@ export default function EnquiryBookPage() {
 
             <Modal
                 isOpen={showModal}
-                onClose={() => !submitting && setShowModal(false)}
+                onClose={() => !isSubmitting && setShowModal(false)}
                 title={editingEnquiry ? "Edit Enquiry" : "Add Enquiry"}
                 size="5xl"
                 variant="form"
                 contentClassName="py-4 sm:py-5"
                 footer={
                     <div className="flex justify-end gap-3">
-                        <Button variant="outline" onClick={() => setShowModal(false)} disabled={submitting}>
+                        <Button variant="outline" onClick={() => setShowModal(false)} disabled={isSubmitting}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit} disabled={submitting}>
-                            {submitting && <Loader2 size={16} className="animate-spin" />}
+                        <Button onClick={handleSubmit} disabled={isSubmitting}>
+                            {isSubmitting && <Loader2 size={16} className="animate-spin" />}
                             {editingEnquiry ? "Update Enquiry" : "Create Enquiry"}
                         </Button>
                     </div>
