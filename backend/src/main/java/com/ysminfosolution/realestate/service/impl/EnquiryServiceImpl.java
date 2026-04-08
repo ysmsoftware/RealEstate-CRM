@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.ysminfosolution.realestate.dto.EnquiryBasicInfoDTO;
 import com.ysminfosolution.realestate.dto.EnquiryResponseDTO;
@@ -41,10 +41,12 @@ import com.ysminfosolution.realestate.service.EnquiryService;
 import com.ysminfosolution.realestate.service.FollowUpService;
 import com.ysminfosolution.realestate.service.ProjectAuthorizationService;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Validated
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
@@ -144,7 +146,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<EnquiryResponseDTO> getById(@NonNull UUID enquiryId, AppUserDetails appUserDetails) {
+    public ResponseEntity<EnquiryResponseDTO> getById(@NotNull UUID enquiryId, AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Method: getById");
@@ -156,7 +158,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public ResponseEntity<String> cancelEnquiryWithRemark(@NonNull UUID enquiryId, String remark,
+    public ResponseEntity<String> cancelEnquiryWithRemark(@NotNull UUID enquiryId, String remark,
             AppUserDetails appUserDetails) {
 
         log.info("\n");
@@ -207,7 +209,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public ResponseEntity<String> updateEnquiry(@NonNull UUID enquiryId, UpdateEnquiryDTO updateEnquiryDTO,
+    public ResponseEntity<String> updateEnquiry(@NotNull UUID enquiryId, UpdateEnquiryDTO updateEnquiryDTO,
             AppUserDetails appUserDetails) {
 
         log.info("\n");
@@ -310,7 +312,7 @@ public class EnquiryServiceImpl implements EnquiryService {
     }
 
     @Override
-    public ResponseEntity<String> changeEnquiryStatus(@NonNull UUID enquiryId, Status status,
+    public ResponseEntity<String> changeEnquiryStatus(@NotNull UUID enquiryId, Status status,
             AppUserDetails appUserDetails) {
 
         log.info("\n");

@@ -6,9 +6,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.ysminfosolution.realestate.dto.DocumentResponseDTO;
 import com.ysminfosolution.realestate.dto.maincreationformdtos.DocumentCreationDTO;
@@ -23,10 +23,12 @@ import com.ysminfosolution.realestate.service.DocumentService;
 import com.ysminfosolution.realestate.service.ProjectAuthorizationService;
 import com.ysminfosolution.realestate.service.S3StorageService;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Validated
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
@@ -177,7 +179,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ResponseEntity<Document> getDocumentById(@NonNull UUID documentId, AppUserDetails appUserDetails) {
+    public ResponseEntity<Document> getDocumentById(@NotNull UUID documentId, AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Method: getDocumentById");

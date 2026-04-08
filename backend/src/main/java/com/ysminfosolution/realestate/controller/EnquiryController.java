@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +77,7 @@ public class EnquiryController {
     }
     
     @GetMapping("/{enquiryId}")
-    public ResponseEntity<EnquiryResponseDTO> getById(@PathVariable @NonNull UUID enquiryId, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public ResponseEntity<EnquiryResponseDTO> getById(@PathVariable @NotNull UUID enquiryId, @AuthenticationPrincipal AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Path: [GET] /enquiries/{enquiryId} | Method: getById");
@@ -106,7 +105,7 @@ public class EnquiryController {
     }
 
     @PutMapping("/{enquiryId}")
-    public ResponseEntity<String> updateEnquiry(@PathVariable @NonNull UUID enquiryId, @RequestBody @NotNull @Valid UpdateEnquiryDTO updateEnquiryDTO, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public ResponseEntity<String> updateEnquiry(@PathVariable @NotNull UUID enquiryId, @RequestBody @NotNull @Valid UpdateEnquiryDTO updateEnquiryDTO, @AuthenticationPrincipal AppUserDetails appUserDetails) {
 
         log.info("\n");
         log.info("Path: [PUT] /enquiries/{enquiryId} | Method: updateEnquiry");
@@ -115,7 +114,7 @@ public class EnquiryController {
     }
 
     @DeleteMapping("/cancel/{enquiryId}")
-    public ResponseEntity<String> cancelEnquiryWithRemark(@PathVariable @NonNull UUID enquiryId, @RequestParam @NotBlank String remark, @AuthenticationPrincipal AppUserDetails appUserDetails){
+    public ResponseEntity<String> cancelEnquiryWithRemark(@PathVariable @NotNull UUID enquiryId, @RequestParam @NotBlank String remark, @AuthenticationPrincipal AppUserDetails appUserDetails){
 
         log.info("\n");
         log.info("Path: [DELETE] /enquiries/cancel/{enquiryId} | Method: cancelEnquiryWithRemark");
@@ -124,7 +123,7 @@ public class EnquiryController {
     }
 
     @PutMapping("/status/{enquiryId}")
-    public ResponseEntity<String> changeEnquiryStatus(@PathVariable @NonNull UUID enquiryId, @RequestBody @NotNull Status status, @AuthenticationPrincipal AppUserDetails appUserDetails) {
+    public ResponseEntity<String> changeEnquiryStatus(@PathVariable @NotNull UUID enquiryId, @RequestBody @NotNull Status status, @AuthenticationPrincipal AppUserDetails appUserDetails) {
         
         log.info("\n");
         log.info("Path: [DELETE] /enquiries/status/{enquiryId} | Method: changeEnquiryStatus");

@@ -3,8 +3,8 @@ package com.ysminfosolution.realestate.repository;
 import java.util.Set;
 import java.util.UUID;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
 
 import com.ysminfosolution.realestate.model.Disbursement;
 

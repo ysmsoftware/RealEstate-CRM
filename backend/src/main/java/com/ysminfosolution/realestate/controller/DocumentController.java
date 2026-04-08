@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +81,7 @@ public class DocumentController {
     }
 
     @GetMapping("/{documentId}")
-    public ResponseEntity<Document> getDocumentById(@PathVariable @NonNull UUID documentId,
+    public ResponseEntity<Document> getDocumentById(@PathVariable @NotNull UUID documentId,
             @AuthenticationPrincipal AppUserDetails appUserDetails) {
 
         log.info("\n");
