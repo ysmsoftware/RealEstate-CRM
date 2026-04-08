@@ -58,4 +58,10 @@ public class User extends BaseEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Column(name = "mobile_verified", nullable = false)
+    private Boolean mobileVerified = false;
+
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
+
 }

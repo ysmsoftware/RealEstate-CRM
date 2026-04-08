@@ -68,4 +68,10 @@ public class Project extends BaseEntity {
     @Column(name = "letterhead_url", nullable = false)
     private String letterheadUrl;
 
+    @Column(name = "locked", nullable = false)
+    private Boolean locked = false; // If true, only read-only access to project details, no edits allowed
+
+    @Column(name = "lock_reason", nullable = true)
+    private String lockReason; // Reason for locking the project, e.g., "Downgraded subscription - only basic details visible"
+
 }
