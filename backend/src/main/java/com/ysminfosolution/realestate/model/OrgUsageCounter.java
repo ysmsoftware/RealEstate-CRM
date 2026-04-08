@@ -1,5 +1,8 @@
 package com.ysminfosolution.realestate.model;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -28,6 +31,10 @@ public class OrgUsageCounter extends BaseEntity {
     @JoinColumn(name = "plan_entitlement_id", nullable = false)
     private PlanEntitlement planEntitlement;
 
+    @Column(name = "usage_count", nullable = false)
     private int usageCount;
+    
+    @Column(name = "period_start", nullable = false)
+    private LocalDate periodStart;
     
 }

@@ -57,7 +57,7 @@ public class PaymentOrder extends BaseEntity {
     @JoinColumn(name = "created_by_id", nullable = false)
     private User createdBy;
 
-    @Column(name = "paid_at", nullable = false)
+    @Column(name = "paid_at", nullable = true)
     private Instant paidAt;
 
     @Column(name = "payment_attempts", nullable = false)

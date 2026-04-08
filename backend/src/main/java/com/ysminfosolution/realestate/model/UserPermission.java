@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ import lombok.Setter;
 public class UserPermission extends BaseEntity {
 
     @ManyToOne
-    @Column(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "permission", nullable = false)
@@ -30,7 +31,7 @@ public class UserPermission extends BaseEntity {
     private PermissionKey permissionKey;
 
     @ManyToOne
-    @Column(name = "granted_by", nullable = false)
+    @JoinColumn(name = "granted_by", nullable = false)
     private User grantedBy;
 
 
