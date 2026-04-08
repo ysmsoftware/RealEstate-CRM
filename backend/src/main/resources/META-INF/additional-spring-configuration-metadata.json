@@ -36,9 +36,9 @@
             "description": "JWT secret key for signing token'"
         },
         {
-            "name": "LOG_TO_FILE",
+            "name": "realestate.logging.to-file",
             "type": "java.lang.Boolean",
-            "description": "Whether to log to a file or not"
+            "description": "Whether application logs should be written to a file"
         }
     ]
 }

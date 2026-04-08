@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
-    <!-- Read environment variable or property -->
-    <springProperty scope="context" name="LOG_TO_FILE" source="LOG_TO_FILE" defaultValue="false"/>
+    <!-- Read the canonical Spring property; env var fallbacks are handled in application-*.properties -->
+    <springProperty scope="context" name="LOG_TO_FILE" source="realestate.logging.to-file" defaultValue="false"/>
     <springProperty scope="context" name="LOG_DIR" source="realestate.base.directory" defaultValue="./logs"/>
 
     <!-- Common log pattern -->

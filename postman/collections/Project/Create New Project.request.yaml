@@ -187,4 +187,4 @@ scripts:
 
       pm.environment.set(\"mahareraNo\", randomString(10));\r\n"
     language: text/javascript
-order: 4000
+order: 500
