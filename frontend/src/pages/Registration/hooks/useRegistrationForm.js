@@ -53,8 +53,8 @@ export function useRegistrationForm() {
         branchName: "",
         contactPerson: "",
         contactNumber: "",
-        ifsc: "",
-        accountNo: "",
+        ifscCode: "",
+        accountNumber: "",
         accountType: "SAVINGS"
     })
 
@@ -211,14 +211,14 @@ export function useRegistrationForm() {
                 error("Start date must be before completion date"); return false
             }
         }
-        
+
         if (currentStep === 3) {
             if (!letterHead) {
                 error("Project letter head is required")
                 return false
             }
         }
-        
+
         if (currentStep === 4) {
             const totalPercentage = disbursements.reduce((sum, d) => sum + Number.parseFloat(d.percentage), 0)
             if (totalPercentage !== 100) {
@@ -226,7 +226,7 @@ export function useRegistrationForm() {
                 return false
             }
         }
-        
+
         return true
     }
 
@@ -235,13 +235,13 @@ export function useRegistrationForm() {
 
     // --- OTHER HANDLERS ---
     const handleAddBank = () => {
-        if (!bankForm.bankName || !bankForm.branchName || !bankForm.contactPerson || !bankForm.contactNumber || !bankForm.accountNo) {
+        if (!bankForm.bankName || !bankForm.branchName || !bankForm.contactPerson || !bankForm.contactNumber || !bankForm.accountNumber || !bankForm.ifscCode) {
             error("Please fill all bank fields"); return
         }
         setBanks([...banks, { ...bankForm, bankDetailId: uuidv4() }])
         setBankForm({
             bankName: "", branchName: "", contactPerson: "",
-            contactNumber: "", ifsc: "", accountNo: "", accountType: "SAVINGS"
+            contactNumber: "", ifscCode: "", accountNumber: "", accountType: "SAVINGS"
         })
         setShowBankModal(false)
         success("Bank added successfully")
@@ -324,9 +324,9 @@ export function useRegistrationForm() {
                     accountName: bank.contactPerson || bank.bankName,
                     bankName: bank.bankName,
                     branchName: bank.branchName,
-                    ifsc: bank.ifsc || "",
+                    ifscCode: bank.ifscCode || "",
                     accountType: bank.accountType || "SAVINGS",
-                    accountNo: bank.accountNo || "0000000000",
+                    accountNumber: bank.accountNumber || "0000000000",
                     disbursementLetterHead: letterHead, // --- FIX 2: Use dedicated state
                 })),
 

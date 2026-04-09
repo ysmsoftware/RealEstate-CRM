@@ -23,7 +23,7 @@ export default function StepBanks({ banks, setBanks, onOpenModal }) {
                   render: (_, row) => (
                     <div>
                       <div className="font-medium text-gray-900">{row.branchName}</div>
-                      <div className="text-gray-500 text-xs mt-0.5">IFSC: {row.ifsc || "N/A"}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">IFSC: {row.ifscCode || "N/A"}</div>
                     </div>
                   )
                 },
@@ -32,7 +32,7 @@ export default function StepBanks({ banks, setBanks, onOpenModal }) {
                   label: "A/C No & Type",
                   render: (_, row) => (
                     <div>
-                      <div className="font-medium text-gray-900">{row.accountNo}</div>
+                      <div className="font-medium text-gray-900">{row.accountNumber}</div>
                       <div className="text-gray-500 text-xs mt-0.5">{row.accountType || "SAVINGS"}</div>
                     </div>
                   )
