@@ -318,6 +318,9 @@ export function useRegistrationForm() {
                     branchName: bank.branchName,
                     contactPerson: bank.contactPerson,
                     contactNumber: bank.contactNumber,
+                    ifscCode: bank.ifscCode,
+                    accountNumber: bank.accountNumber,
+                    accountType: bank.accountType || "SAVINGS",
                 })),
 
                 disbursementBanksDetail: banks.map((bank) => ({

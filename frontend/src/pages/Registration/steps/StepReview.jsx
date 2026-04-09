@@ -64,7 +64,7 @@ export default function StepReview({ basicInfo, wings, banks, amenities, documen
                                 <p className="font-medium text-gray-900">{bank.bankName} - {bank.branchName}</p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600 mt-1 text-xs">
                                     <p>Contact: {bank.contactPerson}</p><p>Phone: {bank.contactNumber}</p>
-                                    <p>Account No: {bank.accountNo}</p><p>IFSC: {bank.ifsc || "-"}</p>
+                                    <p>Account No: {bank.accountNumber}</p><p>IFSC: {bank.ifscCode || "-"}</p>
                                 </div>
                             </div>
                         ))}

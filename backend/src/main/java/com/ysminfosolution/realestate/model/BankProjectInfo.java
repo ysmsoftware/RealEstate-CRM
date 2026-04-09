@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +47,16 @@ public class BankProjectInfo {
     @Column(name = "contact_number", nullable = false, length = 15)
     private String contactNumber;
 
+    @Column(name = "ifsc_code", nullable = false)
+    private String ifscCode;
+
+    @Column(name = "account_number", nullable = false)
+    private String accountNumber;
+
+    @Column(name = "account_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "project_id", nullable = false)
     private Project project;
@@ -60,5 +72,11 @@ public class BankProjectInfo {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted;
+
+    public enum AccountType {
+        SAVINGS,
+        CURRENT,
+        ESCROW
+    }
 
 }
