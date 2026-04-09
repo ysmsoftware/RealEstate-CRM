@@ -47,16 +47,10 @@ public class BankProjectInfo extends BaseEntity {
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Project project;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    public enum AccountType {
+        SAVINGS,
+        CURRENT,
+        ESCROW
+    }
 
 }
