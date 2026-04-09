@@ -88,6 +88,9 @@ export const projectService = {
                     formData.append(`projectApprovedBanksInfo[${index}].branchName`, bank.branchName)
                     formData.append(`projectApprovedBanksInfo[${index}].contactPerson`, bank.contactPerson)
                     formData.append(`projectApprovedBanksInfo[${index}].contactNumber`, bank.contactNumber)
+                    formData.append(`projectApprovedBanksInfo[${index}].accountNumber`, bank.accountNumber)
+                    formData.append(`projectApprovedBanksInfo[${index}].ifscCode`, bank.ifscCode)
+                    formData.append(`projectApprovedBanksInfo[${index}].accountType`, bank.accountType)
                 })
             }
 
