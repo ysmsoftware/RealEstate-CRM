@@ -350,6 +350,12 @@ export default function EnquiryBookPage() {
             return
         }
 
+        const budgetNum = Number(form.budget)
+        if (isNaN(budgetNum) || budgetNum <= 0) {
+            error("Budget must be greater than zero")
+            return
+        }
+
         if (editingEnquiry) {
             updateMutation.mutate(
                 { id: editingEnquiry.enquiryId, payload: buildUpdatePayload(form) },
@@ -544,7 +550,7 @@ export default function EnquiryBookPage() {
                                 required
                             />
                             <FormInput
-                                label="Landline Number"
+                                label="Alternate Number"
                                 value={form.leadLandlineNumber}
                                 onChange={(e) => setForm((prev) => ({ ...prev, leadLandlineNumber: e.target.value.replace(/\D/g, "").slice(0, 10) }))}
                             />
@@ -636,8 +642,14 @@ export default function EnquiryBookPage() {
                             />
                             <FormInput
                                 label="Budget"
+                                type="number"
+                                min="0"
                                 value={form.budget}
-                                onChange={(e) => setForm((prev) => ({ ...prev, budget: e.target.value }))}
+                                onChange={(e) => {
+                                    let val = e.target.value
+                                    if (val.includes("-") || val.includes("e") || val.includes("E")) return
+                                    setForm((prev) => ({ ...prev, budget: val }))
+                                }}
                                 required
                             />
                             <FormInput

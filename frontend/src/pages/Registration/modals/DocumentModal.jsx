@@ -3,6 +3,7 @@ import { Button } from "../../../components/ui/Button"
 import { FormInput } from "../../../components/ui/FormInput"
 import { FormSelect } from "../../../components/ui/FormSelect"
 import { useToast } from "../../../components/ui/Toast"
+import { AlertCircle } from "lucide-react"
 
 export default function DocumentModal({ isOpen, onClose, docForm, setDocForm, onAdd }) {
   const { error } = useToast()
@@ -21,6 +22,16 @@ export default function DocumentModal({ isOpen, onClose, docForm, setDocForm, on
     }
   }
 
+  let isError = false
+  let errorMsg = ""
+  if (!docForm.title) {
+      isError = true
+      errorMsg = "Document Title is required"
+  } else if (!docForm.file) {
+      isError = true
+      errorMsg = "Please upload a file"
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add Document">
       <FormInput label="Document Title" value={docForm.title} onChange={(e) => setDocForm({ ...docForm, title: e.target.value })} />
@@ -28,7 +39,7 @@ export default function DocumentModal({ isOpen, onClose, docForm, setDocForm, on
         label="Document Type"
         value={docForm.type}
         onChange={(e) => setDocForm({ ...docForm, type: e.target.value })}
-        options={[{ value: "FloorPlan", label: "Floor Plan" }, { value: "BasementPlan", label: "Basement Plan" }]}
+        options={[{ value: "FloorPlan", label: "Floor Plan" }, { value: "BasementPlan", label: "Basement Plan" }, { value: "Other", label: "Other" }]}
       />
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">Upload File</label>
@@ -36,9 +47,27 @@ export default function DocumentModal({ isOpen, onClose, docForm, setDocForm, on
         <p className="text-xs text-gray-500 mt-1">Supported: PDF, DOC, Images</p>
         {docForm.file && <p className="text-xs text-green-600 mt-1">Selected: {docForm.file.name}</p>}
       </div>
+
+      {isError && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
+            <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
+            <div>
+                <span className="font-semibold block">Validation Error</span>
+                <span className="text-red-600">{errorMsg}</span>
+            </div>
+        </div>
+      )}
+
       <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end mt-4">
         <Button onClick={onClose} variant="secondary" className="w-full sm:w-auto">Cancel</Button>
-        <Button onClick={onAdd} variant="primary" className="w-full sm:w-auto">Add Document</Button>
+        <Button 
+          onClick={onAdd} 
+          disabled={isError} 
+          variant="primary" 
+          className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Add Document
+        </Button>
       </div>
     </Modal>
   )

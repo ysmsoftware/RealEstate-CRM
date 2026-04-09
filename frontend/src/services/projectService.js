@@ -83,28 +83,12 @@ export const projectService = {
 
             // --- 3. Project Approved Banks ---
             if (projectData.projectApprovedBanksInfo && projectData.projectApprovedBanksInfo.length > 0) {
-                projectData.projectApprovedBanksInfo.forEach((bank, index) => {
-                    formData.append(`projectApprovedBanksInfo[${index}].bankName`, bank.bankName)
-                    formData.append(`projectApprovedBanksInfo[${index}].branchName`, bank.branchName)
-                    formData.append(`projectApprovedBanksInfo[${index}].contactPerson`, bank.contactPerson)
-                    formData.append(`projectApprovedBanksInfo[${index}].contactNumber`, bank.contactNumber)
-                })
+                buildFormData(formData, projectData.projectApprovedBanksInfo, "projectApprovedBanksInfo")
             }
 
             // --- 4. Disbursement Banks ---
             if (projectData.disbursementBanksDetail && projectData.disbursementBanksDetail.length > 0) {
-                projectData.disbursementBanksDetail.forEach((bank, index) => {
-                    formData.append(`disbursementBanksDetail[${index}].bankName`, bank.bankName)
-                    formData.append(`disbursementBanksDetail[${index}].branchName`, bank.branchName)
-                    formData.append(`disbursementBanksDetail[${index}].accountName`, bank.accountName)
-                    formData.append(`disbursementBanksDetail[${index}].ifsc`, bank.ifsc)
-                    formData.append(`disbursementBanksDetail[${index}].accountType`, bank.accountType)
-                    formData.append(`disbursementBanksDetail[${index}].accountNo`, bank.accountNo)
-
-                    if (bank.disbursementLetterHead) {
-                        formData.append(`disbursementBanksDetail[${index}].disbursementLetterHead`, bank.disbursementLetterHead)
-                    }
-                })
+                buildFormData(formData, projectData.disbursementBanksDetail, "disbursementBanksDetail")
             }
 
             // --- 5. Amenities ---

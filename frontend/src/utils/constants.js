@@ -33,6 +33,7 @@ export const PAYMENT_TYPE = {
 export const DOCUMENT_TYPE = {
     FLOOR_PLAN: "FloorPlan",
     BASEMENT_PLAN: "BasementPlan",
+    OTHER: "Other",
 }
 
 export const NOTIFICATION_TYPE = {

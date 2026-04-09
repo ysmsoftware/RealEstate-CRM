@@ -17,11 +17,36 @@ export default function StepBanks({ banks, setBanks, onOpenModal }) {
             <Table
               columns={[
                 { key: "bankName", label: "Bank Name" },
-                { key: "branchName", label: "Branch" },
-                { key: "accountNo", label: "Account No" }, // Added
-                { key: "accountType", label: "Type" },     // Added
-                { key: "contactPerson", label: "Contact Person" },
-                { key: "contactNumber", label: "Contact Number" },
+                { 
+                  key: "branchInfo", 
+                  label: "Branch & IFSC",
+                  render: (_, row) => (
+                    <div>
+                      <div className="font-medium text-gray-900">{row.branchName}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">IFSC: {row.ifscCode || "N/A"}</div>
+                    </div>
+                  )
+                },
+                { 
+                  key: "accountInfo", 
+                  label: "A/C No & Type",
+                  render: (_, row) => (
+                    <div>
+                      <div className="font-medium text-gray-900">{row.accountNumber}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">{row.accountType || "SAVINGS"}</div>
+                    </div>
+                  )
+                },
+                { 
+                  key: "contactInfo", 
+                  label: "Contact Detail",
+                  render: (_, row) => (
+                    <div>
+                      <div className="font-medium text-gray-900">{row.contactPerson}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">{row.contactNumber}</div>
+                    </div>
+                  )
+                },
               ]}
               data={banks}
               actions={(row) => [{ label: "Delete", onClick: () => setBanks(banks.filter((b) => b.bankDetailId !== row.bankDetailId)) }]}

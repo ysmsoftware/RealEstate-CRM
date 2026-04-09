@@ -2,6 +2,8 @@ package com.ysminfosolution.realestate.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -21,13 +23,15 @@ public class Document extends BaseEntity {
     public enum DocumentType {
         FloorPlan,
         BasementPlan,
-        LetterHead
+        LetterHead,
+        Other
     }
     
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Project project;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "document_type", nullable = false, length = 100)
     private DocumentType documentType;
 

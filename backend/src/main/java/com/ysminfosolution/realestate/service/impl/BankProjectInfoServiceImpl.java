@@ -51,6 +51,9 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
                 bankProjectInfo.setBranchName(bankProjectInfoDTO.branchName());
                 bankProjectInfo.setContactPerson(bankProjectInfoDTO.contactPerson());
                 bankProjectInfo.setContactNumber(bankProjectInfoDTO.contactNumber());
+                bankProjectInfo.setIfscCode(bankProjectInfoDTO.ifscCode());
+                bankProjectInfo.setAccountNumber(bankProjectInfoDTO.accountNumber());
+                bankProjectInfo.setAccountType(bankProjectInfoDTO.accountType());
                 bankProjectInfo.setProject(savedProject);
                 bankProjectInfo.setDeleted(false);
 
@@ -99,6 +102,9 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
             savedBankProjectInfo.getBranchName(),
             savedBankProjectInfo.getContactPerson(),
             savedBankProjectInfo.getContactNumber(),
+            savedBankProjectInfo.getIfscCode(),
+            savedBankProjectInfo.getAccountNumber(),
+            savedBankProjectInfo.getAccountType(),
             savedBankProjectInfo.getProject().getId()
         );
 
@@ -118,7 +124,9 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
         bankProjectInfoDB.setBranchName(bankProjectInfo.getBranchName());
         bankProjectInfoDB.setContactPerson(bankProjectInfo.getContactPerson());
         bankProjectInfoDB.setContactNumber(bankProjectInfo.getContactNumber());
-        
+        bankProjectInfoDB.setAccountType(bankProjectInfo.getAccountType());
+        bankProjectInfoDB.setIfscCode(bankProjectInfo.getIfscCode());
+        bankProjectInfoDB.setAccountNumber(bankProjectInfo.getAccountNumber());
         BankProjectInfo savedBankProjectInfo = bankProjectInfoRepository.save(bankProjectInfoDB);
 
         NewBankProjectInfoResponseDTO bankProjectInfoResponseDTO = new NewBankProjectInfoResponseDTO(
@@ -127,6 +135,9 @@ public class BankProjectInfoServiceImpl implements BankProjectInfoService {
             savedBankProjectInfo.getBranchName(),
             savedBankProjectInfo.getContactPerson(),
             savedBankProjectInfo.getContactNumber(),
+            savedBankProjectInfo.getIfscCode(),
+            savedBankProjectInfo.getAccountNumber(),
+            savedBankProjectInfo.getAccountType(),
             savedBankProjectInfo.getProject().getId()
         );
         return ResponseEntity.ok(bankProjectInfoResponseDTO);

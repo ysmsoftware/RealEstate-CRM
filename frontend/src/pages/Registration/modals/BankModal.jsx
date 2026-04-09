@@ -1,39 +1,31 @@
 import { Modal } from "../../../components/ui/Modal"
 import { Button } from "../../../components/ui/Button"
 import { FormInput } from "../../../components/ui/FormInput"
-import { useToast } from "../../../components/ui/Toast"
-
+import { AlertCircle } from "lucide-react"
 
 export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAdd }) {
-    const { error: toastError } = useToast()
+    let isError = false
+    let errorMsg = ""
 
-    const handleAdd = () => {
-        // Validate required fields
-        if (
-            !bankForm.bankName ||
-            !bankForm.branchName ||
-            !bankForm.accountNo ||
-            !bankForm.ifsc ||
-            !bankForm.contactPerson ||
-            !bankForm.contactNumber
-        ) {
-            toastError("All fields are required")
-            return
-        }
-
-        // Validate Account Number length
-        if (bankForm.accountNo.length < 10) {
-            toastError("Account Number must be at least 10 digits")
-            return
-        }
-
-        // Validate Contact Number length
-        if (bankForm.contactNumber.length !== 10) {
-            toastError("Contact Number must be 10 digits")
-            return
-        }
-
-        onAdd()
+    if (
+        !bankForm.bankName ||
+        !bankForm.branchName ||
+        !bankForm.accountNumber ||
+        !bankForm.ifscCode ||
+        !bankForm.contactPerson ||
+        !bankForm.contactNumber
+    ) {
+        isError = true
+        errorMsg = "All fields are required"
+    } else if (bankForm.accountNumber.length < 10) {
+        isError = true
+        errorMsg = "Account Number must be at least 10 digits"
+    } else if (bankForm.contactNumber.length !== 10) {
+        isError = true
+        errorMsg = "Contact Number must be 10 digits"
+    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifscCode)) {
+        isError = true
+        errorMsg = "Invalid IFSC Code. Must be 11 characters (e.g. SBIN0005943)"
     }
 
     return (
@@ -63,11 +55,11 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                 {/* --- NEW FIELDS --- */}
                 <FormInput
                     label="Account Number"
-                    value={bankForm.accountNo}
+                    value={bankForm.accountNumber}
                     onChange={(e) => {
                         const val = e.target.value
                         if (/^\d*$/.test(val) && val.length <= 16) {
-                            setBankForm({ ...bankForm, accountNo: val })
+                            setBankForm({ ...bankForm, accountNumber: val })
                         }
                     }}
                     required
@@ -89,13 +81,14 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
 
                 <FormInput
                     label="IFSC Code"
-                    value={bankForm.ifsc}
+                    value={bankForm.ifscCode}
                     onChange={(e) => {
                         const val = e.target.value.toUpperCase()
-                        if (/^[A-Z0-9]*$/.test(val)) {
-                            setBankForm({ ...bankForm, ifsc: val })
+                        if (/^[A-Z0-9]*$/.test(val) && val.length <= 11) {
+                            setBankForm({ ...bankForm, ifscCode: val })
                         }
                     }}
+                    maxLength={11}
                     required
                 />
                 <FormInput
@@ -121,9 +114,26 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                 />
             </div>
 
+            {isError && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
+                    <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
+                    <div>
+                        <span className="font-semibold block">Validation Error</span>
+                        <span className="text-red-600">{errorMsg}</span>
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end mt-6">
                 <Button onClick={onClose} variant="secondary" className="w-full sm:w-auto">Cancel</Button>
-                <Button onClick={handleAdd} variant="primary" className="w-full sm:w-auto">Add Bank</Button>
+                <Button
+                    onClick={onAdd}
+                    disabled={isError}
+                    variant="primary"
+                    className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Add Bank
+                </Button>
             </div>
         </Modal>
     )
