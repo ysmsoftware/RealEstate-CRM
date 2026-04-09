@@ -31,7 +31,7 @@ export default function DisbursementModal({ isOpen, onClose, form, setForm, onAd
     <Modal isOpen={isOpen} onClose={onClose} title="Add Disbursement">
       <FormInput label="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
       <FormInput label="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-      <FormInput label="Percentage" type="number" min="0" value={form.percentage} onChange={handlePercentageChange} />
+      <FormInput label="Percentage" type="number" min="0" max={100 - currentTotal} value={form.percentage} onChange={handlePercentageChange} />
       
       {isError && (
         <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">

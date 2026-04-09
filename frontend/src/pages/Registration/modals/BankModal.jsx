@@ -6,7 +6,7 @@ import { AlertCircle } from "lucide-react"
 export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAdd }) {
     let isError = false
     let errorMsg = ""
-    
+
     if (
         !bankForm.bankName ||
         !bankForm.branchName ||
@@ -23,6 +23,9 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
     } else if (bankForm.contactNumber.length !== 10) {
         isError = true
         errorMsg = "Contact Number must be 10 digits"
+    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifsc)) {
+        isError = true
+        errorMsg = "Invalid IFSC Code. Must be 11 characters (e.g. SBIN0005943)"
     }
 
     return (
@@ -81,10 +84,11 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                     value={bankForm.ifsc}
                     onChange={(e) => {
                         const val = e.target.value.toUpperCase()
-                        if (/^[A-Z0-9]*$/.test(val)) {
+                        if (/^[A-Z0-9]*$/.test(val) && val.length <= 11) {
                             setBankForm({ ...bankForm, ifsc: val })
                         }
                     }}
+                    maxLength={11}
                     required
                 />
                 <FormInput
@@ -109,7 +113,7 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                     required
                 />
             </div>
-            
+
             {isError && (
                 <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-start gap-2">
                     <AlertCircle size={18} className="text-red-500 mt-0.5 shrink-0" />
@@ -122,13 +126,13 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
 
             <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end mt-6">
                 <Button onClick={onClose} variant="secondary" className="w-full sm:w-auto">Cancel</Button>
-                <Button 
-                  onClick={onAdd} 
-                  disabled={isError} 
-                  variant="primary" 
-                  className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                <Button
+                    onClick={onAdd}
+                    disabled={isError}
+                    variant="primary"
+                    className="w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Add Bank
+                    Add Bank
                 </Button>
             </div>
         </Modal>
