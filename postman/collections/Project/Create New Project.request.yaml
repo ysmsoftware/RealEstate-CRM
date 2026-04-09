@@ -153,38 +153,25 @@ scripts:
   - type: afterResponse
     code: |+
       pm.test("Successful POST request", function () {
-          pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      pm.expect(pm.response.code).to.be.oneOf([200, 201]);
       });
 
-      // Update the selected environment project Id
+      // Store project ID
       pm.environment.set("project_id", pm.response.json().projectId);
 
+      // Function to generate random string
+      function randomString(length) {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+          let result = '';
+          for (let i = 0; i < length; i++) {
+              result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+      }
+
+      // Generate mahareraNo for NEXT request
+      pm.environment.set("mahareraNo", randomString(10));
+
     language: text/javascript
-  - type: beforeRequest
-    code: "// Function to generate random string\r
-
-      function randomString(length) {\r
-
-      \    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';\r
-
-      \    let result = '';\r
-
-      \    for (let i = 0; i < length; i++) {\r
-
-      \        result += chars.charAt(Math.floor(Math.random() *
-      chars.length));\r
-
-      \    }\r
-
-      \    return result;\r
-
-      }\r
-
-      \r
-
-      // Set mahareraNo as an environment variable\r
-
-      pm.environment.set(\"mahareraNo\", randomString(10));\r\n"
-    language: text/javascript
+  
 order: 500

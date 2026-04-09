@@ -1,0 +1,3 @@
+realestate:
+  logging:
+    to-file: "${LOG_TO_FILE:true}"
