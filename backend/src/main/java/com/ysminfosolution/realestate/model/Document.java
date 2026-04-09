@@ -30,7 +30,8 @@ public class Document {
     public enum DocumentType {
         FloorPlan,
         BasementPlan,
-        LetterHead
+        LetterHead,
+        Other
     }
     
     @Id

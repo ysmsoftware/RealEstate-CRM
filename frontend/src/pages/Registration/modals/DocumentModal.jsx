@@ -39,7 +39,7 @@ export default function DocumentModal({ isOpen, onClose, docForm, setDocForm, on
         label="Document Type"
         value={docForm.type}
         onChange={(e) => setDocForm({ ...docForm, type: e.target.value })}
-        options={[{ value: "FloorPlan", label: "Floor Plan" }, { value: "BasementPlan", label: "Basement Plan" }]}
+        options={[{ value: "FloorPlan", label: "Floor Plan" }, { value: "BasementPlan", label: "Basement Plan" }, { value: "Other", label: "Other" }]}
       />
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">Upload File</label>
