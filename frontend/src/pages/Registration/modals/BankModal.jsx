@@ -10,20 +10,20 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
     if (
         !bankForm.bankName ||
         !bankForm.branchName ||
-        !bankForm.accountNo ||
-        !bankForm.ifsc ||
+        !bankForm.accountNumber ||
+        !bankForm.ifscCode ||
         !bankForm.contactPerson ||
         !bankForm.contactNumber
     ) {
         isError = true
         errorMsg = "All fields are required"
-    } else if (bankForm.accountNo.length < 10) {
+    } else if (bankForm.accountNumber.length < 10) {
         isError = true
         errorMsg = "Account Number must be at least 10 digits"
     } else if (bankForm.contactNumber.length !== 10) {
         isError = true
         errorMsg = "Contact Number must be 10 digits"
-    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifsc)) {
+    } else if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifscCode)) {
         isError = true
         errorMsg = "Invalid IFSC Code. Must be 11 characters (e.g. SBIN0005943)"
     }
@@ -55,11 +55,11 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
                 {/* --- NEW FIELDS --- */}
                 <FormInput
                     label="Account Number"
-                    value={bankForm.accountNo}
+                    value={bankForm.accountNumber}
                     onChange={(e) => {
                         const val = e.target.value
                         if (/^\d*$/.test(val) && val.length <= 16) {
-                            setBankForm({ ...bankForm, accountNo: val })
+                            setBankForm({ ...bankForm, accountNumber: val })
                         }
                     }}
                     required
@@ -81,11 +81,11 @@ export default function BankModal({ isOpen, onClose, bankForm, setBankForm, onAd
 
                 <FormInput
                     label="IFSC Code"
-                    value={bankForm.ifsc}
+                    value={bankForm.ifscCode}
                     onChange={(e) => {
                         const val = e.target.value.toUpperCase()
                         if (/^[A-Z0-9]*$/.test(val) && val.length <= 11) {
-                            setBankForm({ ...bankForm, ifsc: val })
+                            setBankForm({ ...bankForm, ifscCode: val })
                         }
                     }}
                     maxLength={11}

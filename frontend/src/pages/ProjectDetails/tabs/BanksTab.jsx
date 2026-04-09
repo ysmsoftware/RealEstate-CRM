@@ -19,34 +19,34 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
         branchName: "",
         contactPerson: "",
         contactNumber: "",
-        accountNo: "",
+        accountNumber: "",
         accountType: "SAVINGS",
-        ifsc: "",
+        ifscCode: "",
     })
 
     const handleSaveBank = async () => {
         try {
             if (
-                !bankForm.bankName || 
-                !bankForm.branchName || 
-                !bankForm.accountNo || 
-                !bankForm.ifsc
+                !bankForm.bankName ||
+                !bankForm.branchName ||
+                !bankForm.accountNumber ||
+                !bankForm.ifscCode
             ) {
                 toastError("Please fill all required fields")
                 return
             }
-            
-            if (bankForm.accountNo.length < 10) {
+
+            if (bankForm.accountNumber.length < 10) {
                 toastError("Account Number must be at least 10 digits")
                 return
             }
-            
+
             if (bankForm.contactNumber && bankForm.contactNumber.length !== 10) {
                 toastError("Contact Number must be 10 digits")
                 return
             }
-            
-            if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifsc)) {
+
+            if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(bankForm.ifscCode)) {
                 toastError("Invalid IFSC Code. Must be 11 characters (e.g. SBIN0005943)")
                 return
             }
@@ -60,9 +60,9 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
             }
             setIsAddingBank(false)
             setEditingBankId(null)
-            setBankForm({ 
+            setBankForm({
                 bankName: "", branchName: "", contactPerson: "", contactNumber: "",
-                accountNo: "", accountType: "SAVINGS", ifsc: ""
+                accountNumber: "", accountType: "SAVINGS", ifscCode: ""
             })
             if (onRefresh) onRefresh()
         } catch (err) {
@@ -95,9 +95,9 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
                                 branchName: "",
                                 contactPerson: "",
                                 contactNumber: "",
-                                accountNo: "",
+                                accountNumber: "",
                                 accountType: "SAVINGS",
-                                ifsc: "",
+                                ifscCode: "",
                             })
                             setIsAddingBank(true)
                         }}
@@ -157,11 +157,11 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
                         />
                         <FormInput
                             label="Account Number *"
-                            value={bankForm.accountNo}
+                            value={bankForm.accountNumber}
                             onChange={(e) => {
                                 const val = e.target.value
                                 if (/^\d*$/.test(val) && val.length <= 16) {
-                                    setBankForm({ ...bankForm, accountNo: val })
+                                    setBankForm({ ...bankForm, accountNumber: val })
                                 }
                             }}
                         />
@@ -179,11 +179,11 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
                         </div>
                         <FormInput
                             label="IFSC Code *"
-                            value={bankForm.ifsc}
+                            value={bankForm.ifscCode}
                             onChange={(e) => {
                                 const val = e.target.value.toUpperCase()
                                 if (/^[A-Z0-9]*$/.test(val) && val.length <= 11) {
-                                    setBankForm({ ...bankForm, ifsc: val })
+                                    setBankForm({ ...bankForm, ifscCode: val })
                                 }
                             }}
                             maxLength={11}
@@ -223,9 +223,9 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
                                                     branchName: bank.branchName,
                                                     contactPerson: bank.contactPerson || "",
                                                     contactNumber: bank.contactNumber || "",
-                                                    accountNo: bank.accountNo || "",
+                                                    accountNumber: bank.accountNumber || "",
                                                     accountType: bank.accountType || "SAVINGS",
-                                                    ifsc: bank.ifsc || "",
+                                                    ifscCode: bank.ifscCode || "",
                                                 })
                                                 setIsAddingBank(true)
                                             }}
@@ -246,10 +246,10 @@ export default function BanksTab({ banks, projectId, onRefresh }) {
                             <p className="text-sm text-gray-600">{bank.branchName}</p>
                             <div className="mt-3 pt-3 border-t border-gray-100 text-sm">
                                 <p>
-                                    <span className="font-medium">A/C No:</span> {bank.accountNo || "N/A"}
+                                    <span className="font-medium">A/C No:</span> {bank.accountNumber || "N/A"}
                                 </p>
                                 <p>
-                                    <span className="font-medium">IFSC:</span> {bank.ifsc || "N/A"}
+                                    <span className="font-medium">IFSC:</span> {bank.ifscCode || "N/A"}
                                 </p>
                                 <p>
                                     <span className="font-medium">Type:</span> {bank.accountType || "N/A"}
